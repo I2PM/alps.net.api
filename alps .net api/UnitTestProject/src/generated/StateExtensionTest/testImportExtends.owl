@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE rdf:RDF [
+	<!ENTITY rdf 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+	<!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+	<!ENTITY xsd 'http://www.w3.org/2001/XMLSchema#'>
+	<!ENTITY owl 'http://www.w3.org/2002/07/owl#'>
+	<!ENTITY xml 'http://www.w3.org/XML/1998/namespace'>
+	<!ENTITY swrla 'http://swrl.stanford.edu/ontologies/3.3/swrla.owl#'>
+	<!ENTITY abstract-pass-ont 'http://www.imi.kit.edu/abstract-pass-ont#'>
+	<!ENTITY standard-pass-ont 'http://www.i2pm.net/standard-pass-ont#'>
+	<!ENTITY baseuri 'http://subjective-me.jimdo.com/s-bpm/processmodels/2021-11-02/Page-1#'>
+]>
+<rdf:RDF xml:base="http://subjective-me.jimdo.com/s-bpm/processmodels/2021-11-02/Page-1" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:xml="http://www.w3.org/XML/1998/namespace" xmlns:swrla="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#" xmlns:abstract-pass-ont="http://www.imi.kit.edu/abstract-pass-ont#" xmlns:standard-pass-ont="http://www.i2pm.net/standard-pass-ont#" xmlns="http://subjective-me.jimdo.com/s-bpm/processmodels/2021-11-02/Page-1#" xmlns:baseuri="http://subjective-me.jimdo.com/s-bpm/processmodels/2021-11-02/Page-1#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <owl:Ontology rdf:about="http://subjective-me.jimdo.com/s-bpm/processmodels/2021-11-02/Page-1">
+    <owl:imports rdf:resource="http://www.i2pm.net/standard-pass-ont" />
+    <owl:imports rdf:resource="http://www.imi.kit.edu/abstract-pass-ont" />
+    <owl:versionIRI rdf:resource="http://subjective-me.jimdo.com/s-bpm/processmodels/2021-11-02/Page-1/2021-12-09" />
+  </owl:Ontology>
+  <owl:NamedIndividual rdf:about="&baseuri;Connector_Hallo_Peter">
+    <standard-pass-ont:hasMessageType rdf:resource="&baseuri;Hallo_Peter" />
+    <standard-pass-ont:hasModelComponentID xml:lang="http://www.w3.org/2001/xmlschema#string">Connector_Hallo_Peter</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">Message: Hallo Peter From: Hans To: Peter</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:hasReceiver rdf:resource="&baseuri;Peter" />
+    <standard-pass-ont:hasSender rdf:resource="&baseuri;Hans" />
+    <rdf:type rdf:resource="&standard-pass-ont;MessageExchange" />
+  </owl:NamedIndividual>
+  <rdf:Description rdf:about="&baseuri;Drawing64">
+    <standard-pass-ont:contains rdf:resource="&baseuri;Connector_Hallo_Peter" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;Hallo_Peter" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;Hans" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;MEL_Con_Hallo_Peter" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;Peter" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;SBD_Hans" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;SBD_Peter" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;SID_1" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;SID_8" />
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">Drawing64</standard-pass-ont:hasModelComponentLabel>
+  </rdf:Description>
+  <owl:NamedIndividual rdf:about="&baseuri;EBD_9_SID_1_SubjectExtension_3">
+    <standard-pass-ont:contains rdf:resource="&baseuri;SBD_9_StateReference_3" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;action_of_SBD_9_StateReference_3" />
+    <standard-pass-ont:hasModelComponentID xml:lang="http://www.w3.org/2001/xmlschema#string">EBD_9_SID_1_SubjectExtension_3</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">EBD: Subject Extension 3-8</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:hasPriorityNumber rdf:datatype="&xsd;positiveInteger">1</standard-pass-ont:hasPriorityNumber>
+    <rdf:type rdf:resource="&standard-pass-ont;SubjectBehavior" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;Hallo_Peter">
+    <standard-pass-ont:containsPayloadDescription rdf:resource="&baseuri;payload_description_of_Hallo_Peter" />
+    <standard-pass-ont:hasModelComponentID xml:lang="http://www.w3.org/2001/xmlschema#string">Hallo_Peter</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">Hallo Peter</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;MessageSpecification" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;Hans">
+    <standard-pass-ont:containsBaseBehavior rdf:resource="&baseuri;SBD_Hans" />
+    <standard-pass-ont:containsBehavior rdf:resource="&baseuri;SBD_Hans" />
+    <standard-pass-ont:hasMaximumSubjectInstanceRestriction rdf:datatype="&xsd;integer">1</standard-pass-ont:hasMaximumSubjectInstanceRestriction>
+    <standard-pass-ont:hasModelComponentID xml:lang="http://www.w3.org/2001/xmlschema#string">Hans</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">Hans</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:hasOutgoingMessageExchange rdf:resource="&baseuri;Connector_Hallo_Peter" />
+    <rdf:type rdf:resource="&standard-pass-ont;FullySpecifiedSubject" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;MEL_Con_Hallo_Peter">
+    <standard-pass-ont:contains rdf:resource="&baseuri;Connector_Hallo_Peter" />
+    <standard-pass-ont:hasModelComponentID xml:lang="http://www.w3.org/2001/xmlschema#string">MEL_Con_Hallo_Peter</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">Connector_Hallo_Peter</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;MessageExchangeList" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;Peter">
+    <standard-pass-ont:containsBaseBehavior rdf:resource="&baseuri;SBD_Peter" />
+    <standard-pass-ont:containsBehavior rdf:resource="&baseuri;SBD_Peter" />
+    <standard-pass-ont:hasIncomingMessageExchange rdf:resource="&baseuri;Connector_Hallo_Peter" />
+    <standard-pass-ont:hasMaximumSubjectInstanceRestriction rdf:datatype="&xsd;integer">1</standard-pass-ont:hasMaximumSubjectInstanceRestriction>
+    <standard-pass-ont:hasModelComponentID xml:lang="http://www.w3.org/2001/xmlschema#string">Peter</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">Peter</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;FullySpecifiedSubject" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;SBD_4_DoState">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;SBD_Hans" />
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;action_DoState" />
+    <standard-pass-ont:hasFunctionSpecification rdf:resource="&baseuri;FD_SBD_4_DoState" />
+    <standard-pass-ont:hasModelComponentID xml:lang="http://www.w3.org/2001/xmlschema#string">SBD_4_DoState</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">Do State</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;DoState" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;SBD_9_StateReference_3">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;EBD_9_SID_1_SubjectExtension_3" />
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;action_of_SBD_9_StateReference_3" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;SBD_4_DoState" />
+    <standard-pass-ont:hasModelComponentID xml:lang="http://www.w3.org/2001/xmlschema#string">SBD_9_StateReference_3</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">State Extension</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:references rdf:resource="&baseuri;SBD_4_DoState" />
+    <rdf:type rdf:resource="&standard-pass-ont;StateReference" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;SBD_Hans">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;Hans" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;SBD_4_DoState" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;action_DoState" />
+    <standard-pass-ont:hasModelComponentID xml:lang="http://www.w3.org/2001/xmlschema#string">SBD_Hans</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">SBD: Hans</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:hasPriorityNumber rdf:datatype="&xsd;positiveInteger">2</standard-pass-ont:hasPriorityNumber>
+    <rdf:type rdf:resource="&standard-pass-ont;SubjectBehavior" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;SBD_Peter">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;Peter" />
+    <standard-pass-ont:hasModelComponentID xml:lang="http://www.w3.org/2001/xmlschema#string">SBD_Peter</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">SBD: Peter</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:hasPriorityNumber rdf:datatype="&xsd;positiveInteger">2</standard-pass-ont:hasPriorityNumber>
+    <rdf:type rdf:resource="&standard-pass-ont;SubjectBehavior" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;SID_1">
+    <standard-pass-ont:contains rdf:resource="&baseuri;Connector_Hallo_Peter" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;Hallo_Peter" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;Hans" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;MEL_Con_Hallo_Peter" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;Peter" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;SBD_Hans" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;SBD_Peter" />
+    <standard-pass-ont:hasModelComponentID xml:lang="http://www.w3.org/2001/xmlschema#string">SID_1</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">SID_1</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:hasPriorityNumber rdf:datatype="&xsd;positiveInteger">2</standard-pass-ont:hasPriorityNumber>
+    <rdf:type rdf:resource="&abstract-pass-ont;ModelLayer" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;SID_8">
+    <standard-pass-ont:contains rdf:resource="&baseuri;EBD_9_SID_1_SubjectExtension_3" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;SID_8_SubjectExtension_3" />
+    <standard-pass-ont:hasModelComponentID xml:lang="http://www.w3.org/2001/xmlschema#string">SID_8</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">SID_8</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:hasPriorityNumber rdf:datatype="&xsd;positiveInteger">1</standard-pass-ont:hasPriorityNumber>
+    <abstract-pass-ont:extends rdf:resource="&baseuri;SID_1" />
+    <rdf:type rdf:resource="&abstract-pass-ont;ExtensionLayer" />
+    <rdf:type rdf:resource="&abstract-pass-ont;ExtensionModelLayer" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;SID_8_SubjectExtension_3">
+    <standard-pass-ont:containsBehavior rdf:resource="&baseuri;EBD_9_SID_1_SubjectExtension_3" />
+    <standard-pass-ont:hasModelComponentID xml:lang="http://www.w3.org/2001/xmlschema#string">SID_8_SubjectExtension_3</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">Subject Extension 3</standard-pass-ont:hasModelComponentLabel>
+    <abstract-pass-ont:extends rdf:resource="&baseuri;SID_1_FullySpecifiedSubject_2" />
+    <rdf:type rdf:resource="&abstract-pass-ont;SubjectExtension" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;action_DoState">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;SBD_Hans" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;SBD_4_DoState" />
+    <standard-pass-ont:hasModelComponentID xml:lang="http://www.w3.org/2001/xmlschema#string">action_DoState</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">action_DoState</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;Action" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;action_of_SBD_9_StateReference_3">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;EBD_9_SID_1_SubjectExtension_3" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;SBD_9_StateReference_3" />
+    <standard-pass-ont:hasModelComponentID xml:lang="http://www.w3.org/2001/xmlschema#string">action_of_SBD_9_StateReference_3</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">action_of_SBD_9_StateReference_3</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;Action" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="http://subjective-me.jimdo.com/s-bpm/processmodels/2021-11-02/Page-1#http://subjective-me.jimdo.com/s-bpm/processmodels/2021-11-02/Page-1">
+    <standard-pass-ont:hasModelComponentID xml:lang="http://www.w3.org/2001/xmlschema#string">http://subjective-me.jimdo.com/s-bpm/processmodels/2021-11-02/Page-1</standard-pass-ont:hasModelComponentID>
+    <rdf:type rdf:resource="&standard-pass-ont;PASSProcessModel" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;payload_description_of_Hallo_Peter">
+    <standard-pass-ont:hasModelComponentID xml:lang="http://www.w3.org/2001/xmlschema#string">payload_description_of_Hallo_Peter</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">payload_description_of_Hallo_Peter</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;PayloadDescription" />
+  </owl:NamedIndividual>
+</rdf:RDF>

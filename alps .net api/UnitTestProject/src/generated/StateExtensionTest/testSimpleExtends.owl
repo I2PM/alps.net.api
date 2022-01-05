@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE rdf:RDF [
+	<!ENTITY rdf 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+	<!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+	<!ENTITY xsd 'http://www.w3.org/2001/XMLSchema#'>
+	<!ENTITY owl 'http://www.w3.org/2002/07/owl#'>
+	<!ENTITY xml 'http://www.w3.org/XML/1998/namespace'>
+	<!ENTITY swrla 'http://swrl.stanford.edu/ontologies/3.3/swrla.owl#'>
+	<!ENTITY abstract-pass-ont 'http://www.imi.kit.edu/abstract-pass-ont#'>
+	<!ENTITY standard-pass-ont 'http://www.i2pm.net/standard-pass-ont#'>
+	<!ENTITY baseuri 'http://www.exampletesturi.com/#'>
+]>
+<rdf:RDF xml:base="http://www.exampletesturi.com/" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:xml="http://www.w3.org/XML/1998/namespace" xmlns:swrla="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#" xmlns:abstract-pass-ont="http://www.imi.kit.edu/abstract-pass-ont#" xmlns:standard-pass-ont="http://www.i2pm.net/standard-pass-ont#" xmlns="http://www.exampletesturi.com/#" xmlns:baseuri="http://www.exampletesturi.com/#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <owl:Ontology rdf:about="http://www.exampletesturi.com/">
+    <owl:imports rdf:resource="http://www.i2pm.net/standard-pass-ont" />
+    <owl:imports rdf:resource="http://www.imi.kit.edu/abstract-pass-ont" />
+  </owl:Ontology>
+  <owl:NamedIndividual rdf:about="&baseuri;ActionForDoState-239ecbcf-61af-48b3-8d23-14c2c12b1805-62332867-55fb-4830-aa36-9799675783dc">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;secondLayer-17e53629-45b4-4f21-bf63-8484c0073503" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;DoState-239ecbcf-61af-48b3-8d23-14c2c12b1805" />
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">ActionForDoState-239ecbcf-61af-48b3-8d23-14c2c12b1805</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;Action" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;ActionForDoState-9ed9e783-d691-4270-b8f2-9a35bebba310-ae023114-baac-40fd-b8e8-da57354e9837">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;defaultBehavior-50511da3-5451-461a-ae29-32341839d22e" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;DoState-9ed9e783-d691-4270-b8f2-9a35bebba310" />
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">ActionForDoState-9ed9e783-d691-4270-b8f2-9a35bebba310</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;Action" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;DoState-239ecbcf-61af-48b3-8d23-14c2c12b1805">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;ActionForDoState-239ecbcf-61af-48b3-8d23-14c2c12b1805-62332867-55fb-4830-aa36-9799675783dc" />
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;secondLayer-17e53629-45b4-4f21-bf63-8484c0073503" />
+    <standard-pass-ont:references rdf:resource="&baseuri;DoState-9ed9e783-d691-4270-b8f2-9a35bebba310" />
+    <rdf:type rdf:resource="&standard-pass-ont;StateReference" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;DoState-9ed9e783-d691-4270-b8f2-9a35bebba310">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;ActionForDoState-9ed9e783-d691-4270-b8f2-9a35bebba310-ae023114-baac-40fd-b8e8-da57354e9837" />
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;defaultBehavior-50511da3-5451-461a-ae29-32341839d22e" />
+    <rdf:type rdf:resource="&standard-pass-ont;DoState" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;FullySpecifiedSubject-77608d5e-38d7-4216-940d-b7ab73d19aa0">
+    <standard-pass-ont:containsBaseBehavior rdf:resource="&baseuri;defaultBehavior-50511da3-5451-461a-ae29-32341839d22e" />
+    <standard-pass-ont:containsBehavior rdf:resource="&baseuri;defaultBehavior-50511da3-5451-461a-ae29-32341839d22e" />
+    <standard-pass-ont:containsBehavior rdf:resource="&baseuri;secondLayer-17e53629-45b4-4f21-bf63-8484c0073503" />
+    <standard-pass-ont:hasMaximumSubjectInstanceRestriction rdf:datatype="&xsd;nonNegativeInteger">1</standard-pass-ont:hasMaximumSubjectInstanceRestriction>
+    <rdf:type rdf:resource="&standard-pass-ont;FullySpecifiedSubject" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;PASSProcessModel-662586a9-7cf6-4448-a11f-d4f0ddca35f1">
+    <standard-pass-ont:contains rdf:resource="&baseuri;defaultBaseLayer-9aeaa93e-2153-4c7b-9676-11873e1b1e6b" />
+    <rdf:type rdf:resource="&standard-pass-ont;PASSProcessModel" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;defaultBaseLayer-9aeaa93e-2153-4c7b-9676-11873e1b1e6b">
+    <standard-pass-ont:contains rdf:resource="&baseuri;FullySpecifiedSubject-77608d5e-38d7-4216-940d-b7ab73d19aa0" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;defaultBehavior-50511da3-5451-461a-ae29-32341839d22e" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;secondLayer-17e53629-45b4-4f21-bf63-8484c0073503" />
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">defaultBaseLayer</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&abstract-pass-ont;ModelLayer" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;defaultBehavior-50511da3-5451-461a-ae29-32341839d22e">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;FullySpecifiedSubject-77608d5e-38d7-4216-940d-b7ab73d19aa0" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;ActionForDoState-9ed9e783-d691-4270-b8f2-9a35bebba310-ae023114-baac-40fd-b8e8-da57354e9837" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;DoState-9ed9e783-d691-4270-b8f2-9a35bebba310" />
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">defaultBehavior</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;SubjectBehavior" />
+    <rdfs:comment xml:lang="en">This is the subject behavior to the fully specified subject: FullySpecifiedSubject-77608d5e-38d7-4216-940d-b7ab73d19aa0</rdfs:comment>
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;secondLayer-17e53629-45b4-4f21-bf63-8484c0073503">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;FullySpecifiedSubject-77608d5e-38d7-4216-940d-b7ab73d19aa0" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;ActionForDoState-239ecbcf-61af-48b3-8d23-14c2c12b1805-62332867-55fb-4830-aa36-9799675783dc" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;DoState-239ecbcf-61af-48b3-8d23-14c2c12b1805" />
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">secondLayer</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;MacroBehavior" />
+  </owl:NamedIndividual>
+</rdf:RDF>

@@ -1,0 +1,31 @@
+﻿using alps.net.api.parsing;
+using alps.net.api.util;
+using System.Collections.Generic;
+
+namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
+{
+    /// <summary>
+    /// Class that represents a communication act
+    /// </summary>
+    public class CommunicationAct : FunctionSpecification, ICommunicationAct
+    {
+        /// <summary>
+        /// Name of the class
+        /// </summary>
+        private const string className = "CommunicationAct";
+
+        public override string getClassName()
+        {
+            return className;
+        }
+        public override IParseablePASSProcessModelElement getParsedInstance()
+        {
+            return new CommunicationAct();
+        }
+
+       protected CommunicationAct() { }
+        public CommunicationAct(ISubjectBehavior behavior, string labelForID = null, string toolSpecificDefinition = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            : base(behavior, labelForID,  toolSpecificDefinition, comment, additionalLabel, additionalAttribute) { }
+
+    }
+}

@@ -1,0 +1,81 @@
+﻿using alps.net.api.parsing;
+using alps.net.api.src;
+using alps.net.api.util;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using VDS.RDF;
+
+namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
+{
+    /// <summary>
+    /// Class that represents a transition condition
+    /// </summary>
+    public class TransitionCondition : BehaviorDescribingComponent, ITransitionCondition
+    {
+        protected string toolSpecificDefinition = "";
+        /// <summary>
+        /// Name of the class
+        /// </summary>
+        private const string className = "TransitionCondition";
+
+
+        public override string getClassName()
+        {
+            return className;
+        }
+        public override IParseablePASSProcessModelElement getParsedInstance()
+        {
+            return new TransitionCondition();
+        }
+
+       protected TransitionCondition() { }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="label"></param>
+        /// <param name="comment"></param>
+        /// <param name="toolSpecificDefintion"></param>
+        /// <param name="additionalAttribute"></param>
+        public TransitionCondition(ITransition transition, string label = null , string toolSpecificDefintion = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            : base(null, label, comment, additionalLabel, additionalAttribute)
+        {
+            if (transition != null)
+            {
+                if (transition.getContainedBy(out ISubjectBehavior behavior))
+                    setContainedBy(behavior);
+                transition.setTransitionCondition(this);
+            }
+            setToolSpecificDefinition(toolSpecificDefintion);
+        }
+
+
+        public void setToolSpecificDefinition(string toolSpecificDefinition)
+        {
+            if (toolSpecificDefinition != null && toolSpecificDefinition.Equals(this.toolSpecificDefinition)) return;
+            removeTriple(new IncompleteTriple(OWLTags.stdHasToolSpecificDefinition, this.toolSpecificDefinition, IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeString));
+            this.toolSpecificDefinition = (toolSpecificDefinition is null || toolSpecificDefinition.Equals("")) ? null : toolSpecificDefinition;
+            if (toolSpecificDefinition != null)
+            {
+                addTriple(new IncompleteTriple(OWLTags.stdHasToolSpecificDefinition, toolSpecificDefinition, IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeString));
+            }
+        }
+
+
+        public string getToolSpecificDefinition()
+        {
+            return toolSpecificDefinition;
+        }
+
+        protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
+        {
+            if (predicate.Contains(OWLTags.hasToolSpecificDefinition))
+            {
+                setToolSpecificDefinition(objectContent);
+                return true;
+            }
+            return base.parseAttribute(predicate, objectContent, lang, dataType, element);
+        }
+
+    }
+}
