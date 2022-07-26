@@ -1,14 +1,10 @@
-﻿using alps.net.api.ALPS.ALPSModelElements;
+﻿using alps.net.api.ALPS;
 using alps.net.api.parsing;
 using alps.net.api.src;
-using alps.net.api.StandardPASS.DataDescribingComponents;
 using alps.net.api.util;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using VDS.RDF;
 
-namespace alps.net.api.StandardPASS.InteractionDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that contains a certain message specification

@@ -1,15 +1,14 @@
-﻿using alps.net.api.ALPS.ALPSModelElements;
-using alps.net.api.StandardPASS.BehaviorDescribingComponents;
-using alps.net.api.StandardPASS.InteractionDescribingComponents;
+﻿using alps.net.api.ALPS;
 using alps.net.api.util;
 using System.Collections.Generic;
 namespace alps.net.api.StandardPASS
 {
-    
+
     /// <summary>
     /// Interface to the Subject behavior class
     /// </summary>
-    public interface ISubjectBehavior : IPASSProcessModelElement, IContainableElement<IModelLayer>, IImplementingElement<ISubjectBehavior>, IPrioritizableElement
+    public interface ISubjectBehavior : IPASSProcessModelElement, IContainableElement<IModelLayer>,
+        IImplementingElement<ISubjectBehavior>, IExtendingElement<ISubjectBehavior>, IPrioritizableElement
     {
 
         // ######################## BehaviorDescribingComponents methods ########################

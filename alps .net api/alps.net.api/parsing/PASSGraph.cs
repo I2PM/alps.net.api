@@ -1,8 +1,6 @@
-﻿using alps.net.api.StandardPASS;
-using alps.net.api.StandardPASS.BehaviorDescribingComponents;
+﻿using alps.net.api.util;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using VDS.RDF;
 using VDS.RDF.Ontology;
 using VDS.RDF.Writing;
@@ -15,7 +13,20 @@ namespace alps.net.api.parsing
     /// </summary>
     public class PASSGraph : IPASSGraph
     {
-        private readonly IDictionary<string, string> namespaceMappings = new Dictionary<string, string>{
+        public interface IGraphCallback
+        {
+            void notifyTriple(Triple triple);
+
+            string getSubjectName();
+
+            void notifyModelComponentIDChanged(string oldID, string newID);
+        }
+
+        public const string EXAMPLE_BASE_URI_PLACEHOLDER = "baseuri:";
+
+        private ICompatibilityDictionary<string, IGraphCallback> elements = new CompatibilityDictionary<string, IGraphCallback>();
+
+        private readonly ICompatibilityDictionary<string, string> namespaceMappings = new CompatibilityDictionary<string, string>{
             { "rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#"},
             { "rdfs", "http://www.w3.org/2000/01/rdf-schema#"},
             { "xml", "http://www.w3.org/XML/1998/namespace"},
@@ -28,6 +39,16 @@ namespace alps.net.api.parsing
         };
         private string baseURI;
 
+        public bool containsNonBaseUri(string input)
+        {
+            foreach (KeyValuePair<string, string> nameMapping in namespaceMappings)
+            {
+                if (input.Contains(nameMapping.Value) && !nameMapping.Key.Equals(EXAMPLE_BASE_URI_PLACEHOLDER.Replace(":", "")))
+                    return true;
+            }
+            return false;
+        }
+
         protected const string EXAMPLE_BASE_URI = "http://www.imi.kit.edu/exampleBaseURI";
 
         protected IGraph baseGraph;
@@ -38,7 +59,7 @@ namespace alps.net.api.parsing
                 this.baseURI = EXAMPLE_BASE_URI;
             else
                 this.baseURI = baseURI;
-            namespaceMappings.Add(IPASSGraph.EXAMPLE_BASE_URI_PLACEHOLDER.Replace(":", ""), baseURI + "#");
+            namespaceMappings.Add(EXAMPLE_BASE_URI_PLACEHOLDER.Replace(":", ""), baseURI + "#");
 
             OntologyGraph exportGraph = new OntologyGraph();
 
@@ -89,7 +110,7 @@ namespace alps.net.api.parsing
             string subjWithoutUri = t.Subject.ToString().Replace(baseURI + "#", "");
             if (elements.ContainsKey(subjWithoutUri))
             {
-                elements[subjWithoutUri].addTriple(t);
+                elements[subjWithoutUri].notifyTriple(t);
             }
         }
 
@@ -122,19 +143,19 @@ namespace alps.net.api.parsing
         public void removeTriple(Triple t) { baseGraph.Retract(t); }
 
 
-        public void register(IParseablePASSProcessModelElement element)
+        public void register(IGraphCallback element)
         {
-            elements.TryAdd(element.getModelComponentID(), element);
+            elements.TryAdd(element.getSubjectName(), element);
         }
 
-        public void unregister(IParseablePASSProcessModelElement element)
+        public void unregister(IGraphCallback element)
         {
-            elements.Remove(element.getModelComponentID());
+            elements.Remove(element.getSubjectName());
         }
 
         public void modelComponentIDChanged(string oldID, string newID)
         {
-            IList<IParseablePASSProcessModelElement> elementsToNotify = new List<IParseablePASSProcessModelElement>();
+            IList<IGraphCallback> elementsToNotify = new List<IGraphCallback>();
             foreach (Triple t in baseGraph.Triples)
             {
                 if (t.ToString().Contains(oldID))
@@ -146,7 +167,7 @@ namespace alps.net.api.parsing
                     }
                 }
             }
-            foreach (IParseablePASSProcessModelElement parseable in elementsToNotify)
+            foreach (IGraphCallback parseable in elementsToNotify)
             {
                 parseable.notifyModelComponentIDChanged(oldID, newID);
             }
@@ -163,10 +184,6 @@ namespace alps.net.api.parsing
         {
             return baseURI;
         }
-
-        private IDictionary<string, IParseablePASSProcessModelElement> elements = new Dictionary<string, IParseablePASSProcessModelElement>();
-
-        
 
     }
 }

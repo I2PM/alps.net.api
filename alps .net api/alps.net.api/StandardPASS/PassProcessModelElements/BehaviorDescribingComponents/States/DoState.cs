@@ -1,12 +1,10 @@
 ﻿using alps.net.api.util;
 using System.Collections.Generic;
-using alps.net.api.StandardPASS.SubjectBehaviors;
-using alps.net.api.StandardPASS.DataDescribingComponents;
 using alps.net.api.parsing;
-using static alps.net.api.StandardPASS.BehaviorDescribingComponents.IState;
 using alps.net.api.src;
+using static alps.net.api.StandardPASS.IState;
 
-namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents a DoState
@@ -14,8 +12,8 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
 
     public class DoState : StandardPASSState, IDoState
     {
-        protected readonly IDictionary<string, IDataMappingIncomingToLocal> dataMappingIncomingToLocalDict = new Dictionary<string, IDataMappingIncomingToLocal>();
-        protected readonly IDictionary<string, IDataMappingLocalToOutgoing> dataMappingLocalToOutgoingDict = new Dictionary<string, IDataMappingLocalToOutgoing>();
+        protected readonly ICompatibilityDictionary<string, IDataMappingIncomingToLocal> dataMappingIncomingToLocalDict = new CompatibilityDictionary<string, IDataMappingIncomingToLocal>();
+        protected readonly ICompatibilityDictionary<string, IDataMappingLocalToOutgoing> dataMappingLocalToOutgoingDict = new CompatibilityDictionary<string, IDataMappingLocalToOutgoing>();
 
         /// <summary>
         /// Name of the class

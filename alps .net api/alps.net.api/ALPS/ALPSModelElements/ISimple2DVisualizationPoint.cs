@@ -1,5 +1,5 @@
 ﻿
-namespace alps.net.api.ALPS.ALPSModelElements
+namespace alps.net.api.ALPS
 {
     /// <summary>
     /// An interface to define points for a simple visual representation of model elements

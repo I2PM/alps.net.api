@@ -1,6 +1,5 @@
-﻿using alps.net.api.ALPS.ALPSModelElements;
+﻿using alps.net.api.ALPS;
 using alps.net.api.parsing;
-using alps.net.api.StandardPASS.InteractionDescribingComponents;
 using System.Collections.Generic;
 
 namespace alps.net.api.StandardPASS
@@ -8,7 +7,7 @@ namespace alps.net.api.StandardPASS
     /// <summary>
     /// Interface of the pass process model class
     /// </summary>
-    public interface IPASSProcessModel : IPASSProcessModelElement
+    public interface IPASSProcessModel : IPASSProcessModelElement, IImplementingElement<IPASSProcessModel>
     {
 
         /// <summary>

@@ -3,7 +3,7 @@ using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
 
-namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents a DoTransition

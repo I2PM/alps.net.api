@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace alps.net.api.StandardPASS
+﻿namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Interface for elements that can be abstract

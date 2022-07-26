@@ -3,9 +3,8 @@ using alps.net.api.src;
 using alps.net.api.StandardPASS;
 using alps.net.api.util;
 using System.Collections.Generic;
-using System.IO;
 
-namespace alps.net.api.ALPS.ALPSModelElements
+namespace alps.net.api.ALPS
 {
     /// <summary>
     /// Class that represents an ALPS SID component

@@ -1,4 +1,4 @@
-﻿using alps.net.api.ALPS.ALPSModelElements;
+﻿using alps.net.api.ALPS;
 using alps.net.api.util;
 
 namespace alps.net.api.StandardPASS

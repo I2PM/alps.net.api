@@ -1,12 +1,10 @@
 ﻿using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.StandardPASS;
-using alps.net.api.StandardPASS.BehaviorDescribingComponents;
-using alps.net.api.StandardPASS.SubjectBehaviors;
 using alps.net.api.util;
 using System.Collections.Generic;
 
-namespace alps.net.api.ALPS.ALPSModelElements.ALPSSBDComponents
+namespace alps.net.api.ALPS
 {
     public class GroupState : State, IGroupState
     {
@@ -14,7 +12,7 @@ namespace alps.net.api.ALPS.ALPSModelElements.ALPSSBDComponents
         /// Name of the class
         /// </summary>
         private const string className = "GroupState";
-        protected IDictionary<string, IBehaviorDescribingComponent> groupedComponents = new Dictionary<string, IBehaviorDescribingComponent>();
+        protected ICompatibilityDictionary<string, IBehaviorDescribingComponent> groupedComponents = new CompatibilityDictionary<string, IBehaviorDescribingComponent>();
 
         public override string getClassName()
         {
@@ -29,16 +27,6 @@ namespace alps.net.api.ALPS.ALPSModelElements.ALPSSBDComponents
         /// <summary>
         /// Constructor that creates a new fully specified instance of the group state class
         /// </summary>
-        /// <param name="additionalAttribute"></param>
-        /// <param name="modelComponentID"></param>
-        /// <param name="modelComponentLabel"></param>
-        /// <param name="comment"></param>
-        /// <param name="subjectBehavior"></param>
-        /// <param name="incomingTransition"></param>
-        /// <param name="outgoingTransition"></param>
-        /// <param name="functionSpecification"></param>
-        /// <param name="guardBehavior"></param>
-        /// <param name="action"></param>
         public GroupState(ISubjectBehavior behavior, string labelForID = null, IGuardBehavior guardBehavior = null,
             IFunctionSpecification functionSpecification = null, ISet<ITransition> incomingTransition = null, ISet<ITransition> outgoingTransition = null,
             string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)

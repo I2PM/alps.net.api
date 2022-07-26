@@ -1,6 +1,4 @@
-﻿using alps.net.api.StandardPASS.DataDescribingComponents;
-
-namespace alps.net.api.StandardPASS.InteractionDescribingComponents
+﻿namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Interface for the MessageSpecification class

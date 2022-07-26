@@ -1,10 +1,10 @@
-﻿using alps.net.api.ALPS.ALPSModelElements;
+﻿using alps.net.api.ALPS;
 using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
 
-namespace alps.net.api.StandardPASS.InteractionDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents an message sender type constraint
@@ -42,7 +42,8 @@ namespace alps.net.api.StandardPASS.InteractionDescribingComponents
         /// <param name="subject"></param>
         /// <param name="additionalAttribute"></param>
         public MessageSenderTypeConstraint(IModelLayer layer, string labelForID = null,  IInputPoolConstraintHandlingStrategy inputPoolConstraintHandlingStrategy = null,
-            int limit = 0, IMessageSpecification messageSpecification = null, ISubject subject = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            int limit = 0, IMessageSpecification messageSpecification = null, ISubject subject = null, string comment = null,
+            string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
             : base(layer, labelForID,  inputPoolConstraintHandlingStrategy, limit, comment, additionalLabel, additionalAttribute)
         {
             setReferencedMessageSpecification(messageSpecification);

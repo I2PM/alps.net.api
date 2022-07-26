@@ -1,5 +1,4 @@
 ﻿using alps.net.api.parsing;
-using alps.net.api.util;
 using VDS.RDF;
 
 namespace alps.net.api

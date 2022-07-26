@@ -2,7 +2,7 @@
 using alps.net.api.util;
 using System.Collections.Generic;
 
-namespace alps.net.api.StandardPASS.DataDescribingComponents
+namespace alps.net.api.StandardPASS
 {
 
     /// <summary>
@@ -23,7 +23,9 @@ namespace alps.net.api.StandardPASS.DataDescribingComponents
 
        protected PayloadDataObjectDefinition() { }
 
-        public PayloadDataObjectDefinition(IPASSProcessModel model, string labelForID = null, IDataTypeDefinition dataTypeDefintion = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+        public PayloadDataObjectDefinition(IPASSProcessModel model, string labelForID = null,
+            IDataTypeDefinition dataTypeDefintion = null, string comment = null, string additionalLabel = null,
+            IList<IIncompleteTriple> additionalAttribute = null)
             : base(model, labelForID, dataTypeDefintion, comment, additionalLabel, additionalAttribute)
         { }
 

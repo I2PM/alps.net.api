@@ -1,12 +1,9 @@
 ﻿using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.util;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using VDS.RDF;
 
-namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents a transition condition

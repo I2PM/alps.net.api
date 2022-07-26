@@ -17,7 +17,7 @@ namespace alps.net.api
         /// Overrides the current child nodes with a list of new child nodes
         /// </summary>
         /// <param name="childNodes">the new child nodes</param>
-        void setChildNodes(List<ITreeNode<T>> childNodes);
+        void setChildNodes(IList<ITreeNode<T>> childNodes);
 
         /// <summary>
         /// Adds a child to the list of child nodes
@@ -35,7 +35,9 @@ namespace alps.net.api
         /// Returns the child nodes
         /// </summary>
         /// <returns>the child nodes</returns>
-        List<ITreeNode<T>> getChildNodes();
+        IList<ITreeNode<T>> getChildNodes();
+
+        ITreeNode<T> getChild(int index);
 
         /// <summary>
         /// Sets the content of the node
@@ -54,7 +56,7 @@ namespace alps.net.api
         /// </summary>
         /// <param name="content">the string that will be checked as reference</param>
         /// <returns>true if the string equals the content, false if not</returns>
-        bool containsContent(T compare);
+        bool containsContent(T compare, out ITreeNode<T> node);
 
         /// <summary>
         /// Checks whether the given node is sublcass of a specified node
@@ -64,5 +66,17 @@ namespace alps.net.api
         /// <returns>true if it is a sublass of the specified parent, false if not</returns>
         bool isSubClassOf(ITreeNode<T> parent, bool direct = false);
 
+        /// <summary>
+        /// Returns the root node of the current tree node
+        /// </summary>
+        /// <returns>the root node</returns>
+        ITreeNode<T> getRoot();
+
+        /// <summary>
+        /// Returns the height of the longest path to a leaf starting from this node.
+        /// If this node is already a leaf, it returns 0
+        /// </summary>
+        /// <returns></returns>
+        int getHeigthToLastLeaf();
     }
 }

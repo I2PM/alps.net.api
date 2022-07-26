@@ -1,10 +1,9 @@
 ﻿using alps.net.api.parsing;
 using alps.net.api.util;
-using System.Linq;
 using System.Collections.Generic;
 using alps.net.api.src;
 
-namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents an action. This is a construct used in the ontology, but is only implemented here to guarantee a correct standard.
@@ -16,7 +15,7 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
     public class Action : BehaviorDescribingComponent, IAction
     {
         protected IState state;
-        protected IDictionary<string, ITransition> transitions = new Dictionary<string, ITransition>();
+        protected ICompatibilityDictionary<string, ITransition> transitions = new CompatibilityDictionary<string, ITransition>();
 
         /// <summary>
         /// Name of the class

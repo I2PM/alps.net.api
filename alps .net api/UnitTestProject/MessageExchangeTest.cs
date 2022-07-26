@@ -1,9 +1,6 @@
 ﻿
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using alps.net.api.StandardPASS;
-using alps.net.api.StandardPASS.BehaviorDescribingComponents;
-using alps.net.api.StandardPASS.InteractionDescribingComponents;
-using alps.net.api.StandardPASS.DataDescribingComponents;
 using System.Collections.Generic;
 
 namespace UnitTestProject
@@ -17,7 +14,7 @@ namespace UnitTestProject
         private IFullySpecifiedSubject subjPeter;
         private IFullySpecifiedSubject subjHans;
 
-    [TestInitialize]
+        [TestInitialize]
         public void init()
         {
             model = new PASSProcessModel("http://www.exampleTestUri.com");
@@ -39,7 +36,7 @@ namespace UnitTestProject
             ISendState sendState = new SendState(behaviorHans, "SendState");
             IDoState doState = new DoState(behaviorHans, "DoState");
             ISendTransition trans = new SendTransition(sendState, doState);
-            ISendTransitionCondition cond = new SendTransitionCondition(trans, "cond", null,  exchange, 0, 0, null, subjHans, spec);
+            ISendTransitionCondition cond = new SendTransitionCondition(trans, "cond", null, exchange, 0, 0, null, subjHans, spec);
             model.removeElement(exchange.getModelComponentID());
             Assert.IsTrue(cond.getRequiresPerformedMessageExchange() is null);
         }

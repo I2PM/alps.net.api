@@ -1,4 +1,4 @@
-﻿using alps.net.api.ALPS.ALPSModelElements;
+﻿using alps.net.api.ALPS;
 using alps.net.api.parsing;
 using alps.net.api.util;
 using System.Collections.Generic;
@@ -52,12 +52,6 @@ namespace alps.net.api.StandardPASS
         public InteractionDescribingComponent(IModelLayer layer, string labelForID = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
             : base(labelForID, comment, additionalLabel, additionalAttribute) { setContainedBy(layer); }
 
-        public override string getBaseURI()
-        {
-            if (layer != null && layer is IParseablePASSProcessModelElement parseable)
-                return parseable.getBaseURI();
-            return base.getBaseURI();
-        }
 
         protected override IDictionary<string, IParseablePASSProcessModelElement> getDictionaryOfAllAvailableElements()
         {

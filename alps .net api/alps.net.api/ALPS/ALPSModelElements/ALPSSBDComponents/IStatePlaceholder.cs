@@ -1,6 +1,6 @@
-﻿using alps.net.api.StandardPASS.BehaviorDescribingComponents;
+﻿using alps.net.api.StandardPASS;
 
-namespace alps.net.api.ALPS.ALPSModelElements.ALPSSBDComponents
+namespace alps.net.api.ALPS
 {
     interface IStatePlaceholder : IALPSSBDComponent, IState
     {

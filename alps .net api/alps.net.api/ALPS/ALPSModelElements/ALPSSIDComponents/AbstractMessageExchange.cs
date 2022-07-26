@@ -1,10 +1,10 @@
 ﻿using alps.net.api.parsing;
 using alps.net.api.src;
-using alps.net.api.StandardPASS.InteractionDescribingComponents;
+using alps.net.api.StandardPASS;
 using alps.net.api.util;
 using System.Collections.Generic;
 
-namespace alps.net.api.ALPS.ALPSModelElements.ALPSSIDComponents
+namespace alps.net.api.ALPS
 {
     /// <summary>
     /// Method that represents an abstract message exchange class

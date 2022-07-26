@@ -1,8 +1,9 @@
-﻿using alps.net.api.parsing;
+﻿using alps.net.api;
+using alps.net.api.parsing;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Reflection;
 
 namespace UnitTestProject
 {
@@ -42,6 +43,7 @@ namespace UnitTestProject
         {
             if (ioHandler is null)
             {
+                ReflectiveEnumerator.addAssemblyToCheckForTypes(Assembly.GetExecutingAssembly());
                 ioHandler = PASSReaderWriter.getInstance();
                 IList<string> path = new List<string>
                 {

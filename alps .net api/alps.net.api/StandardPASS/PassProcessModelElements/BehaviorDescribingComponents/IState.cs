@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using alps.net.api.StandardPASS.SubjectBehaviors;
 
-namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Interface to the state class
@@ -71,17 +70,22 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
         /// <param name="stateType">the specified type</param>
         /// <returns>true if the state is of this type</returns>
         bool isStateType(StateType stateType);
+
         /// <summary>
         /// Sets a new type for this state.
-        /// This must not override the old type, a state can have multiple types at once
+        /// This must not override the old type, a state can have multiple types at once.
+        /// Used to make state i.e. an EndState, declared finalized, abstract...
         /// </summary>
         /// <param name="stateType">the new state type</param>
         void setIsStateType(StateType stateType);
+
         /// <summary>
-        /// Removes a type from the list of types this state currently is of
+        /// Removes a type from the list of types this state currently is of.
+        /// 
         /// </summary>
         /// <param name="stateType">the type that is removed</param>
         void removeStateType(StateType stateType);
+
         /// <summary>
         /// Represent different types the state can be of.
         /// A state can have several types at once

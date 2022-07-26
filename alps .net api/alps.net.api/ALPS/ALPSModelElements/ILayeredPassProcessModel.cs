@@ -1,9 +1,8 @@
 ﻿using alps.net.api.StandardPASS;
-using System.Collections.Generic;
 
-namespace alps.net.api.ALPS.ALPSModelElements
+namespace alps.net.api.ALPS
 {
-    interface ILayeredPASSProcessModel : IPASSProcessModel
+    public interface ILayeredPASSProcessModel : IPASSProcessModel
     {
 
     }

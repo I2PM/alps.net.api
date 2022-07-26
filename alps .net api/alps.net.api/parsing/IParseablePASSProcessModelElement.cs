@@ -3,16 +3,15 @@ using alps.net.api.StandardPASS;
 using alps.net.api.util;
 using System.Collections.Generic;
 using VDS.RDF;
+using static alps.net.api.parsing.PASSGraph;
 
 namespace alps.net.api.parsing
 {
     /// <summary>
     /// Interface that extends the standard PASSProcessModelElement interface for parsing methods
     /// </summary>
-    public interface IParseablePASSProcessModelElement : IPASSProcessModelElement
+    public interface IParseablePASSProcessModelElement : IPASSProcessModelElement, IGraphCallback
     {
-        public static readonly int CANNOT_PARSE = -1;
-
         /// <summary>
         /// This method verifies whether a class can parse an ontology class, given by the string name of the ontology class.
         /// Example: The class PASSProcessModel should not return <see cref="CANNOT_PARSE"/> for the string "PASSProcessModel".
@@ -103,6 +102,7 @@ namespace alps.net.api.parsing
         void replaceTriple(IIncompleteTriple oldTriple, IIncompleteTriple newTriple);
 
         IParseablePASSProcessModelElement getParsedInstance();
+
 
     }
 }

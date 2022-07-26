@@ -1,5 +1,4 @@
 ﻿using alps.net.api.parsing;
-using alps.net.api.util;
 using VDS.RDF;
 
 namespace alps.net.api
@@ -58,8 +57,8 @@ namespace alps.net.api
             }
             if (content.Contains("@"))
             {
-                this.content = content.Split("@")[0];
-                setExtra(content.Split("@")[1]);
+                this.content = content.Split('@')[0];
+                setExtra(content.Split('@')[1]);
             }
             else
             {

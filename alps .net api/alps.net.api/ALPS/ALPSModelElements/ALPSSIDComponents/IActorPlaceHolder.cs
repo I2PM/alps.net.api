@@ -1,4 +1,4 @@
-﻿namespace alps.net.api.ALPS.ALPSModelElements.ALPSSIDComponents
+﻿namespace alps.net.api.ALPS
 {
     /// <summary>
     /// Interface to an Actor Placeholder

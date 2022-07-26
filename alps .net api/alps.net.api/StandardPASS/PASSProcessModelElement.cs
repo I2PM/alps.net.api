@@ -1,18 +1,17 @@
-﻿using alps.net.api.parsing;
+﻿using alps.net.api.FunctionalityCapsules;
+using alps.net.api.parsing;
 using alps.net.api.src;
-using alps.net.api.StandardPASS;
 using alps.net.api.util;
 using System;
 using System.Collections.Generic;
 using VDS.RDF;
-using VDS.RDF.Ontology;
 
 namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Root class for the inheritans graphs. Represents a PASS process model element
     /// </summary>
-    public class PASSProcessModelElement : IParseablePASSProcessModelElement
+    public class PASSProcessModelElement : ICapsuleCallback
     {
 
         /// <summary>
@@ -20,7 +19,12 @@ namespace alps.net.api.StandardPASS
         /// </summary>
         /// 
 
+        protected string exportSubjectNodeName = null;
+
+        protected string BASE_URI_PLACEHOLDER = "baseuri:";
+
         protected const string EXAMPLE_BASE_URI = "http://www.imi.kit.edu/exampleBaseURI";
+        public static readonly int CANNOT_PARSE = -1;
 
         protected readonly List<IValueChangedObserver<IPASSProcessModelElement>> observerList = new List<IValueChangedObserver<IPASSProcessModelElement>>();
         protected IList<Triple> additionalAttributeTriples = new List<Triple>();
@@ -29,7 +33,7 @@ namespace alps.net.api.StandardPASS
 
         protected ISet<IStringWithExtra> modelComponentLabels = new HashSet<IStringWithExtra>();
         protected ISet<IStringWithExtra> comments = new HashSet<IStringWithExtra>();
-        protected IDictionary<string, IPASSProcessModelElement> additionalElements = new Dictionary<string, IPASSProcessModelElement>();
+        protected ICompatibilityDictionary<string, IPASSProcessModelElement> additionalElements = new CompatibilityDictionary<string, IPASSProcessModelElement>();
         protected Guid guid = Guid.NewGuid();
         protected string modelComponentID = "";
         protected IPASSGraph exportGraph;
@@ -38,6 +42,8 @@ namespace alps.net.api.StandardPASS
         /// Name of the class
         /// </summary>
         private const string className = "PASSProcessModelElement";
+
+
         public virtual string getClassName()
         {
             return className;
@@ -76,15 +82,21 @@ namespace alps.net.api.StandardPASS
 
 
         /// <summary>
-        /// Adds an Incomplete Triple to the element that will either be parsed right away, or delayed
-        /// (depending on whether there is a graph available or not)
+        /// Adds an incomplete Triple to the element that will either be parsed right away or delayed,
+        /// depending on whether there is a graph with a base uri available or not.
         /// </summary>
         /// <param name="triple">the triple that is being saved</param>
         public void addTriple(IIncompleteTriple triple)
         {
             if (containsTriple(triple)) return;
             if (exportGraph is null)
+            {
                 additionalIncompleteTriples.Add(triple);
+                IStringWithExtra extraString = triple.getObjectWithExtra();
+                parseAttribute(triple.getPredicate(), extraString.getContent(),
+                    (extraString is LanguageSpecificString) ? extraString.getExtra() : null,
+                    (extraString is DataTypeString) ? extraString.getExtra() : null, null);
+            }
             else
             {
                 completeIncompleteTriple(triple);
@@ -130,19 +142,28 @@ namespace alps.net.api.StandardPASS
         /// <param name="triples"></param>
         public void addTriple(Triple triple)
         {
+            // Do not add the triple if it is alreay contained
             if (triple is null)
                 return;
             if (additionalAttributeTriples.Contains(triple)) return;
-            IIncompleteTriple incTriple = new IncompleteTriple(triple);
-            if (getIncompleteTriple(incTriple) != null)
-            {
-                removeTriple(incTriple);
-            }
-            additionalAttributeTriples.Add(triple);
-            if (exportGraph != null) exportGraph.addTriple(triple);
 
-            IParseablePASSProcessModelElement element;
-            parseAttribute(triple, out element);
+            // If a graph with a base URI is available, the base uri of the Triple might clash with the base uri defined by the graph.
+            // Convert the triple to an incomplete triple that is parsed back to a Triple using the graphs uri
+            IIncompleteTriple incTriple = new IncompleteTriple(triple);
+            if (!(exportGraph is null))
+                addTriple(incTriple);
+
+            // If no graph is available
+            else
+            {
+                // Remove all incomplete triples that are encoding the same information
+                if (getIncompleteTriple(incTriple) != null)
+                    removeTriple(incTriple);
+
+                // Parse the information encoded by the triple
+                additionalAttributeTriples.Add(triple);
+                parseAttribute(triple, out _);
+            }
         }
 
         /// <summary>
@@ -156,10 +177,23 @@ namespace alps.net.api.StandardPASS
             if (exportGraph is null) return;
             INode subjectNode;
 
-            // The subject node is defined by own ID
-            if (getBaseURI().Equals(""))
-                subjectNode = exportGraph.createUriNode(new Uri(EXAMPLE_BASE_URI + "#" + getModelComponentID()));
-            else subjectNode = exportGraph.createUriNode(new Uri(getBaseURI() + "#" + getModelComponentID()));
+
+            // Generate subject node uri from modelComponentID
+            if (exportSubjectNodeName == null || exportSubjectNodeName.Equals(""))
+            {
+                subjectNode = exportGraph.createUriNode(new Uri(StaticFunctions.addGenericBaseURI(getModelComponentID())));
+            }
+            // Generate it from preset name
+            else
+            {
+
+                if (exportSubjectNodeName.Equals(getBaseURI()))
+                    subjectNode = exportGraph.createUriNode(new Uri(getBaseURI()));
+                else
+                    subjectNode = exportGraph.createUriNode(new Uri(StaticFunctions.addGenericBaseURI(exportSubjectNodeName)));
+
+            }
+
 
             // other nodes are evaluated from the provided incomplete triple
             Triple completeTriple = triple.getRealTriple(exportGraph, subjectNode);
@@ -266,9 +300,9 @@ namespace alps.net.api.StandardPASS
             }
         }
 
-        public virtual string getBaseURI()
+        public string getBaseURI()
         {
-            return (exportGraph is null) ? IPASSGraph.EXAMPLE_BASE_URI_PLACEHOLDER : exportGraph.getBaseURI(); ;
+            return PASSGraph.EXAMPLE_BASE_URI_PLACEHOLDER;
         }
 
         // ############################ ModelComponentID ############################
@@ -280,8 +314,7 @@ namespace alps.net.api.StandardPASS
 
         public string getUriModelComponentID()
         {
-            string baseURI = getBaseURI();
-            return (baseURI == null || baseURI.Equals("")) ? "baseUri:" + getModelComponentID() : baseURI + "#" + getModelComponentID();
+            return StaticFunctions.addGenericBaseURI(getModelComponentID());
         }
 
         public void setModelComponentID(string id)
@@ -291,31 +324,46 @@ namespace alps.net.api.StandardPASS
             if (!id.Equals(oldID))
             {
                 string modifiedID = id.Trim().Replace(" ", "_");
-                modelComponentID = modifiedID;
 
                 IIncompleteTriple oldTriple = new IncompleteTriple(OWLTags.stdHasModelComponentID, getModelComponentID(), IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeString);
+
+                modelComponentID = modifiedID;
+
                 IIncompleteTriple newTriple = new IncompleteTriple(OWLTags.stdHasModelComponentID, id, IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeString);
 
                 replaceTriple(oldTriple, newTriple);
 
-                IList<IIncompleteTriple> triplesToBeChanged = new List<IIncompleteTriple>();
-                foreach (Triple triple in getTriples())
-                {
-                    if (triple.ToString().Contains(oldID))
-                    {
-                        triplesToBeChanged.Add(new IncompleteTriple(triple));
-                    }
-                }
-                foreach (IIncompleteTriple triple in triplesToBeChanged)
-                {
-                    removeTriple(triple);
-                }
-                foreach (IIncompleteTriple triple in triplesToBeChanged)
-                {
-                    addTriple(triple);
-                }
+                invalidateTriplesContainingString(oldID);
                 if (exportGraph != null) exportGraph.modelComponentIDChanged(oldID, id);
                 publishNewModelComponentID(oldID);
+            }
+        }
+
+
+        /// <summary>
+        /// This method is used to replace invalid triples with incomplete representations.
+        /// A triple might be invalid if the base URI of the model graph or the ModelComponentID of the current element has changed.
+        /// On such a change, the nodes inside the graph must be updated.
+        /// Therefore, the triples are stored as incomplete triples, which are later parsed back to Triples once the new id or URI is known.
+        /// </summary>
+        /// <param name="containedString"></param>
+        protected void invalidateTriplesContainingString(string containedString)
+        {
+            IList<IIncompleteTriple> triplesToBeChanged = new List<IIncompleteTriple>();
+            foreach (Triple triple in getTriples())
+            {
+                if (triple.ToString().Contains(containedString))
+                {
+                    triplesToBeChanged.Add(new IncompleteTriple(triple));
+                }
+            }
+            foreach (IIncompleteTriple triple in triplesToBeChanged)
+            {
+                removeTriple(triple);
+            }
+            foreach (IIncompleteTriple triple in triplesToBeChanged)
+            {
+                addTriple(triple);
             }
         }
 
@@ -463,13 +511,20 @@ namespace alps.net.api.StandardPASS
             // Calling parsing method
             // If attribute contains a reference to a PassProcessModelElement, pass this to the method
             parsedElement = null;
+            setExportXMLName(NodeHelper.getNodeContent(triple.Subject));
             string predicateContent = NodeHelper.getNodeContent(triple.Predicate);
             string objectContent = NodeHelper.getNodeContent(triple.Object);
             string lang = NodeHelper.getLangIfContained(triple.Object);
             string dataType = NodeHelper.getDataTypeIfContained(triple.Object);
             string possibleID = objectContent;
-            if (possibleID.Split("#").Length > 1)
-                possibleID = possibleID.Split("#")[possibleID.Split("#").Length - 1];
+            if (possibleID.Split('#').Length > 1)
+                possibleID = possibleID.Split('#')[possibleID.Split('#').Length - 1];
+
+            if (triple.Subject != null && triple.Subject.ToString() != "")
+            {
+                exportSubjectNodeName = triple.Subject.ToString();
+            }
+
             if (allElements != null && allElements.ContainsKey(possibleID))
             {
                 if (parseAttribute(predicateContent, possibleID, lang, dataType, allElements[possibleID]) && allElements[possibleID] != this)
@@ -484,6 +539,7 @@ namespace alps.net.api.StandardPASS
             {
                 return parseAttribute(predicateContent, objectContent, lang, dataType, null);
             }
+
         }
 
         protected virtual void successfullyParsedElement(IParseablePASSProcessModelElement parsedElement) { return; }
@@ -526,14 +582,16 @@ namespace alps.net.api.StandardPASS
 
             else if (predicate.Contains(OWLTags.hasModelComponentID))
             {
-                setModelComponentID(objectContent.Split("#")[objectContent.Split("#").Length - 1]);
+                setModelComponentID(objectContent.Split('#')[objectContent.Split('#').Length - 1]);
                 return true;
             }
-            if(!(element is null))
+            if (!(element is null))
             {
                 addElementWithUnspecifiedRelation(element);
                 return true;
             }
+
+            
 
             return false;
         }
@@ -541,9 +599,10 @@ namespace alps.net.api.StandardPASS
 
 
 
+
         public virtual int canParse(string className)
         {
-            if (className.ToLower().Contains(getClassName().ToLower()))
+            if (className.ToLower().Equals(getClassName().ToLower()))
             {
                 return getClassName().Length;
             }
@@ -582,7 +641,7 @@ namespace alps.net.api.StandardPASS
         /// Publishes that an element has been added to this component
         /// </summary>
         /// <param name="element">the added element</param>
-        protected void publishElementAdded(IPASSProcessModelElement element)
+        public void publishElementAdded(IPASSProcessModelElement element)
         {
             IList<IValueChangedObserver<IPASSProcessModelElement>> localObserver = new List<IValueChangedObserver<IPASSProcessModelElement>>(observerList);
             foreach (IValueChangedObserver<IPASSProcessModelElement> observer in localObserver)
@@ -597,7 +656,7 @@ namespace alps.net.api.StandardPASS
         /// <param name="element">the removed element</param>
         /// <param name="removeCascadeDepth">An integer that specifies the depth of a cascading delete for connected elements (to the deleted element)
         /// 0 deletes only the given element, 1 the adjacent elements etc.</param>
-        protected void publishElementRemoved(IPASSProcessModelElement element, int removeCascadeDepth = 0)
+        public void publishElementRemoved(IPASSProcessModelElement element, int removeCascadeDepth = 0)
         {
             foreach (IValueChangedObserver<IPASSProcessModelElement> observer in new List<IValueChangedObserver<IPASSProcessModelElement>>(observerList))
             {
@@ -708,10 +767,11 @@ namespace alps.net.api.StandardPASS
             graph.register(this);
             string baseURI = getBaseURI();
             if (baseURI != null && !baseURI.Equals(""))
-                foreach (IIncompleteTriple triple in getIncompleteTriples())
-                {
-                    completeIncompleteTriple(triple);
-                }
+                invalidateTriplesContainingString("");
+            foreach (IIncompleteTriple triple in getIncompleteTriples())
+            {
+                completeIncompleteTriple(triple);
+            }
             foreach (Triple triple in getTriples())
             {
                 graph.addTriple(triple);
@@ -805,6 +865,21 @@ namespace alps.net.api.StandardPASS
             }
         }
 
+        public string getSubjectName()
+        {
+            return getModelComponentID();
+        }
+
+        public void notifyTriple(Triple triple)
+        {
+            addTriple(triple);
+        }
+
+        protected void setExportXMLName(string xmlTag)
+        {
+            if (exportSubjectNodeName is null || exportSubjectNodeName.Equals(""))
+                exportSubjectNodeName = xmlTag;
+        }
 
         protected PASSProcessModelElement() { }
     }

@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using alps.net.api.util;
-using alps.net.api.StandardPASS.BehaviorDescribingComponents;
 using System.Linq;
-using alps.net.api.StandardPASS.InteractionDescribingComponents;
-using alps.net.api.ALPS.ALPSModelElements;
+using alps.net.api.ALPS;
 using alps.net.api.parsing;
 
-namespace alps.net.api.StandardPASS.SubjectBehaviors
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents an Macro behavior of a Subject
@@ -44,13 +42,21 @@ namespace alps.net.api.StandardPASS.SubjectBehaviors
 
         public IDictionary<string, IStateReference> getStateReferences()
         {
-            return new Dictionary<string, IStateReference>(getBehaviorDescribingComponents().OfType<KeyValuePair<string, IStateReference>>());
+            IDictionary<string, IStateReference> output = new Dictionary<string, IStateReference>();
+            foreach (KeyValuePair<string, IStateReference> pair in getBehaviorDescribingComponents().OfType<KeyValuePair<string, IStateReference>>())
+                output.Add(pair.Key, pair.Value);
+            return output;
+            //return new Dictionary<string, IStateReference>(getBehaviorDescribingComponents().OfType<KeyValuePair<string, IStateReference>>());
         }
 
 
         public IDictionary<string, IGenericReturnToOriginReference> getReturnReferences()
         {
-            return new Dictionary<string, IGenericReturnToOriginReference>(getBehaviorDescribingComponents().OfType<KeyValuePair<string, IGenericReturnToOriginReference>>());
+            IDictionary<string, IGenericReturnToOriginReference> output = new Dictionary<string, IGenericReturnToOriginReference>();
+            foreach (KeyValuePair<string, IGenericReturnToOriginReference> pair in getBehaviorDescribingComponents().OfType<KeyValuePair<string, IGenericReturnToOriginReference>>())
+                output.Add(pair.Key, pair.Value);
+            return output;
+            //return new Dictionary<string, IGenericReturnToOriginReference>(getBehaviorDescribingComponents().OfType<KeyValuePair<string, IGenericReturnToOriginReference>>());
         }
 
 

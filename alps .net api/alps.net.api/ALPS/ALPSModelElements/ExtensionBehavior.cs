@@ -1,15 +1,10 @@
-﻿using alps.net.api.ALPS.ALPSModelElements.ALPSSIDComponents;
-using alps.net.api.parsing;
+﻿using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.StandardPASS;
-using alps.net.api.StandardPASS.BehaviorDescribingComponents;
-using alps.net.api.StandardPASS.InteractionDescribingComponents;
 using alps.net.api.util;
-using System;
 using System.Collections.Generic;
-using System.IO;
 
-namespace alps.net.api.ALPS.ALPSModelElements
+namespace alps.net.api.ALPS
 {
     public class ExtensionBehavior : SubjectBehavior, IExtensionBehavior
     {

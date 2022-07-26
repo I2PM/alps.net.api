@@ -1,8 +1,6 @@
 ﻿using alps.net.api.parsing;
 using alps.net.api.util;
 using System.Collections.Generic;
-using System.IO;
-using VDS.RDF;
 
 namespace alps.net.api.StandardPASS
 {
@@ -57,12 +55,6 @@ namespace alps.net.api.StandardPASS
             : base(labelForID, comment, additionalLabel, additionalAttribute)
         { setContainedBy(model); }
 
-        public override string getBaseURI()
-        {
-            if (model != null && model is IParseablePASSProcessModelElement element)
-                return element.getBaseURI();
-            return base.getBaseURI();
-        }
 
         protected override IDictionary<string, IParseablePASSProcessModelElement> getDictionaryOfAllAvailableElements()
         {

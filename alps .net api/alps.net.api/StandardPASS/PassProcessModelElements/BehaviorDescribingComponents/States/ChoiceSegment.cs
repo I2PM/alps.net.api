@@ -1,17 +1,16 @@
 ﻿using alps.net.api.parsing;
 using alps.net.api.src;
-using alps.net.api.StandardPASS.SubjectBehaviors;
 using alps.net.api.util;
 using System.Collections.Generic;
 
-namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents a Choice Segment
     /// </summary>
     public class ChoiceSegment : State, IChoiceSegment
     {
-        protected IDictionary<string, IChoiceSegmentPath> choiceSegmentPathDict = new Dictionary<string, IChoiceSegmentPath>();
+        protected ICompatibilityDictionary<string, IChoiceSegmentPath> choiceSegmentPathDict = new CompatibilityDictionary<string, IChoiceSegmentPath>();
 
         /// <summary>
         /// Name of the class

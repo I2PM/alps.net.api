@@ -1,10 +1,10 @@
-﻿using alps.net.api.ALPS.ALPSModelElements;
+﻿using alps.net.api.ALPS;
 using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
 
-namespace alps.net.api.StandardPASS.InteractionDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     public class SubjectExecutionMapping : InteractionDescribingComponent, ISubjectExecutionMapping
     {
@@ -43,7 +43,7 @@ namespace alps.net.api.StandardPASS.InteractionDescribingComponents
 
         public string getExecutionMapping()
         {
-            return new string(executionMapping);
+            return executionMapping;
         }
 
         public void setExecutionMapping(string mapping)

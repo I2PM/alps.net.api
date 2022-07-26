@@ -1,4 +1,4 @@
-﻿namespace alps.net.api.ALPS.ALPSModelElements.ALPSSIDComponents
+﻿namespace alps.net.api.ALPS
 {
     public interface ICommunicationChannel : IALPSSIDComponent
     {

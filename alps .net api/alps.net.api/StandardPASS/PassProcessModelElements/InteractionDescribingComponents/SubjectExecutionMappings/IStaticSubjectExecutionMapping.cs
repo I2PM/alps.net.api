@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace alps.net.api.StandardPASS.InteractionDescribingComponents
+﻿namespace alps.net.api.StandardPASS
 {
     public interface IStaticSubjectExecutionMapping
     {

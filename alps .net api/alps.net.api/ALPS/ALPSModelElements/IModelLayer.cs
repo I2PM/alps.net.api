@@ -1,14 +1,14 @@
 ﻿using alps.net.api.StandardPASS;
-using alps.net.api.StandardPASS.InteractionDescribingComponents;
 using alps.net.api.util;
 using System.Collections.Generic;
 
-namespace alps.net.api.ALPS.ALPSModelElements
+namespace alps.net.api.ALPS
 {
     /// <summary>
     /// Defines an interface for a model layer
     /// </summary>
-    public interface IModelLayer : IALPSModelElement, IPrioritizableElement, IContainableElement<IPASSProcessModel>, IImplementingElement<IModelLayer>, IAbstractElement
+    public interface IModelLayer : IALPSModelElement, IPrioritizableElement, IContainableElement<IPASSProcessModel>,
+        IImplementingElement<IModelLayer>, IExtendingElement<IModelLayer>, IAbstractElement
     {
         /// <summary>
         /// Represents the type of the layer

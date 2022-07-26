@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 
-namespace alps.net.api.StandardPASS.InteractionDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Interface to the subject class
     /// </summary>
-    public interface ISubject : IInteractionDescribingComponent, IImplementingElement<ISubject>, IAbstractElement
+    public interface ISubject : IInteractionDescribingComponent, IImplementingElement<ISubject>, IExtendingElement<ISubject>, IAbstractElement
     {
 
         /// <summary>

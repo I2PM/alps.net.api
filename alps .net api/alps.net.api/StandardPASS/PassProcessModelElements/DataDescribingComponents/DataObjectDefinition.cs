@@ -1,12 +1,9 @@
 ﻿using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.util;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using VDS.RDF;
 
-namespace alps.net.api.StandardPASS.DataDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents a data object definition
@@ -31,7 +28,9 @@ namespace alps.net.api.StandardPASS.DataDescribingComponents
         }
 
        protected DataObjectDefinition() { }
-        public DataObjectDefinition(IPASSProcessModel model, string labelForID = null, IDataTypeDefinition dataTypeDefintion = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+        public DataObjectDefinition(IPASSProcessModel model, string labelForID = null,
+            IDataTypeDefinition dataTypeDefintion = null, string comment = null,
+            string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
             : base(model, labelForID, comment, additionalLabel, additionalAttribute)
         {
             setDataTypeDefinition(dataTypeDefintion);

@@ -1,10 +1,7 @@
-﻿using alps.net.api.ALPS.ALPSModelElements;
-using alps.net.api.ALPS.ALPSModelElements.ALPSSIDComponents;
+﻿using alps.net.api.ALPS;
+using alps.net.api.FunctionalityCapsules;
 using alps.net.api.parsing;
 using alps.net.api.src;
-using alps.net.api.StandardPASS.BehaviorDescribingComponents;
-using alps.net.api.StandardPASS.InteractionDescribingComponents;
-using alps.net.api.StandardPASS.SubjectBehaviors;
 using alps.net.api.util;
 using System.Collections.Generic;
 using System.IO;
@@ -22,7 +19,7 @@ namespace alps.net.api.StandardPASS
         /// <summary>
         /// All elements held by the model (sum of all elements held by the layers)
         /// </summary>
-        protected IDictionary<string, IPASSProcessModelElement> allModelElements = new Dictionary<string, IPASSProcessModelElement>();
+        protected ICompatibilityDictionary<string, IPASSProcessModelElement> allModelElements = new CompatibilityDictionary<string, IPASSProcessModelElement>();
 
         /// <summary>
         /// A default layer, created when an element is added but no layer is specified.
@@ -30,10 +27,11 @@ namespace alps.net.api.StandardPASS
         /// </summary>
         protected IModelLayer baseLayer;
 
-        protected IDictionary<string, ISubject> startSubjects = new Dictionary<string, ISubject>();
+        protected ICompatibilityDictionary<string, ISubject> startSubjects = new CompatibilityDictionary<string, ISubject>();
         protected string baseURI;
         protected IPASSGraph baseGraph;
         protected bool layered;
+        protected readonly IImplementsFunctionalityCapsule<IPASSProcessModel> implCapsule;
 
         /// <summary>
         /// Name of the class
@@ -50,7 +48,7 @@ namespace alps.net.api.StandardPASS
             return new PASSProcessModel();
         }
 
-        protected PASSProcessModel() { }
+        protected PASSProcessModel() { implCapsule = new ImplementsFunctionalityCapsule<IPASSProcessModel>(this); }
 
         /// <summary>
         /// Constructor that creates a new fully specified instance of the pass process modell class
@@ -59,6 +57,7 @@ namespace alps.net.api.StandardPASS
             ISet<ISubject> startSubject = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
             : base(labelForID, comment, additionalLabel, additionalAttribute)
         {
+            implCapsule = new ImplementsFunctionalityCapsule<IPASSProcessModel>(this);
             if (!(baseURI is null || baseURI.Equals("")))
             {
                 setBaseURI(baseURI);
@@ -328,12 +327,6 @@ namespace alps.net.api.StandardPASS
 
 
 
-        public override string getBaseURI()
-        {
-            return baseURI;
-        }
-
-
         public void setBaseURI(string baseURI)
         {
             if (baseURI != null)
@@ -389,8 +382,9 @@ namespace alps.net.api.StandardPASS
                     string objectContent = NodeHelper.getNodeContent(triple.Object);
 
                     string possibleID = objectContent;
-                    if (possibleID.Split("#").Length > 1)
-                        possibleID = possibleID.Split("#")[possibleID.Split("#").Length - 1];
+                    string[] splitted = possibleID.Split('#');
+                    if (splitted.Length > 1)
+                        possibleID = splitted[splitted.Length - 1];
 
                     if (allElements.ContainsKey(possibleID))
                     {
@@ -490,7 +484,12 @@ namespace alps.net.api.StandardPASS
             }
         }
 
-
+        /// <summary>
+        /// Fix the layers if the imported model is not multi-layered.
+        /// All elements get loaded into one layer, afterwards this method is called to split the elements onto multiple layers.
+        /// </summary>
+        /// <param name="idOfSubject"></param>
+        /// <param name="idsOfBehaviors"></param>
         private void fixLayers(string idOfSubject, IList<string> idsOfBehaviors)
         {
             /*
@@ -499,16 +498,18 @@ namespace alps.net.api.StandardPASS
              * 
 
              */
+
+            // Case: A subject holds multiple behaviors in one layer -> split the behaviors up to several layers
             IFullySpecifiedSubject extendedSubject = (IFullySpecifiedSubject)getAllElements()[idOfSubject];
             ISubjectBehavior baseBehavior = null;
             if (extendedSubject.getSubjectBaseBehavior() != null)
             {
-                // If there is an explicit base behavior
+                // If there is an explicit base behavior, keep this in base layer
                 baseBehavior = extendedSubject.getSubjectBaseBehavior();
             }
             else
             {
-                // find a "normal" behavior with the lowest priority number
+                // find a "normal" behavior with the lowest priority number to keep in base layer
                 int lowestPrio = int.MaxValue;
                 foreach (string id in idsOfBehaviors)
                 {
@@ -520,36 +521,45 @@ namespace alps.net.api.StandardPASS
                     }
                 }
             }
+
+            // Make sure the selected behavior is in the base layer
             getBaseLayer().addElement(baseBehavior);
             foreach (string id in idsOfBehaviors)
             {
                 if (!id.Equals(baseBehavior.getModelComponentID()))
                 {
-                    ISubjectBehavior behavior = (ISubjectBehavior)getAllElements()[id];
+                    ISubjectBehavior behaviorOfSubjectExtension = (ISubjectBehavior)getAllElements()[id];
                     IModelLayer layer = new ModelLayer(this);
-                    ISubjectExtension ext = null;
-                    if (behavior is IMacroBehavior)
+                    ISubjectExtension subjectExtension;
+
+                    // Create the extension subject and add it to a new layer with correct layer type
+                    if (behaviorOfSubjectExtension is IMacroBehavior)
                     {
                         layer.setLayerType(IModelLayer.LayerType.MACRO);
-                        ext = new MacroExtension(layer);
+                        subjectExtension = new MacroExtension(layer);
 
                     }
-                    else if (behavior is IGuardBehavior)
+                    else if (behaviorOfSubjectExtension is IGuardBehavior)
                     {
                         layer.setLayerType(IModelLayer.LayerType.GUARD);
-                        ext = new GuardExtension(layer);
+                        subjectExtension = new GuardExtension(layer);
                     }
                     else
                     {
                         layer.setLayerType(IModelLayer.LayerType.EXTENSION);
-                        ext = new SubjectExtension(layer);
+                        subjectExtension = new SubjectExtension(layer);
                     }
 
-                    ext.setExtendedSubject(extendedSubject);
-                    ext.addExtensionBehavior(behavior);
-                    extendedSubject.addBehavior(behavior);
-                    layer.addElement(ext);
-                    addLayer(layer);
+                    // Cross-link the new extension to the old subject
+                    subjectExtension.setExtendedSubject(extendedSubject);
+                    subjectExtension.addExtensionBehavior(behaviorOfSubjectExtension);
+                    extendedSubject.addBehavior(behaviorOfSubjectExtension);
+
+                    // Move the behavior to the new layer
+                    getBaseLayer().removeContainedElement(behaviorOfSubjectExtension.getModelComponentID());
+                    layer.addElement(behaviorOfSubjectExtension);
+
+                    //addLayer(layer);
                 }
             }
             // TODO
@@ -557,16 +567,19 @@ namespace alps.net.api.StandardPASS
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
         {
-            if (predicate.Contains(OWLTags.contains))
-            {
-                if (element is IModelLayer layer)
+                if (implCapsule != null && implCapsule.parseAttribute(predicate, objectContent, lang, dataType, element))
+                    return true;
+                else if (predicate.Contains(OWLTags.contains) && element != null)
                 {
-                    addLayer(layer);
-                }
-                else addElement(element);
+                    if (element is IModelLayer layer)
+                    {
+                        addLayer(layer);
+                    }
+                    else addElement(element);
 
-                return true;
-            }
+                    return true;
+                }
+            
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
 
@@ -677,6 +690,46 @@ namespace alps.net.api.StandardPASS
             FileInfo writtenFile = new FileInfo(fullPath);
             if (File.Exists(fullPath)) return writtenFile.FullName;
             return "";
+        }
+
+        public void setImplementedInterfacesIDReferences(ISet<string> implementedInterfacesIDs)
+        {
+            implCapsule.setImplementedInterfacesIDReferences(implementedInterfacesIDs);
+        }
+
+        public void addImplementedInterfaceIDReference(string implementedInterfaceID)
+        {
+            implCapsule.addImplementedInterfaceIDReference(implementedInterfaceID);
+        }
+
+        public void removeImplementedInterfacesIDReference(string implementedInterfaceID)
+        {
+            implCapsule.removeImplementedInterfacesIDReference(implementedInterfaceID);
+        }
+
+        public ISet<string> getImplementedInterfacesIDReferences()
+        {
+            return implCapsule.getImplementedInterfacesIDReferences();
+        }
+
+        public void setImplementedInterfaces(ISet<IPASSProcessModel> implementedInterface, int removeCascadeDepth = 0)
+        {
+            implCapsule.setImplementedInterfaces(implementedInterface, removeCascadeDepth);
+        }
+
+        public void addImplementedInterface(IPASSProcessModel implementedInterface)
+        {
+            implCapsule.addImplementedInterface(implementedInterface);
+        }
+
+        public void removeImplementedInterfaces(string id, int removeCascadeDepth = 0)
+        {
+            implCapsule.removeImplementedInterfaces(id, removeCascadeDepth);
+        }
+
+        public IDictionary<string, IPASSProcessModel> getImplementedInterfaces()
+        {
+            return implCapsule.getImplementedInterfaces();
         }
     }
 }

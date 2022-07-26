@@ -1,9 +1,9 @@
-﻿using alps.net.api.ALPS.ALPSModelElements;
+﻿using alps.net.api.ALPS;
 using alps.net.api.parsing;
 using alps.net.api.util;
 using System.Collections.Generic;
 
-namespace alps.net.api.StandardPASS.InteractionDescribingComponents
+namespace alps.net.api.StandardPASS
 { 
     public class StaticSubjectExecutionMapping : SubjectExecutionMapping, IStaticSubjectExecutionMapping
     {
@@ -31,7 +31,8 @@ namespace alps.net.api.StandardPASS.InteractionDescribingComponents
         /// <param name="senderSubject"></param>
         /// <param name="receiverSubject"></param>
         /// <param name="additionalAttribute"></param>
-        public StaticSubjectExecutionMapping(IModelLayer layer, string labelForID = null, string executionMapping = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+        public StaticSubjectExecutionMapping(IModelLayer layer, string labelForID = null, string executionMapping = null,
+            string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
             : base(layer, labelForID, comment, executionMapping, additionalLabel , additionalAttribute)
         {}
     }

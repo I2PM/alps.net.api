@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using VDS.RDF;
+﻿using VDS.RDF;
 
 namespace alps.net.api.util
 {
@@ -27,8 +24,8 @@ namespace alps.net.api.util
 
         public static string cutURI(string uri)
         {
-            string firstCut = uri.Split("#")[uri.Split("#").Length - 1];
-            return firstCut.Split(":")[firstCut.Split(":").Length - 1];
+            string firstCut = uri.Split('#')[uri.Split('#').Length - 1];
+            return firstCut.Split(':')[firstCut.Split(':').Length - 1];
         }
     }
 }

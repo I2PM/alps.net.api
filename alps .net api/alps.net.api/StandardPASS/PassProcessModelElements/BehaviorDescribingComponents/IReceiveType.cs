@@ -1,4 +1,4 @@
-﻿namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
+﻿namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Interface to the receive type class

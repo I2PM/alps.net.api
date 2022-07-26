@@ -1,10 +1,7 @@
 ﻿
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using alps.net.api.StandardPASS;
-using alps.net.api.StandardPASS.BehaviorDescribingComponents;
-using alps.net.api.StandardPASS.InteractionDescribingComponents;
 using System.Linq;
-using alps.net.api.StandardPASS.SubjectBehaviors;
 using alps.net.api.parsing;
 using VDS.RDF;
 using System.Collections.Generic;
@@ -32,7 +29,7 @@ namespace UnitTestProject
                 refState.setReferencedState(state);
 
 
-            Env.getIOHandler().exportModel(model, Env.getTestResourceGeneratePath(this) + "testSimpleExtends", out VDS.RDF.IGraph graph);
+            Env.getIOHandler().exportModel(model, Env.getTestResourceGeneratePath(this) + "testSimpleExtends", out IGraph graph);
             bool found = false;
             foreach (Triple t in graph.Triples)
             {
@@ -66,6 +63,25 @@ namespace UnitTestProject
             if (refState is IStateReference reference)
                 Assert.IsTrue(reference.getReferencedState().Equals(initialDoState));
             else Assert.Fail();
+
+
+            IFullySpecifiedSubject Reviewer = new FullySpecifiedSubject(model.getBaseLayer());
+            ISubject Gruppe1 = new FullySpecifiedSubject(model.getBaseLayer());
+            ISendTransition sendTransition = new SendTransition(Reviewer.getBehaviors().Values.First());
+
+            IMessageExchange ReviewerGruppe1 = new MessageExchange(model.getBaseLayer());
+            ReviewerGruppe1.setSender(Reviewer);
+            ReviewerGruppe1.setReceiver(Gruppe1);
+
+            ReviewerGruppe1.setMessageType(new MessageSpecification(model.getBaseLayer(), "Review completed", null, null, "Review completed"));
+            ISendTransitionCondition sendInvitationCompleted = new SendTransitionCondition(sendTransition, "Review completed", null, ReviewerGruppe1, 3, 1, null, Reviewer, ReviewerGruppe1.getMessageType());
+
+            IMessageExchange ReviewerGruppe1_2 = new MessageExchange(model.getBaseLayer());
+            ReviewerGruppe1_2.setSender(Reviewer);
+            ReviewerGruppe1_2.setReceiver(Gruppe1);
+            ReviewerGruppe1_2.setMessageType(new MessageSpecification(model.getBaseLayer(), "Time out", null, null, "Time out"));
+            ISendTransitionCondition sendTimeOutMessage = new SendTransitionCondition(sendTransition, "Time out", null, ReviewerGruppe1_2, 3, 0, null, Reviewer, ReviewerGruppe1_2.getMessageType());
+            
         }
     }
 }

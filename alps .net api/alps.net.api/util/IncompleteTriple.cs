@@ -1,14 +1,12 @@
 ﻿using alps.net.api.parsing;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using VDS.RDF;
 
 namespace alps.net.api.util
 {
     public class IncompleteTriple : IIncompleteTriple
     {
-        private string predicateContent, objectContent;
+        private string predicateContent;
         private IStringWithExtra extraString;
 
         public enum LiteralType
@@ -20,23 +18,25 @@ namespace alps.net.api.util
         public IncompleteTriple(string predicate, string objectContent)
         {
             predicateContent = predicate;
-            this.objectContent = objectContent;
+            this.extraString = new StringWithoutExtra(objectContent);
         }
 
-        public IncompleteTriple(Triple realTriple)
+        public IncompleteTriple(Triple realTriple, string baseUriToReplace = null)
         {
-            predicateContent = realTriple.Predicate.ToString();
+            predicateContent = (baseUriToReplace == null) ? realTriple.Predicate.ToString() : StaticFunctions.replaceBaseUriWithGeneric(realTriple.Predicate.ToString(), baseUriToReplace);
             if (realTriple.Object is ILiteralNode literal)
             {
                 if (literal.Language != null && !literal.Language.Equals(""))
                     extraString = new LanguageSpecificString(literal.Value, literal.Language);
                 else if (literal.DataType != null && !literal.DataType.ToString().Equals(""))
-                    extraString = new LanguageSpecificString(literal.Value, literal.DataType.ToString());
+                    extraString = new DataTypeString(literal.Value, literal.DataType.ToString());
                 else
-                    this.objectContent = realTriple.Object.ToString();
+                {
+                    extraString = new StringWithoutExtra(StaticFunctions.replaceBaseUriWithGeneric(realTriple.Object.ToString(), baseUriToReplace));
+                }
             }
             else
-                this.objectContent = realTriple.Object.ToString();
+                extraString = new StringWithoutExtra(StaticFunctions.replaceBaseUriWithGeneric(realTriple.Object.ToString(), baseUriToReplace));
         }
 
         public IncompleteTriple(string predicate, string objectContent, LiteralType literalType, string objectAddition)
@@ -65,26 +65,8 @@ namespace alps.net.api.util
             {
                 predicateNode = graph.createUriNode(new Uri(predicateContent));
             }
-            INode objectNode;
-            if (extraString is null && objectContent != null)
-            {
-                if (!objectContent.Contains("http://") && !objectContent.Contains("https://"))
-                try
-                {
-                    objectNode = graph.createUriNode(objectContent);
-                }
-                catch (RdfException)
-                {
-                    objectNode = graph.createUriNode(new Uri(objectContent));
-                }
-                else objectNode = graph.createUriNode(new Uri(objectContent));
-            }
+            INode objectNode = extraString.getNodeFromString(graph);
 
-            else if (extraString != null)
-            {
-                objectNode = extraString.getNodeFromString(graph);
-            }
-            else return null;
             return new Triple(subjectNode, predicateNode, objectNode);
         }
 
@@ -92,11 +74,7 @@ namespace alps.net.api.util
         { return predicateContent; }
         public string getObject()
         {
-            if (objectContent != null)
-            {
-                return objectContent;
-            }
-            else { return extraString.getContent(); }
+            return extraString.getContent();
         }
 
         public override bool Equals(object otherObject)
@@ -106,18 +84,16 @@ namespace alps.net.api.util
             {
                 if ((triple.getPredicate() != null && getPredicate() != null && triple.getPredicate().Equals(getPredicate())) || (triple.getPredicate() is null && getPredicate() is null))
                     matches++;
-                if ((triple.getObject() != null && getObject() != null && triple.getObject().Equals(getObject())) || (triple.getObject() is null && getObject() is null))
-                    matches++;
                 if ((triple.getObjectWithExtra() != null && getObjectWithExtra() != null && triple.getObjectWithExtra().Equals(getObjectWithExtra())) || (triple.getObjectWithExtra() is null && getObjectWithExtra() is null))
                     matches++;
             }
-            if (matches == 3) return true;
+            if (matches == 2) return true;
             return false;
         }
 
         public IStringWithExtra getObjectWithExtra()
         {
-            return (extraString is null) ? null : extraString.clone();
+            return extraString.clone();
         }
 
         public override int GetHashCode()
@@ -125,8 +101,6 @@ namespace alps.net.api.util
             string baseString = "";
             if (getPredicate() != null)
                 baseString += getPredicate();
-            if (getObject() != null)
-                baseString += getObject();
             if (getObjectWithExtra() != null)
                 baseString += getObjectWithExtra();
             return baseString.GetHashCode();

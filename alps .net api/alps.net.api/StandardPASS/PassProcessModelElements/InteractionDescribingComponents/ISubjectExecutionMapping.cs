@@ -1,5 +1,5 @@
 ﻿
-namespace alps.net.api.StandardPASS.InteractionDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     public interface ISubjectExecutionMapping : IInteractionDescribingComponent
     {

@@ -1,6 +1,6 @@
-﻿using alps.net.api.StandardPASS.InteractionDescribingComponents;
+﻿using alps.net.api.StandardPASS;
 
-namespace alps.net.api.ALPS.ALPSModelElements.ALPSSIDComponents
+namespace alps.net.api.ALPS
 {
     interface IAbstractMessageExchange : IALPSSIDComponent, IMessageExchange
     {

@@ -1,8 +1,7 @@
 ﻿using alps.net.api.StandardPASS;
-using alps.net.api.StandardPASS.InteractionDescribingComponents;
 using System.Collections.Generic;
 
-namespace alps.net.api.ALPS.ALPSModelElements.ALPSSIDComponents
+namespace alps.net.api.ALPS
 {
     /// <summary>
     /// Interface for a subject extension

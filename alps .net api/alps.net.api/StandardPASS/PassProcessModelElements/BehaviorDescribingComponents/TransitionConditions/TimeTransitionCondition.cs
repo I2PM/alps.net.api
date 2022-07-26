@@ -2,9 +2,8 @@
 using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
-using VDS.RDF;
 
-namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents a time transition condition

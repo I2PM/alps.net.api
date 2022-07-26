@@ -1,12 +1,10 @@
 ﻿using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.StandardPASS;
-using alps.net.api.StandardPASS.BehaviorDescribingComponents;
-using alps.net.api.StandardPASS.SubjectBehaviors;
 using alps.net.api.util;
 using System.Collections.Generic;
 
-namespace alps.net.api.ALPS.ALPSModelElements.ALPSSBDComponents
+namespace alps.net.api.ALPS
 {
     class StatePlaceholder : State, IStatePlaceholder
     {
@@ -30,7 +28,7 @@ namespace alps.net.api.ALPS.ALPSModelElements.ALPSSBDComponents
             return new StatePlaceholder();
         }
 
-       protected StatePlaceholder() { }
+        protected StatePlaceholder() { }
         public StatePlaceholder(ISubjectBehavior behavior, string labelForID = null, IGuardBehavior guardBehavior = null,
             IFunctionSpecification functionSpecification = null, ISet<ITransition> incomingTransition = null, ISet<ITransition> outgoingTransition = null,
             string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)

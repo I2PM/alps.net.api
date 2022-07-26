@@ -1,4 +1,4 @@
-﻿namespace alps.net.api.StandardPASS.DataDescribingComponents
+﻿namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Interface to the OWL data type definition class

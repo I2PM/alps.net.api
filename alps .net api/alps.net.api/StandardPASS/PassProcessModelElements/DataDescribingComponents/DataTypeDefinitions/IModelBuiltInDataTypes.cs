@@ -1,4 +1,4 @@
-﻿namespace alps.net.api.StandardPASS.DataDescribingComponents
+﻿namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Interface to the model built in data type class

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using alps.net.api.util;
-using alps.net.api.StandardPASS.InteractionDescribingComponents;
+using alps.net.api.StandardPASS;
 using alps.net.api.parsing;
 using alps.net.api.src;
 
-namespace alps.net.api.ALPS.ALPSModelElements.ALPSSIDComponents
+namespace alps.net.api.ALPS
 {
     class FinalizedMessageExchange : MessageExchange, IFinalizedMessageExchange
     {

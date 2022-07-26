@@ -1,10 +1,10 @@
-﻿using alps.net.api.ALPS.ALPSModelElements;
+﻿using alps.net.api.ALPS;
 using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
 
-namespace alps.net.api.StandardPASS.InteractionDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents an message exchange list
@@ -12,7 +12,7 @@ namespace alps.net.api.StandardPASS.InteractionDescribingComponents
 
     public class MessageExchangeList : InteractionDescribingComponent, IMessageExchangeList
     {
-        protected IDictionary<string, IMessageExchange> messageExchanges = new Dictionary<string, IMessageExchange>();
+        protected ICompatibilityDictionary<string, IMessageExchange> messageExchanges = new CompatibilityDictionary<string, IMessageExchange>();
 
         /// <summary>
         /// Name of the class

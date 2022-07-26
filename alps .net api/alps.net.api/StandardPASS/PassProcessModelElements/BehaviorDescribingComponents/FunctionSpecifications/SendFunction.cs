@@ -1,10 +1,8 @@
 ﻿using alps.net.api.parsing;
 using alps.net.api.util;
 using System.Collections.Generic;
-using System.IO;
-using VDS.RDF;
 
-namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents a send function
@@ -26,7 +24,8 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
         }
 
        protected SendFunction() { }
-        public SendFunction(ISubjectBehavior behavior, string labelForID = null, string toolSpecificDefinition = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+        public SendFunction(ISubjectBehavior behavior, string labelForID = null, string toolSpecificDefinition = null,
+            string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
             : base(behavior, labelForID, toolSpecificDefinition, comment, additionalLabel, additionalAttribute) { }
 
 

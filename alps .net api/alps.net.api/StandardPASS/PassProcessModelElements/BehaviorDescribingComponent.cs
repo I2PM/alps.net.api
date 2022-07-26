@@ -1,4 +1,4 @@
-﻿using alps.net.api.ALPS.ALPSModelElements;
+﻿using alps.net.api.ALPS;
 using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.util;
@@ -89,12 +89,6 @@ namespace alps.net.api.StandardPASS
             return baseElements;
         }
 
-        public override string getBaseURI()
-        {
-            if (subjectBehavior is IParseablePASSProcessModelElement element)
-                return element.getBaseURI();
-            return base.getBaseURI();
-        }
 
         protected override IDictionary<string, IParseablePASSProcessModelElement> getDictionaryOfAllAvailableElements()
         {

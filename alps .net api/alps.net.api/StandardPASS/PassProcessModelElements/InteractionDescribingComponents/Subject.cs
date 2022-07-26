@@ -1,10 +1,11 @@
-﻿using alps.net.api.ALPS.ALPSModelElements;
+﻿using alps.net.api.ALPS;
+using alps.net.api.FunctionalityCapsules;
 using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
 
-namespace alps.net.api.StandardPASS.InteractionDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents a subject
@@ -16,9 +17,10 @@ namespace alps.net.api.StandardPASS.InteractionDescribingComponents
 
 
         protected int instanceRestriction;
-        protected readonly IDictionary<string, IMessageExchange> incomingExchange = new Dictionary<string, IMessageExchange>();
-        protected readonly IDictionary<string, IMessageExchange> outgoingExchange = new Dictionary<string, IMessageExchange>();
-        protected readonly IDictionary<string, ISubject> implementedInterfaces = new Dictionary<string, ISubject>();
+        protected readonly ICompatibilityDictionary<string, IMessageExchange> incomingExchange = new CompatibilityDictionary<string, IMessageExchange>();
+        protected readonly ICompatibilityDictionary<string, IMessageExchange> outgoingExchange = new CompatibilityDictionary<string, IMessageExchange>();
+        protected readonly IImplementsFunctionalityCapsule<ISubject> implCapsule;
+        protected readonly IExtendsFunctionalityCapsule<ISubject> extendsCapsule;
         protected readonly IList<ISubject.Role> roles = new List<ISubject.Role>();
         protected bool isAbstractType = false;
 
@@ -39,7 +41,11 @@ namespace alps.net.api.StandardPASS.InteractionDescribingComponents
             return new Subject();
         }
 
-       protected Subject() { }
+        protected Subject()
+        {
+            implCapsule = new ImplementsFunctionalityCapsule<ISubject>(this);
+            extendsCapsule = new ExtendsFunctionalityCapsule<ISubject>(this);
+        }
 
         /// <summary>
         /// 
@@ -50,11 +56,13 @@ namespace alps.net.api.StandardPASS.InteractionDescribingComponents
         /// <param name="outgoingMessageExchange"></param>
         /// <param name="maxSubjectInstanceRestriction"></param>
         /// <param name="additionalAttribute"></param>
-        public Subject(IModelLayer layer, string labelForID = null,  ISet<IMessageExchange> incomingMessageExchange = null,
+        public Subject(IModelLayer layer, string labelForID = null, ISet<IMessageExchange> incomingMessageExchange = null,
             ISet<IMessageExchange> outgoingMessageExchange = null, int maxSubjectInstanceRestriction = 1, string comment = null, string additionalLabel = null,
             IList<IIncompleteTriple> additionalAttribute = null)
             : base(layer, labelForID, comment, additionalLabel, additionalAttribute)
         {
+            extendsCapsule = new ExtendsFunctionalityCapsule<ISubject>(this);
+            implCapsule = new ImplementsFunctionalityCapsule<ISubject>(this);
             setIncomingMessageExchanges(incomingMessageExchange);
             setInstanceRestriction(maxSubjectInstanceRestriction);
             setOutgoingMessageExchanges(outgoingMessageExchange);
@@ -160,7 +168,11 @@ namespace alps.net.api.StandardPASS.InteractionDescribingComponents
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
         {
-            if (predicate.Contains(OWLTags.hasInstanceRestriction))
+            if (implCapsule != null && implCapsule.parseAttribute(predicate, objectContent, lang, dataType, element))
+                return true;
+            else if (extendsCapsule != null && extendsCapsule.parseAttribute(predicate, objectContent, lang, dataType, element))
+                return true;
+            else if (predicate.Contains(OWLTags.hasInstanceRestriction))
             {
                 string restr = objectContent;
                 setInstanceRestriction(int.Parse(restr));
@@ -226,45 +238,6 @@ namespace alps.net.api.StandardPASS.InteractionDescribingComponents
             }
         }
 
-        public void setImplementedInterfaces(ISet<ISubject> implementedInterface, int removeCascadeDepth = 0)
-        {
-            foreach (ISubject implInterface in getImplementedInterfaces().Values)
-            {
-                removeImplementedInterfaces(implInterface.getModelComponentID(), removeCascadeDepth);
-            }
-            if (implementedInterface is null) return;
-            foreach (ISubject implInterface in implementedInterface)
-            {
-                addImplementedInterface(implInterface);
-            }
-        }
-
-        public void addImplementedInterface(ISubject implementedInterface)
-        {
-            if (implementedInterface is null) { return; }
-            if (implementedInterfaces.TryAdd(implementedInterface.getModelComponentID(), implementedInterface))
-            {
-                publishElementAdded(implementedInterface);
-                implementedInterface.register(this);
-                addTriple(new IncompleteTriple(OWLTags.abstrImplements, implementedInterface.getUriModelComponentID()));
-            }
-        }
-
-        public void removeImplementedInterfaces(string id, int removeCascadeDepth = 0)
-        {
-            if (id is null) return;
-            if (implementedInterfaces.TryGetValue(id, out ISubject implInterface))
-            {
-                implementedInterfaces.Remove(id);
-                implInterface.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.abstrImplements, implInterface.getUriModelComponentID()));
-            }
-        }
-
-        public IDictionary<string, ISubject> getImplementedInterfaces()
-        {
-            return new Dictionary<string, ISubject>(implementedInterfaces);
-        }
 
         public override void notifyModelComponentIDChanged(string oldID, string newID)
         {
@@ -322,6 +295,71 @@ namespace alps.net.api.StandardPASS.InteractionDescribingComponents
         public bool isAbstract()
         {
             return isAbstractType;
+        }
+
+        public void setImplementedInterfacesIDReferences(ISet<string> implementedInterfacesIDs)
+        {
+            implCapsule.setImplementedInterfacesIDReferences(implementedInterfacesIDs);
+        }
+
+        public void addImplementedInterfaceIDReference(string implementedInterfaceID)
+        {
+            implCapsule.addImplementedInterfaceIDReference(implementedInterfaceID);
+        }
+
+        public void removeImplementedInterfacesIDReference(string implementedInterfaceID)
+        {
+            implCapsule.removeImplementedInterfacesIDReference(implementedInterfaceID);
+        }
+
+        public ISet<string> getImplementedInterfacesIDReferences()
+        {
+            return implCapsule.getImplementedInterfacesIDReferences();
+        }
+
+        public void setImplementedInterfaces(ISet<ISubject> implementedInterface, int removeCascadeDepth = 0)
+        {
+            implCapsule.setImplementedInterfaces(implementedInterface, removeCascadeDepth);
+        }
+
+        public void addImplementedInterface(ISubject implementedInterface)
+        {
+            implCapsule.addImplementedInterface(implementedInterface);
+        }
+
+        public void removeImplementedInterfaces(string id, int removeCascadeDepth = 0)
+        {
+            implCapsule.removeImplementedInterfaces(id, removeCascadeDepth);
+        }
+
+        public IDictionary<string, ISubject> getImplementedInterfaces()
+        {
+            return implCapsule.getImplementedInterfaces();
+        }
+
+        public void setExtendedElement(ISubject element)
+        {
+            extendsCapsule.setExtendedElement(element);
+        }
+
+        public void setExtendedElementID(string elementID)
+        {
+            extendsCapsule.setExtendedElementID(elementID);
+        }
+
+        public ISubject getExtendedElement()
+        {
+            return extendsCapsule.getExtendedElement();
+        }
+
+        public string getExtendedElementID()
+        {
+            return extendsCapsule.getExtendedElementID();
+        }
+
+        public bool isExtension()
+        {
+            return extendsCapsule.isExtension();
         }
     }
 }

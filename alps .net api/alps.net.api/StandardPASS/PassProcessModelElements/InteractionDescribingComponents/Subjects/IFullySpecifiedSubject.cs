@@ -1,7 +1,6 @@
-﻿using alps.net.api.StandardPASS.DataDescribingComponents;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace alps.net.api.StandardPASS.InteractionDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Interface to the FullySpecifiedSubject class

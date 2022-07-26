@@ -1,11 +1,9 @@
 ﻿using alps.net.api.parsing;
 using alps.net.api.src;
-using alps.net.api.StandardPASS.SubjectBehaviors;
 using alps.net.api.util;
 using System.Collections.Generic;
-using VDS.RDF;
 
-namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents an macro state
@@ -14,7 +12,7 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
     public class MacroState : State, IMacroState
     {
         protected IMacroBehavior referenceMacroBehavior;
-        protected readonly IDictionary<string, IStateReference> stateReferences = new Dictionary<string, IStateReference>();
+        protected readonly ICompatibilityDictionary<string, IStateReference> stateReferences = new CompatibilityDictionary<string, IStateReference>();
         /// <summary>
         /// Name of the class
         /// </summary>

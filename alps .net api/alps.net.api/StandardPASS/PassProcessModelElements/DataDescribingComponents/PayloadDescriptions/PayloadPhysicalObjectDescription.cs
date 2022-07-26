@@ -2,7 +2,7 @@
 using alps.net.api.util;
 using System.Collections.Generic;
 
-namespace alps.net.api.StandardPASS.DataDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     public class PayloadPhysicalObjectDescription : PayloadDescription, IPayloadPhysicalObjectDescription
     {
@@ -20,7 +20,8 @@ namespace alps.net.api.StandardPASS.DataDescribingComponents
 
        protected PayloadPhysicalObjectDescription() { }
 
-        public PayloadPhysicalObjectDescription(IPASSProcessModel model, string labelForID = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+        public PayloadPhysicalObjectDescription(IPASSProcessModel model, string labelForID = null,
+            string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
             : base(model, labelForID, comment, additionalLabel, additionalAttribute)
         { }
     }

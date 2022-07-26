@@ -1,12 +1,11 @@
-﻿using alps.net.api.ALPS.ALPSModelElements;
+﻿using alps.net.api.ALPS;
+using alps.net.api.FunctionalityCapsules;
 using alps.net.api.parsing;
 using alps.net.api.src;
-using alps.net.api.StandardPASS.BehaviorDescribingComponents;
-using alps.net.api.StandardPASS.InteractionDescribingComponents;
 using alps.net.api.util;
 using System.Collections.Generic;
 
-namespace alps.net.api.StandardPASS.SubjectBehaviors
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents an GuardBehavior
@@ -15,8 +14,10 @@ namespace alps.net.api.StandardPASS.SubjectBehaviors
 
     public class GuardBehavior : SubjectBehavior, IGuardBehavior
     {
-        protected IDictionary<string, ISubjectBehavior> subjectBehaviors = new Dictionary<string, ISubjectBehavior>();
-        protected IDictionary<string, IState> guardedStates = new Dictionary<string, IState>();
+        protected ICompatibilityDictionary<string, ISubjectBehavior> subjectBehaviors = new CompatibilityDictionary<string, ISubjectBehavior>();
+        protected ICompatibilityDictionary<string, IState> guardedStates = new CompatibilityDictionary<string, IState>();
+        protected IGuardsFunctionalityCapsule<IState> stateGuardCapsule;
+        protected IGuardsFunctionalityCapsule<ISubjectBehavior> behaviorGuardCapsule;
 
         /// <summary>
         /// Name of the class

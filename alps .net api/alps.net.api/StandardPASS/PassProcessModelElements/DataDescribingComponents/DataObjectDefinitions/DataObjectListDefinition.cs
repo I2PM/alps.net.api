@@ -1,10 +1,8 @@
 ﻿using alps.net.api.parsing;
 using alps.net.api.util;
 using System.Collections.Generic;
-using System.IO;
-using VDS.RDF;
 
-namespace alps.net.api.StandardPASS.DataDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents a data object list definition
@@ -27,7 +25,9 @@ namespace alps.net.api.StandardPASS.DataDescribingComponents
         }
 
        protected DataObjectListDefinition() { }
-        public DataObjectListDefinition(IPASSProcessModel model, string labelForID = null, IDataTypeDefinition dataTypeDefintion = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+        public DataObjectListDefinition(IPASSProcessModel model, string labelForID = null,
+            IDataTypeDefinition dataTypeDefintion = null, string comment = null,
+            string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
             : base(model, labelForID, dataTypeDefintion, comment, additionalLabel, additionalAttribute)
         { }
     }

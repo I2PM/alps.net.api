@@ -1,5 +1,5 @@
 ﻿
-namespace alps.net.api.ALPS.ALPSModelElements.Simple2DVisualizationPoints
+namespace alps.net.api.ALPS
 {
     /// <summary>
     /// An interface to define paths (consisting of points) for a simple visual representation of model elements

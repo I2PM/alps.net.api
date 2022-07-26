@@ -1,11 +1,9 @@
-﻿using alps.net.api.ALPS.ALPSModelElements;
+﻿using alps.net.api.ALPS;
 using alps.net.api.parsing;
 using alps.net.api.util;
 using System.Collections.Generic;
-using System.IO;
-using VDS.RDF;
 
-namespace alps.net.api.StandardPASS.InteractionDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents an InputConstraintHandlingStrategy
@@ -37,7 +35,8 @@ namespace alps.net.api.StandardPASS.InteractionDescribingComponents
         /// <param name="comment"></param>
         /// <param name="additionalLabel"></param>
         /// <param name="additionalAttribute"></param>
-        public InputPoolConstraintHandlingStrategy(IModelLayer layer, string labelForID = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+        public InputPoolConstraintHandlingStrategy(IModelLayer layer, string labelForID = null, string comment = null,
+            string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
             : base(layer, labelForID, comment, additionalLabel, additionalAttribute)
         { }
 

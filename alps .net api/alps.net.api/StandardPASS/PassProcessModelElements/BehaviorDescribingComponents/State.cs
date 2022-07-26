@@ -1,20 +1,20 @@
 ﻿using alps.net.api.util;
 using System.Collections.Generic;
-using alps.net.api.StandardPASS.SubjectBehaviors;
 using alps.net.api.parsing;
 using alps.net.api.src;
-using static alps.net.api.StandardPASS.BehaviorDescribingComponents.IState;
+using alps.net.api.FunctionalityCapsules;
+using static alps.net.api.StandardPASS.IState;
 
-namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents a state
     /// </summary>
     public class State : BehaviorDescribingComponent, IStateReference
     {
-        protected readonly IDictionary<string, ITransition> incomingTransitions = new Dictionary<string, ITransition>();
-        protected readonly IDictionary<string, ITransition> outgoingTransitions = new Dictionary<string, ITransition>();
-        protected readonly IDictionary<string, IState> implementedInterfaces = new Dictionary<string, IState>();
+        protected readonly ICompatibilityDictionary<string, ITransition> incomingTransitions = new CompatibilityDictionary<string, ITransition>();
+        protected readonly ICompatibilityDictionary<string, ITransition> outgoingTransitions = new CompatibilityDictionary<string, ITransition>();
+        protected readonly IImplementsFunctionalityCapsule<IState> implCapsule;
         protected readonly ISet<StateType> stateTypes = new HashSet<StateType>();
         protected IFunctionSpecification functionSpecification;
         protected IGuardBehavior guardBehavior;
@@ -35,7 +35,7 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
             return new State();
         }
 
-        protected State() { }
+        protected State() { implCapsule = new ImplementsFunctionalityCapsule<IState>(this); }
         /// <summary>
         /// 
         /// </summary>
@@ -51,6 +51,7 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
             IFunctionSpecification functionSpecification = null, ISet<ITransition> incomingTransition = null, ISet<ITransition> outgoingTransition = null,
             string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null) : base(behavior, labelForID, comment, additionalLabel, additionalAttribute)
         {
+            implCapsule = new ImplementsFunctionalityCapsule<IState>(this);
             setGuardBehavior(guardBehavior);
             setFunctionSpecification(functionSpecification);
             setIncomingTransitions(incomingTransition);
@@ -154,24 +155,24 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
         }
 
 
-        public virtual void setFunctionSpecification(IFunctionSpecification functionSpecification, int removeCascadeDepth = 0)
+        public virtual void setFunctionSpecification(IFunctionSpecification funSpec, int removeCascadeDepth = 0)
         {
-            IFunctionSpecification oldSepc = functionSpecification;
+            IFunctionSpecification oldSpec = functionSpecification;
             // Might set it to null
-            this.functionSpecification = functionSpecification;
+            functionSpecification = funSpec;
 
-            if (oldSepc != null)
+            if (oldSpec != null)
             {
-                if (oldSepc.Equals(functionSpecification)) return;
-                oldSepc.unregister(this);
-                removeTriple(new IncompleteTriple(OWLTags.stdHasFunctionSpecification, oldSepc.getUriModelComponentID()));
+                if (oldSpec.Equals(funSpec)) return;
+                oldSpec.unregister(this);
+                removeTriple(new IncompleteTriple(OWLTags.stdHasFunctionSpecification, oldSpec.getUriModelComponentID()));
             }
 
-            if (!(functionSpecification is null))
+            if (funSpec is not null)
             {
-                publishElementAdded(functionSpecification);
-                functionSpecification.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdHasFunctionSpecification, functionSpecification.getUriModelComponentID()));
+                publishElementAdded(funSpec);
+                funSpec.register(this);
+                addTriple(new IncompleteTriple(OWLTags.stdHasFunctionSpecification, funSpec.getUriModelComponentID()));
             }
         }
 
@@ -182,26 +183,26 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
         }
 
 
-        public void setGuardBehavior(IGuardBehavior guardBehavior, int removeCascadeDepth = 0)
+        public void setGuardBehavior(IGuardBehavior guardBehav, int removeCascadeDepth = 0)
         {
             IGuardBehavior oldBehavior = guardBehavior;
             // Might set it to null
-            this.guardBehavior = guardBehavior;
+            guardBehavior = guardBehav;
 
             if (oldBehavior != null)
             {
-                if (oldBehavior.Equals(guardBehavior)) return;
+                if (oldBehavior.Equals(guardBehav)) return;
                 oldBehavior.unregister(this, removeCascadeDepth);
                 oldBehavior.removeGuardedState(getModelComponentID());
                 removeTriple(new IncompleteTriple(OWLTags.stdGuardedBy, oldBehavior.getUriModelComponentID()));
             }
 
-            if (!(guardBehavior is null))
+            if (guardBehav is not null)
             {
-                publishElementAdded(guardBehavior);
-                guardBehavior.register(this);
-                guardBehavior.addGuardedState(this);
-                addTriple(new IncompleteTriple(OWLTags.stdGuardedBy, guardBehavior.getUriModelComponentID()));
+                publishElementAdded(guardBehav);
+                guardBehav.register(this);
+                guardBehav.addGuardedState(this);
+                addTriple(new IncompleteTriple(OWLTags.stdGuardedBy, guardBehav.getUriModelComponentID()));
             }
         }
 
@@ -259,13 +260,13 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
                         addTriple(new IncompleteTriple(OWLTags.rdfType, OWLTags.std + "InitialStateOfChoiceSegmentPath"));
                     break;
                 case StateType.EndState:
-                    if (getContainedBy(out ISubjectBehavior behavior) && !(behavior is ISubjectBaseBehavior)) break;
                     if (stateTypes.Add(stateType))
                     {
                         addTriple(new IncompleteTriple(OWLTags.rdfType, OWLTags.std + "EndState"));
-                        if (getContainedBy(out ISubjectBehavior behavior2) && behavior2 is IParseablePASSProcessModelElement parseable)
+
+                        if (getContainedBy(out ISubjectBehavior behavior) && (behavior is ISubjectBaseBehavior baseBehav))
                         {
-                            parseable.addTriple(new IncompleteTriple(OWLTags.stdHasEndState, getUriModelComponentID()));
+                            baseBehav.registerEndState(this);
                         }
                     }
                     break;
@@ -275,21 +276,26 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
 
         public virtual void removeStateType(StateType stateType)
         {
+            // If the type was removed successfully
             if (stateTypes.Remove(stateType))
             {
                 switch (stateType)
                 {
                     case StateType.InitialStateOfBehavior:
                         removeTriple(new IncompleteTriple(OWLTags.rdfType, OWLTags.std + "InitialStateOfBehavior"));
+                        if (getContainedBy(out ISubjectBehavior behav))
+                        {
+                            behav.setInitialState(null);
+                        }
                         break;
                     case StateType.InitialStateOfChoiceSegmentPath:
                         removeTriple(new IncompleteTriple(OWLTags.rdfType, OWLTags.std + "InitialStateOfChoiceSegmentPath"));
                         break;
                     case StateType.EndState:
                         removeTriple(new IncompleteTriple(OWLTags.rdfType, OWLTags.std + "EndState"));
-                        if (getContainedBy(out ISubjectBehavior behavior) && behavior is IParseablePASSProcessModelElement parseable)
+                        if (getContainedBy(out ISubjectBehavior behavior) && behavior is ISubjectBaseBehavior baseBehav)
                         {
-                            parseable.removeTriple(new IncompleteTriple(OWLTags.stdHasEndState, getUriModelComponentID()));
+                            baseBehav.unregisterEndState(getModelComponentID());
                         }
                         break;
                 }
@@ -300,7 +306,9 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
         {
-            if (element != null)
+            if (implCapsule != null && implCapsule.parseAttribute(predicate, objectContent, lang, dataType, element))
+                return true;
+            else if (element != null)
             {
                 if (element is ITransition transition)
                 {
@@ -434,45 +442,7 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
             base.notifyModelComponentIDChanged(oldID, newID);
         }
 
-        public void setImplementedInterfaces(ISet<IState> implementedInterface, int removeCascadeDepth = 0)
-        {
-            foreach (IState implInterface in getImplementedInterfaces().Values)
-            {
-                removeImplementedInterfaces(implInterface.getModelComponentID(), removeCascadeDepth);
-            }
-            if (implementedInterface is null) return;
-            foreach (IState implInterface in implementedInterface)
-            {
-                addImplementedInterface(implInterface);
-            }
-        }
 
-        public void addImplementedInterface(IState implementedInterface)
-        {
-            if (implementedInterface is null) { return; }
-            if (implementedInterfaces.TryAdd(implementedInterface.getModelComponentID(), implementedInterface))
-            {
-                publishElementAdded(implementedInterface);
-                implementedInterface.register(this);
-                addTriple(new IncompleteTriple(OWLTags.abstrImplements, implementedInterface.getUriModelComponentID()));
-            }
-        }
-
-        public void removeImplementedInterfaces(string id, int removeCascadeDepth = 0)
-        {
-            if (id is null) return;
-            if (implementedInterfaces.TryGetValue(id, out IState implInterface))
-            {
-                implementedInterfaces.Remove(id);
-                implInterface.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.abstrImplements, implInterface.getUriModelComponentID()));
-            }
-        }
-
-        public IDictionary<string, IState> getImplementedInterfaces()
-        {
-            return new Dictionary<string, IState>(implementedInterfaces);
-        }
 
         protected static readonly string STATE_REF_CLASS_NAME = "StateReference";
 
@@ -524,8 +494,9 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
             return !(referenceState is null);
         }
 
-        public override bool register(IValueChangedObserver<IPASSProcessModelElement> observer) { 
-            bool added = base.register(observer); 
+        public override bool register(IValueChangedObserver<IPASSProcessModelElement> observer)
+        {
+            bool added = base.register(observer);
             // Special case: State is parsed, action knows about state, state does not know action -> action registeres at the state, state sets reference to action
             if (added && observer is IAction action && getAction() is null)
             {
@@ -543,6 +514,46 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
                 generateAction(null);
             }
             return added;
+        }
+
+        public void setImplementedInterfacesIDReferences(ISet<string> implementedInterfacesIDs)
+        {
+            implCapsule.setImplementedInterfacesIDReferences(implementedInterfacesIDs);
+        }
+
+        public void addImplementedInterfaceIDReference(string implementedInterfaceID)
+        {
+            implCapsule.addImplementedInterfaceIDReference(implementedInterfaceID);
+        }
+
+        public void removeImplementedInterfacesIDReference(string implementedInterfaceID)
+        {
+            implCapsule.removeImplementedInterfacesIDReference(implementedInterfaceID);
+        }
+
+        public ISet<string> getImplementedInterfacesIDReferences()
+        {
+            return implCapsule.getImplementedInterfacesIDReferences();
+        }
+
+        public void setImplementedInterfaces(ISet<IState> implementedInterface, int removeCascadeDepth = 0)
+        {
+            implCapsule.setImplementedInterfaces(implementedInterface, removeCascadeDepth);
+        }
+
+        public void addImplementedInterface(IState implementedInterface)
+        {
+            implCapsule.addImplementedInterface(implementedInterface);
+        }
+
+        public void removeImplementedInterfaces(string id, int removeCascadeDepth = 0)
+        {
+            implCapsule.removeImplementedInterfaces(id, removeCascadeDepth);
+        }
+
+        public IDictionary<string, IState> getImplementedInterfaces()
+        {
+            return implCapsule.getImplementedInterfaces();
         }
     }
 }

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace alps.net.api.parsing
 {
-    class ProgressBar
+    public class ProgressBar
     {
         private int currentProgress;
         private int maxProgress;

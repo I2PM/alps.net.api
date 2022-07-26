@@ -1,7 +1,4 @@
-﻿using alps.net.api.parsing;
-using System.Collections.Generic;
-
-namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
+﻿namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Interface to the state reference class

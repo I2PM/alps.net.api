@@ -1,16 +1,16 @@
 ﻿using alps.net.api.StandardPASS;
-using alps.net.api.util;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace alps.net.api.parsing
 {
-    class BasicPASSProcessModelElementFactory : IPASSProcessModelElementFactory<IParseablePASSProcessModelElement>
+    public class BasicPASSProcessModelElementFactory : IPASSProcessModelElementFactory<IParseablePASSProcessModelElement>
     {
-        public string createInstance(Dictionary<string, List<(ITreeNode<IParseablePASSProcessModelElement>, int)>> parsingDict, List<string> names, out IParseablePASSProcessModelElement element)
+        public string createInstance(IDictionary<string, IList<(ITreeNode<IParseablePASSProcessModelElement>, int)>> parsingDict,
+            IList<string> names, out IParseablePASSProcessModelElement element)
         {
             element = new PASSProcessModelElement();
-            IList<string> bestParseableNames = new List<string>();
+            HashSet<string> bestParseableNames = new HashSet<string>();
             int lowestParseDiff = int.MaxValue;
 
             // Check how good the instanciations for the names are.
@@ -88,30 +88,37 @@ namespace alps.net.api.parsing
             // parse the one having the longest matching name (longer name -> more specific instance ?)
             else if (possibleElements.Count > 1)
             {
-                int max = -1;
-                KeyValuePair<IParseablePASSProcessModelElement, string> maxPair = new KeyValuePair<IParseablePASSProcessModelElement, string>();
-                int counter = 0;
-                foreach (KeyValuePair<IParseablePASSProcessModelElement, string> pair in possibleElements)
-                {
-                    int parseability = pair.Key.canParse(pair.Value);
-                    if (parseability > max)
-                    {
-                        max = parseability;
-                        maxPair = pair;
-                    }
-                    counter++;
-                }
-                //element = ReflectiveEnumerator.createInstance<IParseablePASSProcessModelElement>(maxPair.Key.GetType());
-                element = possibleElements.Keys.First().getParsedInstance();
-                return maxPair.Value;
+                KeyValuePair<IParseablePASSProcessModelElement, string> selectedPair = decideForElement(possibleElements);
+                element = selectedPair.Key.getParsedInstance();
+                return selectedPair.Value;
             }
 
             return null;
         }
         private string removeUri(string stringWithUri)
         {
-            string[] splitStr = stringWithUri.Split("#");
+            string[] splitStr = stringWithUri.Split('#');
             return splitStr[splitStr.Length - 1];
+        }
+
+        protected virtual KeyValuePair<IParseablePASSProcessModelElement, string> decideForElement(IDictionary<IParseablePASSProcessModelElement, string> possibleElements)
+        {
+            int max = -1;
+            KeyValuePair<IParseablePASSProcessModelElement, string> maxPair = new KeyValuePair<IParseablePASSProcessModelElement, string>();
+            int counter = 0;
+            foreach (KeyValuePair<IParseablePASSProcessModelElement, string> pair in possibleElements)
+            {
+                int parseability = pair.Key.canParse(pair.Value);
+                if (parseability > max)
+                {
+                    max = parseability;
+                    maxPair = pair;
+                }
+                counter++;
+            }
+
+            return maxPair;
+            
         }
     }
 }

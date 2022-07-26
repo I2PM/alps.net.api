@@ -1,17 +1,16 @@
 ﻿using alps.net.api.parsing;
 using alps.net.api.src;
-using alps.net.api.StandardPASS.DataDescribingComponents;
 using alps.net.api.util;
 using System.Collections.Generic;
 
-namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents a receive transition
     /// </summary>
     public class ReceiveTransition : CommunicationTransition, IReceiveTransition
     {
-        protected readonly IDictionary<string, IDataMappingIncomingToLocal> dataMappingsIncomingToLocal = new Dictionary<string, IDataMappingIncomingToLocal>();
+        protected readonly ICompatibilityDictionary<string, IDataMappingIncomingToLocal> dataMappingsIncomingToLocal = new CompatibilityDictionary<string, IDataMappingIncomingToLocal>();
         protected int priorityNumber = 1;
 
         /// <summary>

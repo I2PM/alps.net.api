@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace alps.net.api.parsing
 {
@@ -8,7 +7,7 @@ namespace alps.net.api.parsing
     /// If own classes should be parsed by the library, an own implementation of a
     /// IPASSProcessModelElementFactory must be provided
     /// </summary>
-    interface IPASSProcessModelElementFactory<T> where T : IParseablePASSProcessModelElement
+    public interface IPASSProcessModelElementFactory<T> where T : IParseablePASSProcessModelElement
     {
         /// <summary>
         /// Creates an instance of an <see cref="IParseablePASSProcessModelElement"/>, depending on given names and parsing possibilities.
@@ -19,7 +18,7 @@ namespace alps.net.api.parsing
         /// <param name="names">names of types the owl class belongs to</param>
         /// <param name="element">will contain a new instance of an <see cref="IParseablePASSProcessModelElement"/> if parsing was successfull</param>
         /// <returns>true if parsing was successful, false if not</returns>
-        string createInstance(Dictionary<string, List<(ITreeNode<IParseablePASSProcessModelElement>, int)>> parsingDict, List<string> names, out T element);
+        string createInstance(IDictionary<string, IList<(ITreeNode<IParseablePASSProcessModelElement>, int)>> parsingDict, IList<string> names, out T element);
  
     }
 }

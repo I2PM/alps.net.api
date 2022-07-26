@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [ 
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY abstract-pass-ont "http://www.imi.kit.edu/abstract-pass-ont#" >
+    <!ENTITY standard-pass-ont "http://www.i2pm.net/standard-pass-ont#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+]>
+
+<rdf:RDF xmlns:abstract-pass-ont="http://www.imi.kit.edu/abstract-pass-ont#" xmlns:standard-pass-ont="http://www.i2pm.net/standard-pass-ont#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns="http://subjective-me.jimdo.com/s-bpm/processmodels/2022-06-27/Page-1">
+	<owl:Ontology rdf:about="http://subjective-me.jimdo.com/s-bpm/processmodels/2022-06-27/Page-1">
+		<owl:versionIRI rdf:resource="http://subjective-me.jimdo.com/s-bpm/processmodels/2022-06-27/Page-1/2022-06-27"></owl:versionIRI>
+		<owl:imports rdf:resource="http://www.imi.kit.edu/abstract-pass-ont"></owl:imports>
+		<owl:imports rdf:resource="http://www.i2pm.net/standard-pass-ont"></owl:imports>
+	</owl:Ontology>
+	<owl:Class rdf:about="http://subjective-me.jimdo.com/s-bpm/processmodels/2022-06-27/Page-1#VisioShapesInternalDataMappingFunction" >
+		<rdfs:subClassOf rdf:resource="http://www.i2pm.net/standard-pass-ont#DataMappingFunction"></rdfs:subClassOf>
+	</owl:Class>
+	<owl:NamedIndividual rdf:about="http://subjective-me.jimdo.com/s-bpm/processmodels/2022-06-27/Page-1#Drawing3" >
+		<rdf:type rdf:resource="&standard-pass-ont;PASSProcessModel" ></rdf:type>
+		<standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string" >http://subjective-me.jimdo.com/s-bpm/processmodels/2022-06-27/Page-1</standard-pass-ont:hasModelComponentID>
+		<standard-pass-ont:hasModelComponentLabel xml:lang="en" >Drawing3</standard-pass-ont:hasModelComponentLabel>
+		<standard-pass-ont:contains rdf:resource="http://subjective-me.jimdo.com/s-bpm/processmodels/2022-06-27/Page-1#SID_1" ></standard-pass-ont:contains>
+		<standard-pass-ont:contains rdf:resource="http://subjective-me.jimdo.com/s-bpm/processmodels/2022-06-27/Page-1#SID_1_FullySpecifiedSubject_2" ></standard-pass-ont:contains>
+		<standard-pass-ont:contains rdf:resource="http://subjective-me.jimdo.com/s-bpm/processmodels/2022-06-27/Page-1#SBD_4_SID_1_FullySpecifiedSubject_2" ></standard-pass-ont:contains>
+	</owl:NamedIndividual>
+	<owl:NamedIndividual rdf:about="http://subjective-me.jimdo.com/s-bpm/processmodels/2022-06-27/Page-1#SID_1" >
+		<rdf:type rdf:resource="&abstract-pass-ont;ModelLayer" ></rdf:type>
+		<standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string" >SID_1</standard-pass-ont:hasModelComponentID>
+		<standard-pass-ont:hasModelComponentLabel xml:lang="en" >SID_1</standard-pass-ont:hasModelComponentLabel>
+		<standard-pass-ont:hasPriorityNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#positiveInteger" >1</standard-pass-ont:hasPriorityNumber>
+		<standard-pass-ont:contains rdf:resource="http://subjective-me.jimdo.com/s-bpm/processmodels/2022-06-27/Page-1#SID_1_FullySpecifiedSubject_2" ></standard-pass-ont:contains>
+		<standard-pass-ont:contains rdf:resource="http://subjective-me.jimdo.com/s-bpm/processmodels/2022-06-27/Page-1#SBD_4_SID_1_FullySpecifiedSubject_2" ></standard-pass-ont:contains>
+	</owl:NamedIndividual>
+	<owl:NamedIndividual rdf:about="http://subjective-me.jimdo.com/s-bpm/processmodels/2022-06-27/Page-1#SID_1_FullySpecifiedSubject_2" >
+		<rdf:type rdf:resource="&standard-pass-ont;FullySpecifiedSubject" ></rdf:type>
+		<standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string" >SID_1_FullySpecifiedSubject_2</standard-pass-ont:hasModelComponentID>
+		<standard-pass-ont:hasModelComponentLabel xml:lang="en" >Subject 2</standard-pass-ont:hasModelComponentLabel>
+		<standard-pass-ont:containsBehavior rdf:resource="http://subjective-me.jimdo.com/s-bpm/processmodels/2022-06-27/Page-1#SBD_4_SID_1_FullySpecifiedSubject_2" ></standard-pass-ont:containsBehavior>
+		<standard-pass-ont:containsBaseBehavior rdf:resource="http://subjective-me.jimdo.com/s-bpm/processmodels/2022-06-27/Page-1#SBD_4_SID_1_FullySpecifiedSubject_2" ></standard-pass-ont:containsBaseBehavior>
+		<standard-pass-ont:hasMaximumSubjectInstanceRestriction rdf:datatype="http://www.w3.org/2001/XMLSchema#integer" >1</standard-pass-ont:hasMaximumSubjectInstanceRestriction>
+	</owl:NamedIndividual>
+	<owl:NamedIndividual rdf:about="http://subjective-me.jimdo.com/s-bpm/processmodels/2022-06-27/Page-1#SBD_4_SID_1_FullySpecifiedSubject_2" >
+		<rdf:type rdf:resource="&standard-pass-ont;SubjectBehavior" ></rdf:type>
+		<standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string" >SBD_4_SID_1_FullySpecifiedSubject_2</standard-pass-ont:hasModelComponentID>
+		<standard-pass-ont:hasModelComponentLabel xml:lang="en" >SBD: Subject 2-0</standard-pass-ont:hasModelComponentLabel>
+		<standard-pass-ont:hasPriorityNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#positiveInteger" >1</standard-pass-ont:hasPriorityNumber>
+	</owl:NamedIndividual>
+</rdf:RDF>
+

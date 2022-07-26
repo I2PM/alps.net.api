@@ -1,5 +1,6 @@
 ﻿using System;
 using VDS.RDF;
+using static alps.net.api.parsing.PASSGraph;
 
 namespace alps.net.api.parsing
 {
@@ -13,7 +14,7 @@ namespace alps.net.api.parsing
 
         public string getBaseURI();
 
-        public const string EXAMPLE_BASE_URI_PLACEHOLDER = "baseuri:";
+        public bool containsNonBaseUri(string input);
 
         /// <summary>
         /// Adds a triple to the triple store this graph contains
@@ -58,13 +59,13 @@ namespace alps.net.api.parsing
         /// to the change
         /// </summary>
         /// <param name="element">the element that is registered</param>
-        void register(IParseablePASSProcessModelElement element);
+        void register(IGraphCallback element);
 
         /// <summary>
         /// Deregisteres a component previously registered via <see cref="register(IParseablePASSProcessModelElement)"/>
         /// </summary>
         /// <param name="element">the element that is de-registered</param>
-        void unregister(IParseablePASSProcessModelElement element);
+        void unregister(IGraphCallback element);
 
         /// <summary>
         /// Should be called when a modelComponentID is changed.

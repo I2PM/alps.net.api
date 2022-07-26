@@ -1,12 +1,10 @@
-﻿using alps.net.api.ALPS.ALPSModelElements;
+﻿using alps.net.api.ALPS;
 using alps.net.api.parsing;
 using alps.net.api.src;
-using alps.net.api.StandardPASS.DataDescribingComponents;
-using alps.net.api.StandardPASS.SubjectBehaviors;
 using alps.net.api.util;
 using System.Collections.Generic;
 
-namespace alps.net.api.StandardPASS.InteractionDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents an FullySpecifiedSubject
@@ -15,9 +13,9 @@ namespace alps.net.api.StandardPASS.InteractionDescribingComponents
     public class FullySpecifiedSubject : Subject, IFullySpecifiedSubject
     {
         protected ISubjectBehavior subjectBaseBehavior;
-        protected IDictionary<string, ISubjectBehavior> subjectBehaviors = new Dictionary<string, ISubjectBehavior>();
+        protected ICompatibilityDictionary<string, ISubjectBehavior> subjectBehaviors = new CompatibilityDictionary<string, ISubjectBehavior>();
         protected ISubjectDataDefinition subjectDataDefinition;
-        protected IDictionary<string, IInputPoolConstraint> inputPoolConstraints = new Dictionary<string, IInputPoolConstraint>();
+        protected ICompatibilityDictionary<string, IInputPoolConstraint> inputPoolConstraints = new CompatibilityDictionary<string, IInputPoolConstraint>();
         /// <summary>
         /// Name of the class
         /// </summary>

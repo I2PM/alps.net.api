@@ -1,6 +1,4 @@
-﻿using alps.net.api.StandardPASS.InteractionDescribingComponents;
-
-namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
+﻿namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Interface to the send transition condition class

@@ -1,11 +1,10 @@
 ﻿using alps.net.api.parsing;
 using alps.net.api.src;
-using alps.net.api.StandardPASS.SubjectBehaviors;
 using alps.net.api.util;
 using System.Collections.Generic;
-using static alps.net.api.StandardPASS.BehaviorDescribingComponents.IState;
+using static alps.net.api.StandardPASS.IState;
 
-namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents a send state

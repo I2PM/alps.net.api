@@ -4,7 +4,7 @@ using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
 
-namespace alps.net.api.ALPS.ALPSModelElements
+namespace alps.net.api.ALPS
 {
     public class Simple2DVisualizationPoint : ALPSModelElement, ISimple2DVisualizationPoint
     {

@@ -1,9 +1,10 @@
-﻿using alps.net.api.parsing;
+﻿using alps.net.api.FunctionalityCapsules;
+using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
 
-namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents a transition class
@@ -15,7 +16,7 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
         protected IState targetState;
         protected ITransitionCondition transitionCondition;
         private ITransition.TransitionType transitionType;
-        protected readonly IDictionary<string, ITransition> implementedInterfaces = new Dictionary<string, ITransition>();
+        protected readonly IImplementsFunctionalityCapsule<ITransition> implCapsule;
         protected bool isAbstractType = false;
 
         private const string ABSTRACT_NAME = "AbstractPASSTransition";
@@ -35,7 +36,7 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
             return new Transition();
         }
 
-       protected Transition() { }
+        protected Transition() { implCapsule = new ImplementsFunctionalityCapsule<ITransition>(this); }
 
         /// <summary>
         /// 
@@ -53,6 +54,7 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
             IList<IIncompleteTriple> additionalAttribute = null)
             : base(null, labelForID, comment, additionalLabel, additionalAttribute)
         {
+            implCapsule = new ImplementsFunctionalityCapsule<ITransition>(this);
             ISubjectBehavior behavior = null;
             if (sourceState != null)
                 sourceState.getContainedBy(out behavior);
@@ -72,6 +74,7 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
             IList<IIncompleteTriple> additionalAttribute = null)
             : base(behavior, labelForID, comment, additionalLabel, additionalAttribute)
         {
+            implCapsule = new ImplementsFunctionalityCapsule<ITransition>(this);
             setSourceState(sourceState);
             setTargetState(targetState);
             setTransitionCondition(transitionCondition);
@@ -95,7 +98,7 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
                 oldAction.unregister(this, removeCascadeDepth);
                 removeTriple(new IncompleteTriple(OWLTags.stdBelongsTo, oldAction.getUriModelComponentID()));
             }
-            
+
             if (!(action is null))
             {
                 publishElementAdded(action);
@@ -143,7 +146,7 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
                 oldState.removeIncomingTransition(getModelComponentID());
                 removeTriple(new IncompleteTriple(OWLTags.stdHasTargetState, oldState.getUriModelComponentID()));
             }
-            
+
             if (!(targetState is null))
             {
                 publishElementAdded(targetState);
@@ -176,7 +179,7 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
         }
 
 
-    public IAction getBelongsToAction()
+        public IAction getBelongsToAction()
         {
             return belongsToAction;
         }
@@ -211,7 +214,9 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
         {
-            if (element != null)
+            if (implCapsule != null && implCapsule.parseAttribute(predicate, objectContent, lang, dataType, element))
+                return true;
+            else if (element != null)
             {
                 if (predicate.Contains(OWLTags.belongsTo) && element is IAction action)
                 {
@@ -241,6 +246,7 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
                     }
 
                 }
+
             }
             else
             {
@@ -297,7 +303,8 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
         {
             if (update != null)
             {
-                if (!(caller is null) && caller.Equals(getSourceState())){
+                if (!(caller is null) && caller.Equals(getSourceState()))
+                {
                     if (update is IAction action)
                     {
                         setBelongsToAction(action);
@@ -306,45 +313,6 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
             }
         }
 
-        public void setImplementedInterfaces(ISet<ITransition> implementedInterface, int removeCascadeDepth = 0)
-        {
-            foreach (ITransition implInterface in getImplementedInterfaces().Values)
-            {
-                removeImplementedInterfaces(implInterface.getModelComponentID(), removeCascadeDepth);
-            }
-            if (implementedInterface is null) return;
-            foreach (ITransition implInterface in implementedInterface)
-            {
-                addImplementedInterface(implInterface);
-            }
-        }
-
-        public void addImplementedInterface(ITransition implementedInterface)
-        {
-            if (implementedInterface is null) { return; }
-            if (implementedInterfaces.TryAdd(implementedInterface.getModelComponentID(), implementedInterface))
-            {
-                publishElementAdded(implementedInterface);
-                implementedInterface.register(this);
-                addTriple(new IncompleteTriple(OWLTags.abstrImplements, implementedInterface.getUriModelComponentID()));
-            }
-        }
-
-        public void removeImplementedInterfaces(string id, int removeCascadeDepth = 0)
-        {
-            if (id is null) return;
-            if (implementedInterfaces.TryGetValue(id, out ITransition implInterface))
-            {
-                implementedInterfaces.Remove(id);
-                implInterface.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.abstrImplements, implInterface.getUriModelComponentID()));
-            }
-        }
-
-        public IDictionary<string, ITransition> getImplementedInterfaces()
-        {
-            return new Dictionary<string, ITransition>(implementedInterfaces);
-        }
 
         public void setIsAbstract(bool isAbstract)
         {
@@ -362,6 +330,46 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
         public bool isAbstract()
         {
             return isAbstractType;
+        }
+
+        public void setImplementedInterfacesIDReferences(ISet<string> implementedInterfacesIDs)
+        {
+            implCapsule.setImplementedInterfacesIDReferences(implementedInterfacesIDs);
+        }
+
+        public void addImplementedInterfaceIDReference(string implementedInterfaceID)
+        {
+            implCapsule.addImplementedInterfaceIDReference(implementedInterfaceID);
+        }
+
+        public void removeImplementedInterfacesIDReference(string implementedInterfaceID)
+        {
+            implCapsule.removeImplementedInterfacesIDReference(implementedInterfaceID);
+        }
+
+        public ISet<string> getImplementedInterfacesIDReferences()
+        {
+            return implCapsule.getImplementedInterfacesIDReferences();
+        }
+
+        public void setImplementedInterfaces(ISet<ITransition> implementedInterface, int removeCascadeDepth = 0)
+        {
+            implCapsule.setImplementedInterfaces(implementedInterface, removeCascadeDepth);
+        }
+
+        public void addImplementedInterface(ITransition implementedInterface)
+        {
+            implCapsule.addImplementedInterface(implementedInterface);
+        }
+
+        public void removeImplementedInterfaces(string id, int removeCascadeDepth = 0)
+        {
+            implCapsule.removeImplementedInterfaces(id, removeCascadeDepth);
+        }
+
+        public IDictionary<string, ITransition> getImplementedInterfaces()
+        {
+            return implCapsule.getImplementedInterfaces();
         }
 
     }

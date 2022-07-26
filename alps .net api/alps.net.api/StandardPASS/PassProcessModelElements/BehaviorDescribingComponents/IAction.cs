@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Interface that represents an action. This is a construct used in the ontology, but is only present here to guarantee a correct standard.

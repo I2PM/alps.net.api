@@ -1,23 +1,22 @@
-﻿using alps.net.api.ALPS.ALPSModelElements.ALPSSBDComponents;
-using alps.net.api.ALPS.ALPSModelElements.ALPSSIDComponents;
+﻿using alps.net.api.FunctionalityCapsules;
 using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.StandardPASS;
-using alps.net.api.StandardPASS.InteractionDescribingComponents;
 using alps.net.api.util;
 using System.Collections.Generic;
 using System.Linq;
-using static alps.net.api.ALPS.ALPSModelElements.IModelLayer;
+using static alps.net.api.ALPS.IModelLayer;
 
-namespace alps.net.api.ALPS.ALPSModelElements
+namespace alps.net.api.ALPS
 {
     /// <summary>
     /// Class that represents a model layer 
     /// </summary>
     public class ModelLayer : ALPSModelElement, IModelLayer
     {
-        protected Dictionary<string, IPASSProcessModelElement> elements = new Dictionary<string, IPASSProcessModelElement>();
-        protected readonly IDictionary<string, IModelLayer> implementedInterfaces = new Dictionary<string, IModelLayer>();
+        protected ICompatibilityDictionary<string, IPASSProcessModelElement> elements = new CompatibilityDictionary<string, IPASSProcessModelElement>();
+        protected readonly IImplementsFunctionalityCapsule<IModelLayer> implCapsule;
+        protected readonly IExtendsFunctionalityCapsule<IModelLayer> extendsCapsule;
         protected int priorityNumber;
         protected IPASSProcessModel model;
         protected LayerType layerType = LayerType.STANDARD;
@@ -31,7 +30,11 @@ namespace alps.net.api.ALPS.ALPSModelElements
             return new ModelLayer();
         }
 
-       protected ModelLayer() { }
+        protected ModelLayer()
+        {
+            implCapsule = new ImplementsFunctionalityCapsule<IModelLayer>(this);
+            extendsCapsule = new ExtendsFunctionalityCapsule<IModelLayer>(this);
+        }
         /// <summary>
         /// Name of the class
         /// </summary>
@@ -49,14 +52,13 @@ namespace alps.net.api.ALPS.ALPSModelElements
 
 
         public ModelLayer(IPASSProcessModel model, string labelForID = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
-            : base(labelForID, comment, additionalLabel, additionalAttribute) { setContainedBy(model); }
-
-        public override string getBaseURI()
+            : base(labelForID, comment, additionalLabel, additionalAttribute)
         {
-            if (model != null && model is IParseablePASSProcessModelElement element)
-                return element.getBaseURI();
-            return base.getBaseURI();
+            extendsCapsule = new ExtendsFunctionalityCapsule<IModelLayer>(this);
+            implCapsule = new ImplementsFunctionalityCapsule<IModelLayer>(this);
+            setContainedBy(model);
         }
+
 
 
         /// <summary>
@@ -180,13 +182,7 @@ namespace alps.net.api.ALPS.ALPSModelElements
             if (elements.TryGetValue(modelComponentID, out IPASSProcessModelElement element))
             {
                 elements.Remove(modelComponentID);
-                if (getContainedBy(out IPASSProcessModel model))
-                    model.removeElement(modelComponentID);
                 element.unregister(this, removeCascadeDepth);
-                foreach (IPASSProcessModelElement otherComponent in getElements().Values)
-                {
-                    otherComponent.updateRemoved(element, this, removeCascadeDepth);
-                }
                 removeTriple(new IncompleteTriple(OWLTags.stdContains, element.getUriModelComponentID()));
                 checkLayerTypes();
 
@@ -230,7 +226,7 @@ namespace alps.net.api.ALPS.ALPSModelElements
                     }
                     publishElementAdded(element);
                     element.register(this);
-                    
+
                     checkLayerTypes();
                     if (element is IContainableElement<IModelLayer> containable)
                         containable.setContainedBy(this);
@@ -380,34 +376,10 @@ namespace alps.net.api.ALPS.ALPSModelElements
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
         {
-            if (predicate.Contains(OWLTags.type))
-            {
-                if (objectContent.Contains("MacroLayer"))
-                {
-                    setLayerType(LayerType.MACRO);
-                    return true;
-                }
-                else if (objectContent.Contains("GuardLayer"))
-                {
-                    setLayerType(LayerType.GUARD);
-                    return true;
-                }
-                else if (objectContent.Contains("ExtensionLayer"))
-                {
-                    setLayerType(LayerType.EXTENSION);
-                    return true;
-                }
-                else if (objectContent.Contains("BaseLayer"))
-                {
-                    setLayerType(LayerType.BASE);
-                    return true;
-                }
-                else if (objectContent.Contains(ABSTRACT_NAME))
-                {
-                    setIsAbstract(true);
-                    return true;
-                }
-            }
+            if (implCapsule != null && implCapsule.parseAttribute(predicate, objectContent, lang, dataType, element))
+                return true;
+            else if (extendsCapsule != null && extendsCapsule.parseAttribute(predicate, objectContent, lang, dataType, element))
+                return true;
             else if (element != null)
             {
                 if (predicate.Contains(OWLTags.contains))
@@ -415,20 +387,51 @@ namespace alps.net.api.ALPS.ALPSModelElements
                     addElement(element);
                     return true;
                 }
-                    if (predicate.Contains(OWLTags.extends) && element is IModelLayer layer)
+                else if (predicate.Contains(OWLTags.extends) && element is IModelLayer layer)
+                {
+                    setExtendedLayer(layer);
+                    return true;
+                }
+            }
+            else
+            {
+                if (predicate.Contains(OWLTags.type))
+                {
+                    if (objectContent.Contains("MacroLayer"))
                     {
-                        setExtendedLayer(layer);
+                        setLayerType(LayerType.MACRO);
+                        return true;
+                    }
+                    else if (objectContent.Contains("GuardLayer"))
+                    {
+                        setLayerType(LayerType.GUARD);
+                        return true;
+                    }
+                    else if (objectContent.Contains("ExtensionLayer"))
+                    {
+                        setLayerType(LayerType.EXTENSION);
+                        return true;
+                    }
+                    else if (objectContent.Contains("BaseLayer"))
+                    {
+                        setLayerType(LayerType.BASE);
+                        return true;
+                    }
+                    else if (objectContent.Contains(ABSTRACT_NAME))
+                    {
+                        setIsAbstract(true);
                         return true;
                     }
                 }
-            else
-            {
-                if (predicate.Contains(OWLTags.hasPriorityNumber))
+                else
                 {
-                    string prio = objectContent;
-                    prio = prio.Split('^')[0];
-                    setPriorityNumber(int.Parse(prio));
-                    return true;
+                    if (predicate.Contains(OWLTags.hasPriorityNumber))
+                    {
+                        string prio = objectContent;
+                        prio = prio.Split('^')[0];
+                        setPriorityNumber(int.Parse(prio));
+                        return true;
+                    }
                 }
             }
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
@@ -437,10 +440,25 @@ namespace alps.net.api.ALPS.ALPSModelElements
         public new void updateAdded(IPASSProcessModelElement update, IPASSProcessModelElement caller)
         {
             base.updateAdded(update, caller);
-            addElement(update);
+
+            
             if (getContainedBy(out IPASSProcessModel model))
             {
+                // If the element is already in another layer, do not add it
+                foreach (IModelLayer layer in model.getAllElements().Values.OfType<IModelLayer>())
+                {
+                    if (layer.getElements().ContainsKey(update.getModelComponentID()))
+                    {
+                        return;
+                    }
+                }
+
+                addElement(update);
                 model.updateAdded(update, caller);
+            }
+            else
+            {
+                addElement(update);
             }
         }
 
@@ -508,45 +526,7 @@ namespace alps.net.api.ALPS.ALPSModelElements
             base.notifyModelComponentIDChanged(oldID, newID);
         }
 
-        public void setImplementedInterfaces(ISet<IModelLayer> implementedInterface, int removeCascadeDepth = 0)
-        {
-            foreach (IModelLayer implInterface in getImplementedInterfaces().Values)
-            {
-                removeImplementedInterfaces(implInterface.getModelComponentID(), removeCascadeDepth);
-            }
-            if (implementedInterface is null) return;
-            foreach (IModelLayer implInterface in implementedInterface)
-            {
-                addImplementedInterface(implInterface);
-            }
-        }
 
-        public void addImplementedInterface(IModelLayer implementedInterface)
-        {
-            if (implementedInterface is null) { return; }
-            if (implementedInterfaces.TryAdd(implementedInterface.getModelComponentID(), implementedInterface))
-            {
-                publishElementAdded(implementedInterface);
-                implementedInterface.register(this);
-                addTriple(new IncompleteTriple(OWLTags.abstrImplements, implementedInterface.getUriModelComponentID()));
-            }
-        }
-
-        public void removeImplementedInterfaces(string id, int removeCascadeDepth = 0)
-        {
-            if (id is null) return;
-            if (implementedInterfaces.TryGetValue(id, out IModelLayer implInterface))
-            {
-                implementedInterfaces.Remove(id);
-                implInterface.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.abstrImplements, implInterface.getUriModelComponentID()));
-            }
-        }
-
-        public IDictionary<string, IModelLayer> getImplementedInterfaces()
-        {
-            return new Dictionary<string, IModelLayer>(implementedInterfaces);
-        }
 
         public void setExtendedLayer(IModelLayer extendedLayer, int removeCascadeDepth = 0)
         {
@@ -565,6 +545,72 @@ namespace alps.net.api.ALPS.ALPSModelElements
                 addTriple(new IncompleteTriple(OWLTags.abstrExtends, extendedLayer.getUriModelComponentID()));
             }
         }
+
+        public void setImplementedInterfacesIDReferences(ISet<string> implementedInterfacesIDs)
+        {
+            implCapsule.setImplementedInterfacesIDReferences(implementedInterfacesIDs);
+        }
+
+        public void addImplementedInterfaceIDReference(string implementedInterfaceID)
+        {
+            implCapsule.addImplementedInterfaceIDReference(implementedInterfaceID);
+        }
+
+        public void removeImplementedInterfacesIDReference(string implementedInterfaceID)
+        {
+            implCapsule.removeImplementedInterfacesIDReference(implementedInterfaceID);
+        }
+
+        public ISet<string> getImplementedInterfacesIDReferences()
+        {
+            return implCapsule.getImplementedInterfacesIDReferences();
+        }
+
+        public void setImplementedInterfaces(ISet<IModelLayer> implementedInterface, int removeCascadeDepth = 0)
+        {
+            implCapsule.setImplementedInterfaces(implementedInterface, removeCascadeDepth);
+        }
+
+        public void addImplementedInterface(IModelLayer implementedInterface)
+        {
+            implCapsule.addImplementedInterface(implementedInterface);
+        }
+
+        public void removeImplementedInterfaces(string id, int removeCascadeDepth = 0)
+        {
+            implCapsule.removeImplementedInterfaces(id, removeCascadeDepth);
+        }
+
+        public IDictionary<string, IModelLayer> getImplementedInterfaces()
+        {
+            return implCapsule.getImplementedInterfaces();
+        }
+
+        public void setExtendedElement(IModelLayer element)
+        {
+            extendsCapsule.setExtendedElement(element);
+        }
+
+        public void setExtendedElementID(string elementID)
+        {
+            extendsCapsule.setExtendedElementID(elementID);
+        }
+
+        public IModelLayer getExtendedElement()
+        {
+            return extendsCapsule.getExtendedElement();
+        }
+
+        public string getExtendedElementID()
+        {
+            return extendsCapsule.getExtendedElementID();
+        }
+
+        public bool isExtension()
+        {
+            return extendsCapsule.isExtension();
+        }
+    
     }
 }
 

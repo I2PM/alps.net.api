@@ -2,7 +2,7 @@
 using alps.net.api.parsing;
 using alps.net.api.util;
 
-namespace alps.net.api.StandardPASS.DataDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents an JSONDataTypeDefinition

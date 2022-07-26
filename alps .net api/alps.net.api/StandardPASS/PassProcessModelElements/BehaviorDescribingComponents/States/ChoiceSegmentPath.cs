@@ -1,12 +1,9 @@
 ﻿using alps.net.api.util;
-using System;
 using System.Collections.Generic;
-using alps.net.api.StandardPASS.SubjectBehaviors;
-using VDS.RDF;
 using alps.net.api.parsing;
 using alps.net.api.src;
 
-namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents a Choice Segment Path
@@ -17,7 +14,7 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
         protected IState initialState;
         protected bool isOptionalToStart = false;
         protected bool isOptionalToEnd = false;
-        protected readonly IDictionary<string, IState> containedStates = new Dictionary<string, IState>();
+        protected readonly ICompatibilityDictionary<string, IState> containedStates = new CompatibilityDictionary<string, IState>();
         protected IChoiceSegment segment;
 
         /// <summary>
@@ -164,8 +161,6 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
         {
             return initialState;
         }
-
-
 
 
 

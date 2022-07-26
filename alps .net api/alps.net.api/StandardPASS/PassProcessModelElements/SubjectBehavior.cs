@@ -1,8 +1,7 @@
-﻿using alps.net.api.ALPS.ALPSModelElements;
+﻿using alps.net.api.ALPS;
+using alps.net.api.FunctionalityCapsules;
 using alps.net.api.parsing;
 using alps.net.api.src;
-using alps.net.api.StandardPASS.BehaviorDescribingComponents;
-using alps.net.api.StandardPASS.InteractionDescribingComponents;
 using alps.net.api.util;
 using System.Collections.Generic;
 
@@ -16,8 +15,12 @@ namespace alps.net.api.StandardPASS
         /// <summary>
         /// Contains all components held by the subject behavior
         /// </summary>
-        protected IDictionary<string, IBehaviorDescribingComponent> behaviorDescriptionComponents = new Dictionary<string, IBehaviorDescribingComponent>();
-        protected readonly IDictionary<string, ISubjectBehavior> implementedInterfaces = new Dictionary<string, ISubjectBehavior>();
+        protected ICompatibilityDictionary<string, IBehaviorDescribingComponent> behaviorDescriptionComponents = new CompatibilityDictionary<string, IBehaviorDescribingComponent>();
+
+        // The capsules are used to externalize functionality that is used across multiple classes redundandly
+        protected readonly IImplementsFunctionalityCapsule<ISubjectBehavior> implCapsule;
+        protected readonly IExtendsFunctionalityCapsule<ISubjectBehavior> extendsCapsule;
+
         protected IState initialStateOfBehavior;
         protected int priorityNumber;
         protected ISubject subj;
@@ -38,14 +41,26 @@ namespace alps.net.api.StandardPASS
             return new SubjectBehavior();
         }
 
-        protected SubjectBehavior() { }
+        protected SubjectBehavior() {
+            implCapsule = new ImplementsFunctionalityCapsule<ISubjectBehavior>(this);
+            extendsCapsule = new ExtendsFunctionalityCapsule<ISubjectBehavior>(this);
+        }
 
-
-        public override string getBaseURI()
+        /// <summary>
+        /// Creates a new SubjectBehavior from scratch
+        /// </summary>
+        public SubjectBehavior(IModelLayer layer, string labelForID = null, ISubject subject = null,
+            ISet<IBehaviorDescribingComponent> behaviorDescribingComponents = null, IState initialStateOfBehavior = null,
+            int priorityNumber = 0, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            : base(labelForID, comment, additionalLabel, additionalAttribute)
         {
-            if (subj is IParseablePASSProcessModelElement element)
-                return element.getBaseURI();
-            return base.getBaseURI();
+            implCapsule = new ImplementsFunctionalityCapsule<ISubjectBehavior>(this);
+            extendsCapsule = new ExtendsFunctionalityCapsule<ISubjectBehavior>(this);
+            setContainedBy(layer);
+            setSubject(subject);
+            setBehaviorDescribingComponents(behaviorDescribingComponents);
+            setInitialState(initialStateOfBehavior);
+            setPriorityNumber(priorityNumber);
         }
 
 
@@ -75,18 +90,7 @@ namespace alps.net.api.StandardPASS
             return allParseableElements;
         }
 
-        /// <summary>
-        /// Creates a new SubjectBehavior from scratch
-        /// </summary>
-        public SubjectBehavior(IModelLayer layer, string labelForID = null, ISubject subject = null, ISet<IBehaviorDescribingComponent> behaviorDescribingComponents = null, IState initialStateOfBehavior = null,
-            int priorityNumber = 0, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null) : base(labelForID, comment, additionalLabel, additionalAttribute)
-        {
-            setContainedBy(layer);
-            setSubject(subject);
-            setBehaviorDescribingComponents(behaviorDescribingComponents);
-            setInitialState(initialStateOfBehavior);
-            setPriorityNumber(priorityNumber);
-        }
+        
 
 
         // ######################## BehaviorDescribingComponent()s methods ########################
@@ -163,24 +167,27 @@ namespace alps.net.api.StandardPASS
             if (oldInitialState != null)
             {
                 if (oldInitialState.Equals(initialStateOfBehavior)) return;
-                removeBehaviorDescribingComponent(oldInitialState.getModelComponentID(), removeCascadeDepth);
-                    removeTriple(new IncompleteTriple(OWLTags.stdHasInitialStateOfBehavior, oldInitialState.getUriModelComponentID()));
+                //removeBehaviorDescribingComponent(oldInitialState.getModelComponentID(), removeCascadeDepth);
+                oldInitialState.removeStateType(IState.StateType.InitialStateOfBehavior);
+                removeTriple(new IncompleteTriple(OWLTags.stdHasInitialStateOfBehavior, oldInitialState.getUriModelComponentID()));
             }
 
             if (!(initialStateOfBehavior is null))
             {
                 addBehaviorDescribingComponent(initialStateOfBehavior);
                 initialStateOfBehavior.setIsStateType(IState.StateType.InitialStateOfBehavior);
-                    addTriple(new IncompleteTriple(OWLTags.stdHasInitialStateOfBehavior, initialStateOfBehavior.getUriModelComponentID()));
+                addTriple(new IncompleteTriple(OWLTags.stdHasInitialStateOfBehavior, initialStateOfBehavior.getUriModelComponentID()));
             }
         }
 
         public void setPriorityNumber(int positiveNumber)
         {
             if (positiveNumber == this.priorityNumber) return;
-            removeTriple(new IncompleteTriple(OWLTags.stdHasPriorityNumber, this.priorityNumber.ToString(), IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypePositiveInteger));
+            removeTriple(new IncompleteTriple(OWLTags.stdHasPriorityNumber, this.priorityNumber.ToString(),
+                IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypePositiveInteger));
             this.priorityNumber = (positiveNumber > 0) ? positiveNumber : 1;
-            addTriple(new IncompleteTriple(OWLTags.stdHasPriorityNumber, positiveNumber.ToString(), IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypePositiveInteger));
+            addTriple(new IncompleteTriple(OWLTags.stdHasPriorityNumber, positiveNumber.ToString(),
+                IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypePositiveInteger));
         }
 
 
@@ -208,12 +215,10 @@ namespace alps.net.api.StandardPASS
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
         {
-            if (predicate.Contains(OWLTags.hasPriorityNumber))
-            {
-                string prio = objectContent;
-                setPriorityNumber(int.Parse(prio));
+            if (implCapsule != null && implCapsule.parseAttribute(predicate, objectContent, lang, dataType, element))
                 return true;
-            }
+            else if (extendsCapsule != null && extendsCapsule.parseAttribute(predicate, objectContent, lang, dataType, element))
+                return true;
             else if (element != null)
             {
                 if (predicate.Contains(OWLTags.contains) && element is IBehaviorDescribingComponent component)
@@ -235,6 +240,12 @@ namespace alps.net.api.StandardPASS
                     return true;
 
                 }
+            }
+            else if (predicate.Contains(OWLTags.hasPriorityNumber))
+            {
+                string prio = objectContent;
+                setPriorityNumber(int.Parse(prio));
+                return true;
             }
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
@@ -288,7 +299,7 @@ namespace alps.net.api.StandardPASS
                 // Might set it to null
                 this.subj = subj;
 
-                if (oldSubj != null)
+                if (oldSubj is not null)
                 {
                     if (oldSubj.Equals(subj)) return;
                     if (oldSubj is IParseablePASSProcessModelElement parseable)
@@ -299,7 +310,7 @@ namespace alps.net.api.StandardPASS
                     }
                 }
 
-                if (!(fullySpecified is null))
+                if (fullySpecified is not null)
                 {
                     if (fullySpecified is IParseablePASSProcessModelElement parseable)
                         addTriple(new IncompleteTriple(OWLTags.stdBelongsTo, parseable.getUriModelComponentID()));
@@ -308,49 +319,82 @@ namespace alps.net.api.StandardPASS
             }
         }
 
-        public void setImplementedInterfaces(ISet<ISubjectBehavior> implementedInterface, int removeCascadeDepth = 0)
-        {
-            foreach (ISubjectBehavior implInterface in getImplementedInterfaces().Values)
-            {
-                removeImplementedInterfaces(implInterface.getModelComponentID(), removeCascadeDepth);
-            }
-            if (implementedInterface is null) return;
-            foreach (ISubjectBehavior implInterface in implementedInterface)
-            {
-                addImplementedInterface(implInterface);
-            }
-        }
 
-        public void addImplementedInterface(ISubjectBehavior implementedInterface)
-        {
-            if (implementedInterface is null) { return; }
-            if (implementedInterfaces.TryAdd(implementedInterface.getModelComponentID(), implementedInterface))
-            {
-                publishElementAdded(implementedInterface);
-                implementedInterface.register(this);
-                addTriple(new IncompleteTriple(OWLTags.abstrImplements, implementedInterface.getUriModelComponentID()));
-            }
-        }
-
-        public void removeImplementedInterfaces(string id, int removeCascadeDepth = 0)
-        {
-            if (id is null) return;
-            if (implementedInterfaces.TryGetValue(id, out ISubjectBehavior implInterface))
-            {
-                implementedInterfaces.Remove(id);
-                implInterface.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.abstrImplements, implInterface.getUriModelComponentID()));
-            }
-        }
-
-        public IDictionary<string, ISubjectBehavior> getImplementedInterfaces()
-        {
-            return new Dictionary<string, ISubjectBehavior>(implementedInterfaces);
-        }
         public ISubject getSubject()
         {
             return subj;
         }
 
+
+
+
+        // ##################### Capsule Methods (Calls only get forwarded) #####################
+
+        public void setImplementedInterfacesIDReferences(ISet<string> implementedInterfacesIDs)
+        {
+            implCapsule.setImplementedInterfacesIDReferences(implementedInterfacesIDs);
+        }
+
+        public void addImplementedInterfaceIDReference(string implementedInterfaceID)
+        {
+            implCapsule.addImplementedInterfaceIDReference(implementedInterfaceID);
+        }
+
+        public void removeImplementedInterfacesIDReference(string implementedInterfaceID)
+        {
+            implCapsule.removeImplementedInterfacesIDReference(implementedInterfaceID);
+        }
+
+        public ISet<string> getImplementedInterfacesIDReferences()
+        {
+            return implCapsule.getImplementedInterfacesIDReferences();
+        }
+
+        public void setImplementedInterfaces(ISet<ISubjectBehavior> implementedInterface, int removeCascadeDepth = 0)
+        {
+            implCapsule.setImplementedInterfaces(implementedInterface, removeCascadeDepth);
+        }
+
+        public void addImplementedInterface(ISubjectBehavior implementedInterface)
+        {
+            implCapsule.addImplementedInterface(implementedInterface);
+        }
+
+        public void removeImplementedInterfaces(string id, int removeCascadeDepth = 0)
+        {
+            implCapsule.removeImplementedInterfaces(id, removeCascadeDepth);
+        }
+
+        public IDictionary<string, ISubjectBehavior> getImplementedInterfaces()
+        {
+            return implCapsule.getImplementedInterfaces();
+        }
+
+        public void setExtendedElement(ISubjectBehavior element)
+        {
+            extendsCapsule.setExtendedElement(element);
+        }
+
+        public void setExtendedElementID(string elementID)
+        {
+            extendsCapsule.setExtendedElementID(elementID);
+        }
+
+        public ISubjectBehavior getExtendedElement()
+        {
+            return extendsCapsule.getExtendedElement();
+        }
+
+        public string getExtendedElementID()
+        {
+            return extendsCapsule.getExtendedElementID();
+        }
+
+        public bool isExtension()
+        {
+            return extendsCapsule.isExtension();
+        }
+
+        // ###########################################################
     }
 }

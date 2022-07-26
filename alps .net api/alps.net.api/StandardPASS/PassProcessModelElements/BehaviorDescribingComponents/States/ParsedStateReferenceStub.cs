@@ -4,7 +4,7 @@ using alps.net.api.util;
 using System.Collections.Generic;
 using VDS.RDF;
 
-namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents a StateReference
@@ -61,8 +61,7 @@ namespace alps.net.api.StandardPASS.BehaviorDescribingComponents
             {
                 if (t.getPredicate().ToString().Contains(OWLTags.references))
                 {
-                    string objID = t.getObject().ToString();
-                    if (t.getObject().ToString().Contains("#")) objID = objID.Substring(objID.LastIndexOf("#") + 1);
+                    string objID = StaticFunctions.removeBaseUri(t.getObject().ToString(), null);
                     if (allElements.TryGetValue(objID, out IParseablePASSProcessModelElement element))
                     {
                         IState state = (IState)element.getParsedInstance();

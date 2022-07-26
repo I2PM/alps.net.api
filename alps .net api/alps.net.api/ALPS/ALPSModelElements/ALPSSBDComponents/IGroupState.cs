@@ -1,8 +1,7 @@
 ﻿using alps.net.api.StandardPASS;
-using alps.net.api.StandardPASS.BehaviorDescribingComponents;
 using System.Collections.Generic;
 
-namespace alps.net.api.ALPS.ALPSModelElements.ALPSSBDComponents
+namespace alps.net.api.ALPS
 {
     public interface IGroupState : IALPSSBDComponent, IState
     {

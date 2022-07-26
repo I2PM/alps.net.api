@@ -4,7 +4,7 @@ using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
 
-namespace alps.net.api.ALPS.ALPSModelElements.Simple2DVisualizationPoints
+namespace alps.net.api.ALPS
 {
     public class Simple2DVisualizationPathPoint : Simple2DVisualizationPoint, ISimple2DVisualizationPathPoint
     {

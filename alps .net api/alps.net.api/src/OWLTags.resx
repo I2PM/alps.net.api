@@ -156,6 +156,9 @@
   <data name="guardsState" xml:space="preserve">
     <value>guardsState</value>
   </data>
+  <data name="hasCorrespondent" xml:space="preserve">
+    <value>hasCorrespondent</value>
+  </data>
   <data name="hasDataDefintion" xml:space="preserve">
     <value>hasDataDefintion</value>
   </data>
@@ -282,6 +285,9 @@
   <data name="rdfType" xml:space="preserve">
     <value>rdf:type</value>
   </data>
+  <data name="receiver" xml:space="preserve">
+    <value>receiver</value>
+  </data>
   <data name="references" xml:space="preserve">
     <value>references</value>
   </data>
@@ -302,6 +308,9 @@
   </data>
   <data name="requiresSendingOfMessage" xml:space="preserve">
     <value>requiresSendingOfMessage</value>
+  </data>
+  <data name="sender" xml:space="preserve">
+    <value>sender</value>
   </data>
   <data name="std" xml:space="preserve">
     <value>standard-pass-ont:</value>
@@ -332,6 +341,9 @@
   </data>
   <data name="stdGuardsState" xml:space="preserve">
     <value>standard-pass-ont:guardsState</value>
+  </data>
+  <data name="stdHasCorrespondent" xml:space="preserve">
+    <value>standard-pass-ont:hasCorrespondent</value>
   </data>
   <data name="stdHasDataDefintion" xml:space="preserve">
     <value>standard-pass-ont:hasDataDefintion</value>
@@ -450,6 +462,9 @@
   <data name="stdNamedIndividual" xml:space="preserve">
     <value>owl:NamedIndividual</value>
   </data>
+  <data name="stdReceiver" xml:space="preserve">
+    <value>standard-pass-ont:receiver</value>
+  </data>
   <data name="stdReferences" xml:space="preserve">
     <value>standard-pass-ont:references</value>
   </data>
@@ -470,6 +485,9 @@
   </data>
   <data name="stdRequiresSendingOfMessage" xml:space="preserve">
     <value>standard-pass-ont:requiresSendingOfMessage</value>
+  </data>
+  <data name="stdSender" xml:space="preserve">
+    <value>standard-pass-ont:sender</value>
   </data>
   <data name="type" xml:space="preserve">
     <value>type</value>

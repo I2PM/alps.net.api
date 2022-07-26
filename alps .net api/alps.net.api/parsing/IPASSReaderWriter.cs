@@ -48,5 +48,7 @@ namespace alps.net.api.parsing
         /// <param name="filepath">the path where the file will be saved</param>
         /// <returns>The full filepath to the file that was exported</returns>
         string exportModel(IPASSProcessModel model, string filepath);
+
+        void setModelElementFactory(IPASSProcessModelElementFactory<IParseablePASSProcessModelElement> factory);
     }
 }

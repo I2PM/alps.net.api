@@ -1,13 +1,10 @@
-﻿using alps.net.api.ALPS.ALPSModelElements;
+﻿using alps.net.api.ALPS;
 using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.util;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using VDS.RDF;
 
-namespace alps.net.api.StandardPASS.InteractionDescribingComponents
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents an InputPoolConstraint
@@ -42,7 +39,8 @@ namespace alps.net.api.StandardPASS.InteractionDescribingComponents
         /// <param name="inputPoolConstraintHandlingStrategy"></param>
         /// <param name="limit"></param>
         public InputPoolConstraint(IModelLayer layer, string labelForID = null,  IInputPoolConstraintHandlingStrategy inputPoolConstraintHandlingStrategy = null,
-            int limit = 0, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null) : base(layer, labelForID, comment, additionalLabel, additionalAttribute)
+            int limit = 0, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            : base(layer, labelForID, comment, additionalLabel, additionalAttribute)
         {
             setInputPoolConstraintHandlingStrategy(inputPoolConstraintHandlingStrategy);
             setLimit(limit);

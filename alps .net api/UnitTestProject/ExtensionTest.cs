@@ -1,10 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using alps.net.api.StandardPASS;
-using alps.net.api.StandardPASS.BehaviorDescribingComponents;
-using alps.net.api.StandardPASS.InteractionDescribingComponents;
-using System.Linq;
-using alps.net.api.ALPS.ALPSModelElements;
-using alps.net.api.ALPS.ALPSModelElements.ALPSSIDComponents;
+using alps.net.api.ALPS;
 
 namespace UnitTestProject
 {

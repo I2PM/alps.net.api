@@ -1,16 +1,15 @@
 ﻿using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.StandardPASS;
-using alps.net.api.StandardPASS.InteractionDescribingComponents;
 using alps.net.api.util;
 using System.Collections.Generic;
 
-namespace alps.net.api.ALPS.ALPSModelElements.ALPSSIDComponents
+namespace alps.net.api.ALPS
 {
     //Wie muss ich das verwenden ? Weil ich mir nicht sicher bin wie hier Extension behavior rein kommt
     public class SubjectExtension : Subject, ISubjectExtension
     {
-        protected readonly IDictionary<string, ISubjectBehavior> extensionBehavior = new Dictionary<string, ISubjectBehavior>();
+        protected readonly ICompatibilityDictionary<string, ISubjectBehavior> extensionBehavior = new CompatibilityDictionary<string, ISubjectBehavior>();
         protected ISubject extendedSubj;
 
         /// <summary>

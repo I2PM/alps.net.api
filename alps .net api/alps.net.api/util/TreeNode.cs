@@ -9,7 +9,7 @@ namespace alps.net.api
     public class TreeNode<T> : ITreeNode<T>
     {
         private ITreeNode<T> parentNode;
-        private List<ITreeNode<T>> childNodes = new List<ITreeNode<T>>();
+        private readonly IList<ITreeNode<T>> childNodes = new List<ITreeNode<T>>();
         private T content;
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace alps.net.api
         /// <param name="content">A string that is contained in the tree node</param>
         /// <param name="parent">A node that is parent of this node</param>
         /// <param name="child">A node that is a child of this node</param>
-        public TreeNode(T content, ITreeNode<T> parent, List<ITreeNode<T>> childNodes)
+        public TreeNode(T content, ITreeNode<T> parent, IList<ITreeNode<T>> childNodes)
         {
             setContent(content);
             setParentNode(parent);
@@ -46,7 +46,7 @@ namespace alps.net.api
         /// Constructor creating a TreeNode with content, a parent and a child
         /// </summary>
         /// <param name="childNodes">the child nodes</param>
-        public TreeNode(List<ITreeNode<T>> childNodes)
+        public TreeNode(IList<ITreeNode<T>> childNodes)
         {
             setChildNodes(childNodes);
         }
@@ -58,23 +58,23 @@ namespace alps.net.api
         }
 
 
-        public void setChildNodes(List<ITreeNode<T>> childNodes)
+        public void setChildNodes(IList<ITreeNode<T>> childNodes)
         {
-            // The  list of children should never be null
             if (childNodes is null)
             {
-                this.childNodes = new List<ITreeNode<T>>();
+                this.childNodes.Clear();
             }
             else
             {
-                this.childNodes = childNodes;
+                foreach (ITreeNode<T> childNode in childNodes)
+                    this.childNodes.Add(childNode);
             }
         }
 
 
         public void addChild(ITreeNode<T> child)
         {
-            if (!(child is null))
+            if (child is not null)
             {
                 childNodes.Add(child);
                 child.setParentNode(this);
@@ -88,7 +88,7 @@ namespace alps.net.api
         }
 
 
-        public List<ITreeNode<T>> getChildNodes()
+        public IList<ITreeNode<T>> getChildNodes()
         {
             return childNodes;
         }
@@ -121,22 +121,23 @@ namespace alps.net.api
         }
 
 
-        public bool containsContent(T content)
+        public bool containsContent(T content, out ITreeNode<T> node)
         {
             bool test = false;
+            node = null;
 
             foreach (ITreeNode<T> t in childNodes)
             {
-                if (t.Equals(content))
+                if (t.getContent().Equals(content))
                 {
                     test = true;
-                    //TreeNode newChild = new TreeNode(compare);
-                    //childNodes.Add(newChild);
+                    node = this;
                     break;
                 }
                 else
                 {
-                    test = t.containsContent(content);
+                    test = t.containsContent(content, out node);
+                    if (test) break;
                 }
             }
 
@@ -154,6 +155,32 @@ namespace alps.net.api
             if (parentNode.Equals(parent)) return true;
             if (!direct) return parentNode.isSubClassOf(parent);
             return false;
+        }
+
+        public ITreeNode<T> getChild(int index)
+        {
+            if (index < 0 || index > (childNodes.Count - 1)) return null;
+            return childNodes[index];
+        }
+
+        public ITreeNode<T> getRoot()
+        {
+            ITreeNode<T> currentNode = this;
+            ITreeNode<T> parent = null;
+            while ((parent = currentNode.getParentNode()) is not null) currentNode = parent;
+            return currentNode;
+        }
+
+        public int getHeigthToLastLeaf()
+        {
+            if (getChildNodes().Count == 0)
+                return 0;
+            int height = 0;
+            foreach (ITreeNode<T> child in getChildNodes())
+            {
+                height = Math.Max(height, child.getHeigthToLastLeaf());
+            }
+            return height + 1;
         }
     }
 }

@@ -1,13 +1,11 @@
-﻿using alps.net.api.ALPS.ALPSModelElements;
+﻿using alps.net.api.ALPS;
 using alps.net.api.parsing;
 using alps.net.api.src;
-using alps.net.api.StandardPASS.BehaviorDescribingComponents;
-using alps.net.api.StandardPASS.InteractionDescribingComponents;
 using alps.net.api.util;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace alps.net.api.StandardPASS.SubjectBehaviors
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents a subject base behavior class
@@ -26,7 +24,7 @@ namespace alps.net.api.StandardPASS.SubjectBehaviors
             return new SubjectBaseBehavior();
         }
 
-       protected SubjectBaseBehavior() { }
+        protected SubjectBaseBehavior() { }
 
         public SubjectBaseBehavior(IModelLayer layer, string labelForID = null, ISubject subject = null, ISet<IBehaviorDescribingComponent> components = null,
             ISet<IState> endStates = null, IState initialStateOfBehavior = null, int priorityNumber = 0, string comment = null, string additionalLabel = null,
@@ -34,11 +32,11 @@ namespace alps.net.api.StandardPASS.SubjectBehaviors
             : base(layer, labelForID, subject, components, initialStateOfBehavior, priorityNumber, comment, additionalLabel, additionalAttribute)
         {
             if (endStates != null)
-            foreach (IState state in endStates)
-            {
-                addBehaviorDescribingComponent(state);
-                state.setIsStateType(IState.StateType.EndState);
-            }
+                foreach (IState state in endStates)
+                {
+                    addBehaviorDescribingComponent(state);
+                    state.setIsStateType(IState.StateType.EndState);
+                }
         }
 
         public override string getClassName()
@@ -64,7 +62,7 @@ namespace alps.net.api.StandardPASS.SubjectBehaviors
         public IDictionary<string, IState> getEndStates()
         {
             IDictionary<string, IState> endStates = new Dictionary<string, IState>();
-            foreach(IState state in getBehaviorDescribingComponents().Values.OfType<IState>())
+            foreach (IState state in getBehaviorDescribingComponents().Values.OfType<IState>())
             {
                 if (state.isStateType(IState.StateType.EndState))
                     endStates.Add(state.getModelComponentID(), state);
@@ -84,10 +82,34 @@ namespace alps.net.api.StandardPASS.SubjectBehaviors
         public override ISet<IPASSProcessModelElement> getAllConnectedElements(ConnectedElementsSetSpecification specification)
         {
             ISet<IPASSProcessModelElement> baseElements = base.getAllConnectedElements(specification);
-            foreach(IState endState in getEndStates().Values) baseElements.Add(endState);
+            foreach (IState endState in getEndStates().Values) baseElements.Add(endState);
             return baseElements;
         }
 
+        public void setEndStates(ISet<IState> endStates, int removeCascadeDepth = 0)
+        {
+            foreach (IState state in endStates)
+            {
+                registerEndState(state);
+            }
+        }
 
+        public void registerEndState(IState state)
+        {
+            addBehaviorDescribingComponent(state);
+            state.setIsStateType(IState.StateType.EndState);
+            addTriple(new IncompleteTriple(OWLTags.stdHasEndState, getUriModelComponentID()));
+        }
+
+        public void unregisterEndState(string id, int removeCascadeDepth = 0)
+        {
+            getBehaviorDescribingComponents().TryGetValue(id, out IBehaviorDescribingComponent component);
+            if (component is IState state)
+            {
+                state.removeStateType(IState.StateType.EndState);
+                removeTriple(new IncompleteTriple(OWLTags.stdHasEndState, getUriModelComponentID()));
+            }
+            
+        }
     }
 }
