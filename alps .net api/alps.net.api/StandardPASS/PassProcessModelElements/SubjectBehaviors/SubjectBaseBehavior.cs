@@ -14,7 +14,7 @@ namespace alps.net.api.StandardPASS
     public class SubjectBaseBehavior : SubjectBehavior, ISubjectBaseBehavior
     {
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "SubjectBaseBehavior";
 
@@ -98,7 +98,7 @@ namespace alps.net.api.StandardPASS
         {
             addBehaviorDescribingComponent(state);
             state.setIsStateType(IState.StateType.EndState);
-            addTriple(new IncompleteTriple(OWLTags.stdHasEndState, getUriModelComponentID()));
+            addTriple(new IncompleteTriple(OWLTags.stdHasEndState, state.getUriModelComponentID()));
         }
 
         public void unregisterEndState(string id, int removeCascadeDepth = 0)

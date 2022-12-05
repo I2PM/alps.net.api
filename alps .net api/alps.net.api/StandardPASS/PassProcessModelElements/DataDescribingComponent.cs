@@ -12,7 +12,7 @@ namespace alps.net.api.StandardPASS
         protected IPASSProcessModel model;
 
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "DataDescribingComponent";
 
@@ -32,10 +32,10 @@ namespace alps.net.api.StandardPASS
         }
 
 
-        public bool getContainedBy(out IPASSProcessModel subject)
+        public bool getContainedBy(out IPASSProcessModel model)
         {
-            subject = model;
-            return model != null;
+            model = this.model;
+            return this.model != null;
         }
 
         public override IParseablePASSProcessModelElement getParsedInstance()
@@ -74,5 +74,11 @@ namespace alps.net.api.StandardPASS
             return baseElements;
         }
 
+        public void removeFromContainer()
+        {
+            if (model != null)
+                model.removeElement(getModelComponentID());
+            model = null;
+        }
     }
 }

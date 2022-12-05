@@ -16,7 +16,7 @@ namespace alps.net.api.StandardPASS
         protected readonly ICompatibilityDictionary<string, IDataMappingLocalToOutgoing> dataMappingLocalToOutgoingDict = new CompatibilityDictionary<string, IDataMappingLocalToOutgoing>();
 
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "DoState";
         protected string exportTag = OWLTags.std;

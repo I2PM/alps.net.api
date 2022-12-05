@@ -13,7 +13,7 @@ namespace alps.net.api.StandardPASS
         protected ICompatibilityDictionary<string, IDataObjectDefinition> dataObjectDefinitons = new CompatibilityDictionary<string, IDataObjectDefinition>();
 
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private static string className = "DataTypeDefinition";
 

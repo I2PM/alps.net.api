@@ -39,7 +39,7 @@ namespace alps.net.api.StandardPASS
         protected IPASSGraph exportGraph;
 
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "PASSProcessModelElement";
 
@@ -78,6 +78,7 @@ namespace alps.net.api.StandardPASS
 
             addTriple(new IncompleteTriple(OWLTags.rdfType, OWLTags.stdNamedIndividual));
             addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+            
         }
 
 
@@ -181,7 +182,7 @@ namespace alps.net.api.StandardPASS
             // Generate subject node uri from modelComponentID
             if (exportSubjectNodeName == null || exportSubjectNodeName.Equals(""))
             {
-                subjectNode = exportGraph.createUriNode(new Uri(StaticFunctions.addGenericBaseURI(getModelComponentID())));
+                subjectNode = exportGraph.createUriNode(StaticFunctions.addGenericBaseURI(getModelComponentID()));
             }
             // Generate it from preset name
             else
@@ -190,7 +191,7 @@ namespace alps.net.api.StandardPASS
                 if (exportSubjectNodeName.Equals(getBaseURI()))
                     subjectNode = exportGraph.createUriNode(new Uri(getBaseURI()));
                 else
-                    subjectNode = exportGraph.createUriNode(new Uri(StaticFunctions.addGenericBaseURI(exportSubjectNodeName)));
+                    subjectNode = exportGraph.createUriNode(StaticFunctions.addGenericBaseURI(exportSubjectNodeName));
 
             }
 
@@ -329,7 +330,7 @@ namespace alps.net.api.StandardPASS
 
                 modelComponentID = modifiedID;
 
-                IIncompleteTriple newTriple = new IncompleteTriple(OWLTags.stdHasModelComponentID, id, IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeString);
+                IIncompleteTriple newTriple = new IncompleteTriple(OWLTags.stdHasModelComponentID, modifiedID, IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeString);
 
                 replaceTriple(oldTriple, newTriple);
 
@@ -350,21 +351,45 @@ namespace alps.net.api.StandardPASS
         protected void invalidateTriplesContainingString(string containedString)
         {
             IList<IIncompleteTriple> triplesToBeChanged = new List<IIncompleteTriple>();
+            IIncompleteTriple owlNamedIndivTriple = null;
             foreach (Triple triple in getTriples())
             {
                 if (triple.ToString().Contains(containedString))
                 {
-                    triplesToBeChanged.Add(new IncompleteTriple(triple));
+                    IIncompleteTriple newTriple = new IncompleteTriple(triple);
+                    if (newTriple.getPredicate().Contains("http://www.w3.org/1999/02/22-rdf-syntax-ns#type") && newTriple.getObject().Contains("http://www.w3.org/2002/07/owl#NamedIndividual"))
+                        owlNamedIndivTriple = newTriple;
+                    else 
+                        triplesToBeChanged.Add(newTriple);
                 }
             }
+
+            
+
+
             foreach (IIncompleteTriple triple in triplesToBeChanged)
             {
                 removeTriple(triple);
             }
+
+            // Needed as the underlying graph behaves weirdly and does not type the element with NamedIndividual
+            if (owlNamedIndivTriple != null)
+            {
+                removeTriple(owlNamedIndivTriple);
+            }
+            //
+
             foreach (IIncompleteTriple triple in triplesToBeChanged)
             {
                 addTriple(triple);
             }
+
+            // Needed as the underlying graph behaves weirdly and does not type the element with NamedIndividual
+            if (owlNamedIndivTriple != null)
+            {
+                addTriple(owlNamedIndivTriple);
+            }
+            //
         }
 
 

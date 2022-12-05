@@ -5,6 +5,17 @@
     /// </summary>
     public interface IReceiveTransitionCondition : IMessageExchangeCondition
     {
+
+        /// <summary>
+        /// The different receive types as an enum.
+        /// </summary>
+        public enum ReceiveTypes
+        {
+            STANDARD,
+            RECEIVE_FROM_KNOWN,
+            RECEIVE_FROM_ALL
+        }
+
         /// <summary>
         /// Method that sets the lower bound attribute of the instance
         /// </summary>
@@ -33,14 +44,13 @@
         /// Method that sets the receive type attribute of the instance
         /// </summary>
         /// <param name="receiveType">the receive type</param>
-        /// <param name="removeCascadeDepth">Parses the depth of a cascading delete for elements that are connected to the currently deleted one</param>
-        void setReceiveType(IReceiveType receiveType, int removeCascadeDepth = 0);
+        void setReceiveType(ReceiveTypes receiveType);
 
         /// <summary>
         /// Method that returns the receive type attribute of the instance
         /// </summary>
         /// <returns>The receive type attribute of the instance</returns>
-        IReceiveType getReceiveType();
+        ReceiveTypes getReceiveType();
 
         /// <summary>
         /// Sets the subject that must be the sender of the <see cref="MessageSpecification"/> for this Condition to apply.

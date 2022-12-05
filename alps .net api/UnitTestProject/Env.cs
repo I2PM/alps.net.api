@@ -1,8 +1,10 @@
 ﻿using alps.net.api;
 using alps.net.api.parsing;
+using alps.net.api.StandardPASS;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace UnitTestProject
@@ -14,12 +16,12 @@ namespace UnitTestProject
         private static bool firstDelete = false;
         private static IPASSReaderWriter ioHandler;
 
-        public static String getTestResourcePath()
+        public static string getTestResourcePath()
         {
             return srcFolder;
         }
 
-        public static String getTestResourceGeneratePath()
+        public static string getTestResourceGeneratePath()
         {
             if (!firstDelete)
             {
@@ -30,29 +32,27 @@ namespace UnitTestProject
             
             return generatedFolder;
         }
-        public static String getTestResourceGeneratePath(Object callingInstance)
+        public static string getTestResourceGeneratePath(Object callingInstance)
         {
-            String generalPath = getTestResourceGeneratePath();
-            String newPath = generalPath + "/" + callingInstance.GetType().Name;
+            string generalPath = getTestResourceGeneratePath();
+            string newPath = generalPath + "/" + callingInstance.GetType().Name;
             if (!Directory.Exists(newPath)) Directory.CreateDirectory(newPath);
 
             return newPath + "/";
         }
 
-        public static IPASSReaderWriter getIOHandler()
+        public static IPASSReaderWriter getIoHandler()
         {
-            if (ioHandler is null)
+            if (ioHandler is { }) return ioHandler;
+            ReflectiveEnumerator.addAssemblyToCheckForTypes(Assembly.GetExecutingAssembly());
+            ioHandler = PASSReaderWriter.getInstance();
+            IList<string> path = new List<string>
             {
-                ReflectiveEnumerator.addAssemblyToCheckForTypes(Assembly.GetExecutingAssembly());
-                ioHandler = PASSReaderWriter.getInstance();
-                IList<string> path = new List<string>
-                {
-                    // Going for the ontology that lies in the more general src folder to avoid multiple files
-                    "../../" + srcFolder + "standard_PASS_ont_v_1.1.0.owl",
-                    "../../" + srcFolder + "abstract-layered-pass-ont.owl",
-                };
-                ioHandler.loadOWLParsingStructure(path);
-            }
+                // Going for the ontology that lies in the more general src folder to avoid multiple files
+                "../../" + srcFolder + "standard_PASS_ont_v_1.1.0.owl",
+                "../../" + srcFolder + "abstract-layered-pass-ont.owl",
+            };
+            ioHandler.loadOWLParsingStructure(path);
             return ioHandler;
         }
 
@@ -73,6 +73,13 @@ namespace UnitTestProject
             }
 
             Directory.Delete(target_dir, false);
+        }
+
+        public static IPASSProcessModel getGenericModel()
+        {
+            IPASSProcessModel model = new PASSProcessModel("http://www.exampleTestUri.com");
+            new FullySpecifiedSubject(model.getBaseLayer());
+            return model;
         }
     }
 }

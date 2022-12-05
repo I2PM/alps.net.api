@@ -27,7 +27,7 @@ namespace alps.net.api.StandardPASS
         protected IModelLayer layer;
 
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "SubjectBehavior";
 
@@ -169,14 +169,14 @@ namespace alps.net.api.StandardPASS
                 if (oldInitialState.Equals(initialStateOfBehavior)) return;
                 //removeBehaviorDescribingComponent(oldInitialState.getModelComponentID(), removeCascadeDepth);
                 oldInitialState.removeStateType(IState.StateType.InitialStateOfBehavior);
-                removeTriple(new IncompleteTriple(OWLTags.stdHasInitialStateOfBehavior, oldInitialState.getUriModelComponentID()));
+                removeTriple(new IncompleteTriple(OWLTags.stdHasInitialState, oldInitialState.getUriModelComponentID()));
             }
 
             if (!(initialStateOfBehavior is null))
             {
                 addBehaviorDescribingComponent(initialStateOfBehavior);
                 initialStateOfBehavior.setIsStateType(IState.StateType.InitialStateOfBehavior);
-                addTriple(new IncompleteTriple(OWLTags.stdHasInitialStateOfBehavior, initialStateOfBehavior.getUriModelComponentID()));
+                addTriple(new IncompleteTriple(OWLTags.stdHasInitialState, initialStateOfBehavior.getUriModelComponentID()));
             }
         }
 
@@ -393,6 +393,13 @@ namespace alps.net.api.StandardPASS
         public bool isExtension()
         {
             return extendsCapsule.isExtension();
+        }
+
+        public void removeFromContainer()
+        {
+            if (layer != null)
+                layer.removeContainedElement(getModelComponentID());
+            layer = null;
         }
 
         // ###########################################################

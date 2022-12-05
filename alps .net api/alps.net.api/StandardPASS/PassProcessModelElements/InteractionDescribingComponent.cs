@@ -12,7 +12,7 @@ namespace alps.net.api.StandardPASS
     public class InteractionDescribingComponent : PASSProcessModelElement, IInteractionDescribingComponent
     {
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "InteractionDescribingComponent";
 
@@ -70,6 +70,12 @@ namespace alps.net.api.StandardPASS
             if (specification == ConnectedElementsSetSpecification.ALL)
                 if (getContainedBy(out IModelLayer layer)) baseElements.Add(layer);
             return baseElements;
+        }
+
+        public void removeFromContainer()
+        {
+            layer.removeContainedElement(getModelComponentID());
+            layer = null;
         }
 
     }

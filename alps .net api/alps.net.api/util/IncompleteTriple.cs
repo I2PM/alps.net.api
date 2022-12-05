@@ -32,11 +32,15 @@ namespace alps.net.api.util
                     extraString = new DataTypeString(literal.Value, literal.DataType.ToString());
                 else
                 {
-                    extraString = new StringWithoutExtra(StaticFunctions.replaceBaseUriWithGeneric(realTriple.Object.ToString(), baseUriToReplace));
+                    string content = baseUriToReplace == null ? realTriple.Object.ToString() : StaticFunctions.replaceBaseUriWithGeneric(realTriple.Object.ToString(), baseUriToReplace);
+                    extraString = new StringWithoutExtra(content);
                 }
             }
             else
-                extraString = new StringWithoutExtra(StaticFunctions.replaceBaseUriWithGeneric(realTriple.Object.ToString(), baseUriToReplace));
+            {
+                string content = baseUriToReplace == null ? realTriple.Object.ToString() : StaticFunctions.replaceBaseUriWithGeneric(realTriple.Object.ToString(), baseUriToReplace);
+                extraString = new StringWithoutExtra(content);
+            }
         }
 
         public IncompleteTriple(string predicate, string objectContent, LiteralType literalType, string objectAddition)

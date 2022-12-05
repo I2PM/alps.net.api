@@ -2,7 +2,7 @@
 
 namespace alps.net.api.ALPS
 {
-    interface IGuardReceiveState : IReceiveState, IALPSSBDComponent
+    public interface IGuardReceiveState : IReceiveState, IALPSSBDComponent
     {
     }
 }

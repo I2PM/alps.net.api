@@ -27,7 +27,7 @@ namespace alps.net.api.StandardPASS
         private const string ABSTRACT_NAME = "AbstractSubject";
 
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "Subject";
 
@@ -219,7 +219,14 @@ namespace alps.net.api.StandardPASS
             {
                 roles.Add(role);
                 if (role == ISubject.Role.StartSubject)
-                    addTriple(new IncompleteTriple(OWLTags.rdfType, "standard-pass-ont:StartSubject"));
+                {
+                    addTriple(new IncompleteTriple(OWLTags.rdfType, OWLTags.stdStartSubject));
+                    if (getContainedBy(out IModelLayer layer))
+                    {
+                        if (layer.getContainedBy(out IPASSProcessModel model))
+                            model.addStartSubject(this);
+                    }
+                }
             }
         }
 
@@ -234,7 +241,14 @@ namespace alps.net.api.StandardPASS
             {
                 roles.Remove(role);
                 if (role == ISubject.Role.StartSubject)
-                    removeTriple(new IncompleteTriple(OWLTags.rdfType, "standard-pass-ont:StartSubject"));
+                {
+                    removeTriple(new IncompleteTriple(OWLTags.rdfType, OWLTags.stdStartSubject));
+                    if (getContainedBy(out IModelLayer layer))
+                    {
+                        if (layer.getContainedBy(out IPASSProcessModel model))
+                            model.removeStartSubject(getModelComponentID());
+                    }
+                }
             }
         }
 

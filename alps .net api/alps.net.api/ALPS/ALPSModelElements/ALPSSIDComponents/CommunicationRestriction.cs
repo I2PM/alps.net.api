@@ -7,10 +7,15 @@ using System.Collections.Generic;
 
 namespace alps.net.api.ALPS
 {
+    /// <summary>
+    /// From abstract pass ont:<br></br>
+    /// Communication Restriction is a concept on an abstract layer. 
+    /// A Communication Restriction defines that no communication is allowed between the defined subjects
+    /// </summary>
     public class CommunicationRestriction : ALPSSIDComponent, ICommunicationRestriction
     {
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "CommunicationRestriction";
         private ISubject correspondentA;
@@ -27,10 +32,15 @@ namespace alps.net.api.ALPS
 
         protected CommunicationRestriction() { }
 
-        public CommunicationRestriction(IModelLayer layer, string labelForID = null, string comment = null, string additionalLabel = null,
+        public CommunicationRestriction(IModelLayer layer, string labelForID = null,
+            ISubject correspondentA = null, ISubject correspondentB = null, 
+            string comment = null, string additionalLabel = null,
             IList<IIncompleteTriple> additionalAttribute = null)
             : base(layer, labelForID, comment, additionalLabel, additionalAttribute)
-        { }
+        {
+            setCorrespondentA(correspondentA);
+            setCorrespondentB(correspondentB);
+        }
 
         protected override string getExportTag()
         {
@@ -40,7 +50,7 @@ namespace alps.net.api.ALPS
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
         {
-            if (element != null && element is ISubject subj)
+            if (element is ISubject subj)
             {
                 if (predicate.Contains(OWLTags.hasCorrespondent))
                 {

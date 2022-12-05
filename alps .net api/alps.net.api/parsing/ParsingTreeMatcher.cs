@@ -1,46 +1,70 @@
 ﻿using alps.net.api.StandardPASS;
 using alps.net.api.util;
 using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Ontology;
 
 namespace alps.net.api.parsing
 {
+
+    public interface IParsingTreeMatcher
+    {
+        /// <summary>
+        /// Creates a dictionary that maps owl classes with c# classes.<br></br>
+        /// The owl classes are extracted from given class-defining owl files (i.e. the standard-pass-ont, abstract-pass-ont).<br></br>
+        /// The c# classes are evaluated dynamically at runtime from all classes known to this assembly.<br></br>
+        /// </summary>
+        /// <param name="owlStructureGraphs">A list of filepaths to class-defining owl files</param>
+        /// <param name="bar">A progress bar</param>
+        /// <returns></returns>
+        public IDictionary<string, IList<(ITreeNode<IParseablePASSProcessModelElement>, int)>> loadOWLParsingStructure
+            (IList<OntologyGraph> owlStructureGraphs);
+
+
+    }
     /// <summary>
     /// This class creates trees for the owl class hierarchy and the c# class hierarchy dynamically at runtime.
     /// Afterwards, the nodes in the trees are mapped together.
     /// The mapping is used by the parser to instantiate owl class instances with c# class instances
     /// </summary>
-    public class ParsingTreeMatcher
+    public class ParsingTreeMatcher : IParsingTreeMatcher
     {
 
         public IDictionary<string, IList<(ITreeNode<IParseablePASSProcessModelElement>, int)>> loadOWLParsingStructure
-            (IList<OntologyGraph> owlStructureGraphs, OntologyGraph parsingStructureOntologyGraph, ProgressBar bar = null)
+            (IList<OntologyGraph> owlStructureGraphs)
         {
-            Log.Information("Starting to generate class mapping for parser...");
-            parsingStructureOntologyGraph.Clear();
+            Log.Information("Merging all input graphs...");
+            Console.Write("Generating class mapping for parser...");
+            ConsoleProgressBar consoleBar = new();
+            consoleBar.Report(0);
+            OntologyGraph parsingStructureOntologyGraph = new();
 
             // Merge the input of all files in one big graph
             foreach (OntologyGraph owlGraph in owlStructureGraphs)
             {
                 parsingStructureOntologyGraph.Merge(owlGraph);
             }
-            if (bar != null) bar.increaseProgress();
 
-            Log.Information("Read all input files");
+            consoleBar.Report(0.25);
+
+            Log.Information("Creating owl inheritance tree from merged graphs...");
 
             // Create the inheritance tree for the loaded owl classes
             // The base classes are the classes that have only child classes, no parent classes.
             // They are possible base classes for the tree structure
             IList<OntologyClass> baseClasses = createOWLInheritanceTree(parsingStructureOntologyGraph);
 
+            consoleBar.Report(0.5);
             Log.Information("Dynamically created owl class tree");
+            Log.Information("Creating c# class inheritance tree from classes known to the assembly...");
 
             // Create the inheritance tree for the c# classes by recursively finding child classes to the PASSProcessModelElement class
             // Does also find child classes of external projects if they registered themself at the ReflectiveEnumerator class.
             ITreeNode<IParseablePASSProcessModelElement> treeRootNode = createClassInheritanceTree();
 
+            consoleBar.Report(0.75);
             Log.Information("Dynamically created c# class tree");
 
             // Maps a list of possible c# classes to each ontology class
@@ -55,7 +79,8 @@ namespace alps.net.api.parsing
 
             Log.Information("Finished class mapping");
 
-            if (bar != null) bar.increaseProgress();
+            consoleBar.Report(1);
+            Console.Write("Done.");
 
             return parsingDict;
         }
@@ -67,7 +92,7 @@ namespace alps.net.api.parsing
         /// <summary>
         /// Creates the inheritance tree for owl classes out of the given files
         /// </summary>
-        public IList<OntologyClass> createOWLInheritanceTree(OntologyGraph parsingStructureOntologyGraph)
+        private IList<OntologyClass> createOWLInheritanceTree(OntologyGraph parsingStructureOntologyGraph)
         {
             IList<OntologyClass> nodesWithoutParents = new List<OntologyClass>();
 
@@ -126,7 +151,7 @@ namespace alps.net.api.parsing
         /// <summary>
         /// Creates the inheritance tree for the c# classes known to this library
         /// </summary>
-        public ITreeNode<IParseablePASSProcessModelElement> createClassInheritanceTree()
+        private ITreeNode<IParseablePASSProcessModelElement> createClassInheritanceTree()
         {
             // Start with the default root: the PASSProcessModelElement class
             ITreeNode<IParseablePASSProcessModelElement> treeRootNode = new TreeNode<IParseablePASSProcessModelElement>(new PASSProcessModelElement());
@@ -164,21 +189,22 @@ namespace alps.net.api.parsing
         /// </summary>
         /// <param name="ontClass"></param>
         /// <param name="rootNode"></param>
-        public void createParsingStructureFromTrees(IDictionary<string, IList<(ITreeNode<IParseablePASSProcessModelElement>, int)>> parsingDict,
+        private void createParsingStructureFromTrees(IDictionary<string, IList<(ITreeNode<IParseablePASSProcessModelElement>, int)>> parsingDict,
             OntologyClass ontClass, ITreeNode<IParseablePASSProcessModelElement> rootNode)
         {
             // Start with mapping the roots, they are both PASSProcessModelElement
             if (parsingDict.Count == 0) parsingDict.Add(removeUri(ontClass.Resource.ToString()), new List<(ITreeNode<IParseablePASSProcessModelElement>, int)> { (rootNode, 0) });
             // Create a new dictionary for those urls that could not be mapped properly (need that later)
-            ICompatibilityDictionary<OntologyClass, ITreeNode<IParseablePASSProcessModelElement>> unmappableDict = new CompatibilityDictionary<OntologyClass, ITreeNode<IParseablePASSProcessModelElement>>();
+            ICompatibilityDictionary<OntologyClass, string> unmappableDict = new CompatibilityDictionary<OntologyClass, string>();
 
             // Start to parse childs, passing the parent ontology class and the parent C#-class, as well as the dict off classes already parsed (only the root)
             parseChilds(parsingDict, ontClass, rootNode, unmappableDict);
-
+            Log.Information("##########################################");
             Log.Information("Created parsing structure for owl classes.");
             Log.Information(parsingDict.Count + " classes could be mapped correctly");
             Log.Information(unmappableDict.Count + " were not mapped correctly");
-            foreach (KeyValuePair<OntologyClass, ITreeNode<IParseablePASSProcessModelElement>> pair in unmappableDict)
+            Log.Information("##########################################");
+            foreach (KeyValuePair<OntologyClass, string> pair in unmappableDict)
             {
                 mapRestWithParentNode(parsingDict, pair.Key, pair.Value);
             }
@@ -199,7 +225,7 @@ namespace alps.net.api.parsing
         /// <param name="unmappableDict">A dict of elements that could not be mapped</param>
         private void parseChilds(IDictionary<string, IList<(ITreeNode<IParseablePASSProcessModelElement>, int)>> parsingDict,
             OntologyClass parentOntClass, ITreeNode<IParseablePASSProcessModelElement> parentNode,
-            ICompatibilityDictionary<OntologyClass, ITreeNode<IParseablePASSProcessModelElement>> unmappableDict)
+            ICompatibilityDictionary<OntologyClass, string> unmappableDict)
         {
             List<ITreeNode<IParseablePASSProcessModelElement>> childsBeenParsed = new List<ITreeNode<IParseablePASSProcessModelElement>>();
 
@@ -225,7 +251,8 @@ namespace alps.net.api.parsing
                 // So the unparsed child will be parsed by using the class that can parse the parent
                 if (parseableClasses.Count == 0 && !parsingDict.ContainsKey(url))
                 {
-                    unmappableDict.TryAdd(directSubclass, parentNode);
+                    string parentURI = removeUri(parentOntClass.Resource.ToString());
+                    unmappableDict.TryAdd(directSubclass, parentURI);
                 }
                 else
                 {
@@ -278,10 +305,15 @@ namespace alps.net.api.parsing
             }
 
             // This path will be taken if there is a more specific implementation of a class 
+            // Example: In owl, FullySpecifiedSubject exists. In C#, FullySpecifiedSubject and the subclass SpecialFullySpecifiedSubject exist,
+            // which should also represent normal FullySpecifiedSubjects from the owl.
+            // This code adds the SpecialFullySpecifiedSubject also as possible instanciation to the dictionary
             foreach (ITreeNode<IParseablePASSProcessModelElement> childNode in parentNode.getChildNodes())
             {
+                // Find a child that was not specifically mapped to another owl class
                 if (!childsBeenParsed.Contains(childNode))
                 {
+                    // Get all childclasses of the childNode
                     Queue<ITreeNode<IParseablePASSProcessModelElement>> allNodes = new Queue<ITreeNode<IParseablePASSProcessModelElement>>();
                     IList<ITreeNode<IParseablePASSProcessModelElement>> mappableElements = new List<ITreeNode<IParseablePASSProcessModelElement>>();
                     allNodes.Enqueue(childNode);
@@ -314,16 +346,16 @@ namespace alps.net.api.parsing
         private void addToParsingDict(IDictionary<string, IList<(ITreeNode<IParseablePASSProcessModelElement>, int)>> parsingDict, OntologyClass ontClass,
             ITreeNode<IParseablePASSProcessModelElement> element, int depth)
         {
-            string ontRessource = removeUri(ontClass.Resource.ToString());
+            string ontResource = removeUri(ontClass.Resource.ToString());
 
             // If the key (the name of the owl class) is present in the mapping, add the new found class to the existing list (the value)
-            if (parsingDict.ContainsKey(ontRessource))
+            if (parsingDict.ContainsKey(ontResource))
             {
-                parsingDict[ontRessource].Add((element, depth));
+                parsingDict[ontResource].Add((element, depth));
             }
 
             // If not, create a new entry with a new list containing one element
-            else parsingDict.Add(ontRessource, new List<(ITreeNode<IParseablePASSProcessModelElement>, int)> { (element, depth) });
+            else parsingDict.Add(ontResource, new List<(ITreeNode<IParseablePASSProcessModelElement>, int)> { (element, depth) });
         }
 
         /// <summary>
@@ -333,12 +365,12 @@ namespace alps.net.api.parsing
         /// </summary>
         /// <param name="parsingDict">The parsing dictionary</param>
         /// <param name="ontClass">The ontology class that could not be mapped to a c# class</param>
-        /// <param name="parentNode">the node that was mapped with the parent ontology class of the ontClass</param>
+        /// <param name="parentNodeKey">the node that was mapped with the parent ontology class of the ontClass</param>
 
         private void mapRestWithParentNode(IDictionary<string, IList<(ITreeNode<IParseablePASSProcessModelElement>, int)>> parsingDict, OntologyClass ontClass,
-            ITreeNode<IParseablePASSProcessModelElement> parentNode)
+            string parentNodeKey)
         {
-            mapRestWithParentNode(parsingDict, ontClass, parentNode, 1);
+            mapRestWithParentNode(parsingDict, ontClass, parentNodeKey, 1);
         }
 
         /// <summary>
@@ -347,29 +379,31 @@ namespace alps.net.api.parsing
         /// instead.
         /// </summary>
         private void mapRestWithParentNode(IDictionary<string, IList<(ITreeNode<IParseablePASSProcessModelElement>, int)>> parsingDict, OntologyClass ontClass,
-            ITreeNode<IParseablePASSProcessModelElement> parentNode, int depth)
+            string parentNodeKey, int depth)
         {
-            string ontRessource = removeUri(ontClass.Resource.ToString());
-            if (!(parsingDict.ContainsKey(ontRessource)))
+            string ontResource = removeUri(ontClass.Resource.ToString());
+            IList<(ITreeNode<IParseablePASSProcessModelElement>, int)> possibleMappedClasses = parsingDict[parentNodeKey];
+            if (!(parsingDict.ContainsKey(ontResource)))
             {
-                Log.Error("Could not map " + ontRessource + " correctly, mapped with " + parentNode.getContent().getClassName() + " instead");
-                addToParsingDict(parsingDict, ontClass, parentNode, depth);
-            }
-            foreach (OntologyClass childOntClass in ontClass.DirectSubClasses.ToList())
-            {
-                if (!(parsingDict.ContainsKey(removeUri(childOntClass.Resource.ToString()))))
+                string possibleClasses = string.Join(";", possibleMappedClasses.ToList().Select(x => x.Item1.getContent().getClassName()));
+                Log.Warning("Could not map " + ontResource + " correctly, mapped with " + possibleClasses + " instead");
+                foreach ((ITreeNode<IParseablePASSProcessModelElement>, int) possibleMappedClassPair in possibleMappedClasses)
                 {
-                    mapRestWithParentNode(parsingDict, childOntClass, parentNode, depth + 1);
+                    addToParsingDict(parsingDict, ontClass, possibleMappedClassPair.Item1, depth);
                 }
             }
+            foreach (var childOntClass in ontClass.DirectSubClasses.ToList().Where(childOntClass => !(parsingDict.ContainsKey(removeUri(childOntClass.Resource.ToString())))))
+            {
+                mapRestWithParentNode(parsingDict, childOntClass, parentNodeKey, depth + 1);
+            }
         }
-        
+
         /// <summary>
         /// Removes a base uri from a string if it is concathenated using #
         /// </summary>
         /// <param name="stringWithUri"></param>
         /// <returns></returns>
-        private string removeUri(string stringWithUri)
+        private static string removeUri(string stringWithUri)
         {
             string[] splitStr = stringWithUri.Split('#');
             return splitStr[splitStr.Length - 1];

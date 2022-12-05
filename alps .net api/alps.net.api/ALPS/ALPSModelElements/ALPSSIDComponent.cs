@@ -8,11 +8,14 @@ namespace alps.net.api.ALPS
 {
     /// <summary>
     /// Class that represents an ALPS SID component
+    /// From abstract pass ont:<br></br>
+    /// An abstract SID Component is a model Component only used on model layers defined as abstract.
+    /// It is used to specify a possible process or process elements that later can be used to implement others.
     /// </summary>
     public class ALPSSIDComponent : InteractionDescribingComponent, IALPSSIDComponent
     {
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "ALPSSIDComponent";
 

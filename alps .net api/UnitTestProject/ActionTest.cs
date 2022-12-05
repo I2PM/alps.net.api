@@ -19,7 +19,7 @@ namespace UnitTestProject
         }
 
         [TestMethod]
-        public void testEualsOperator()
+        public void testEqualsOperator()
         {
             IState state = new State(behavior);
             Assert.IsNotNull(state.getAction());

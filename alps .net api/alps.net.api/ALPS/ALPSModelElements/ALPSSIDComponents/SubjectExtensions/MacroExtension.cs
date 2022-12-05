@@ -9,7 +9,7 @@ namespace alps.net.api.ALPS
     public class MacroExtension : SubjectExtension, IMacroExtension
     {
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "MacroExtension";
 

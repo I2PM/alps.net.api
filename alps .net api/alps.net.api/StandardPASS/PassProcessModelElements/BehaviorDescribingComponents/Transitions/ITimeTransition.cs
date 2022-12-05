@@ -5,6 +5,21 @@
     /// </summary>
     public interface ITimeTransition : ITransition
     {
+
+        public enum TimeTransitionType
+        {
+            TimeBasedReminder,
+            BusinessDayTimer,
+            CalendarBasedReminder,
+            DayTimeTimer,
+            YearMonthTimer
+        }
+
+        public void setTimeTransitionType(TimeTransitionType type);
+
+        public TimeTransitionType getTimeTransitionType();
+
+        public new ITimeTransitionCondition getTransitionCondition();
     }
 
 }

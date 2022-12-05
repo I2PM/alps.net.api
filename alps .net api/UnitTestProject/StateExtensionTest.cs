@@ -29,7 +29,7 @@ namespace UnitTestProject
                 refState.setReferencedState(state);
 
 
-            Env.getIOHandler().exportModel(model, Env.getTestResourceGeneratePath(this) + "testSimpleExtends", out IGraph graph);
+            Env.getIoHandler().exportModel(model, Env.getTestResourceGeneratePath(this) + "testSimpleExtends", out IGraph graph);
             bool found = false;
             foreach (Triple t in graph.Triples)
             {
@@ -53,7 +53,7 @@ namespace UnitTestProject
         [TestMethod]
         public void testImportExtends()
         {
-            IPASSReaderWriter io = Env.getIOHandler();
+            IPASSReaderWriter io = Env.getIoHandler();
             model = io.loadModels(new List<string> { Env.getTestResourcePath() + "StateExtensionTest.owl" })[0];
             io.exportModel(model, Env.getTestResourceGeneratePath(this) + "testImportExtends", out VDS.RDF.IGraph graph);
             if (!model.getAllElements().TryGetValue("SBD_9_StateReference_3", out IPASSProcessModelElement referencingState)) Assert.Fail();
@@ -74,13 +74,15 @@ namespace UnitTestProject
             ReviewerGruppe1.setReceiver(Gruppe1);
 
             ReviewerGruppe1.setMessageType(new MessageSpecification(model.getBaseLayer(), "Review completed", null, null, "Review completed"));
-            ISendTransitionCondition sendInvitationCompleted = new SendTransitionCondition(sendTransition, "Review completed", null, ReviewerGruppe1, 3, 1, null, Reviewer, ReviewerGruppe1.getMessageType());
+            ISendTransitionCondition sendInvitationCompleted = new SendTransitionCondition(sendTransition, "Review completed", null, ReviewerGruppe1,
+                3, 1, ISendTransitionCondition.SendTypes.STANDARD, Reviewer, ReviewerGruppe1.getMessageType());
 
             IMessageExchange ReviewerGruppe1_2 = new MessageExchange(model.getBaseLayer());
             ReviewerGruppe1_2.setSender(Reviewer);
             ReviewerGruppe1_2.setReceiver(Gruppe1);
             ReviewerGruppe1_2.setMessageType(new MessageSpecification(model.getBaseLayer(), "Time out", null, null, "Time out"));
-            ISendTransitionCondition sendTimeOutMessage = new SendTransitionCondition(sendTransition, "Time out", null, ReviewerGruppe1_2, 3, 0, null, Reviewer, ReviewerGruppe1_2.getMessageType());
+            ISendTransitionCondition sendTimeOutMessage = new SendTransitionCondition(sendTransition, "Time out", null, ReviewerGruppe1_2,
+                3, 0, ISendTransitionCondition.SendTypes.STANDARD, Reviewer, ReviewerGruppe1_2.getMessageType());
             
         }
     }

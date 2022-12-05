@@ -1,7 +1,9 @@
 ﻿using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.util;
+using System;
 using System.Collections.Generic;
+using static alps.net.api.StandardPASS.IReceiveTransitionCondition;
 
 namespace alps.net.api.StandardPASS
 {
@@ -11,14 +13,33 @@ namespace alps.net.api.StandardPASS
     /// </summary>
     public class ReceiveTransitionCondition : MessageExchangeCondition, IReceiveTransitionCondition
     {
+        /// <summary>
+        /// Used to parse send types from this library to a new owl on export
+        /// </summary>
+        private readonly string[] receiveTypeOWLExportNames = {
+            OWLTags.stdReceiveTypeStandard,
+            OWLTags.stdReceiveTypeReceiveFromKnown,
+            OWLTags.stdReceiveTypeReceiveFromAll
+        };
+
+        /// <summary>
+        /// Used to parse send types from owl to this library
+        /// </summary>
+        private readonly string[] receiveTypeOWLNames = {
+            OWLTags.receiveTypeStandard,
+            OWLTags.receiveTypeReceiveFromKnown,
+            OWLTags.receiveTypeReceiveFromAll
+        };
+
+
         protected int lowerBound;
         protected int upperBound;
-        protected IReceiveType receiveType;
+        protected ReceiveTypes receiveType;
         protected ISubject messageSentFromSubject;
         protected IMessageSpecification receptionOfMessage;
 
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "ReceiveTransitionCondition";
         public override IParseablePASSProcessModelElement getParsedInstance()
@@ -34,7 +55,7 @@ namespace alps.net.api.StandardPASS
         }
 
         public ReceiveTransitionCondition(ITransition transition, string labelForID = null,  string toolSpecificDefintion = null, IMessageExchange messageExchange = null,
-            int upperBound = 0, int lowerBound = 0, IReceiveType receiveType = null, ISubject requiredMessageSendFromSubject = null,
+            int upperBound = 0, int lowerBound = 0, ReceiveTypes receiveType = ReceiveTypes.STANDARD, ISubject requiredMessageSendFromSubject = null,
             IMessageSpecification requiresReceptionOfMessage = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
             : base(transition, labelForID,  toolSpecificDefintion, messageExchange, comment, additionalLabel, additionalAttribute)
         {
@@ -51,40 +72,34 @@ namespace alps.net.api.StandardPASS
         public void setMultipleReceiveLowerBound(int lowerBound)
         {
             if (this.lowerBound == lowerBound) return;
-            removeTriple(new IncompleteTriple(OWLTags.stdHasMultiReceiveLowerBound, this.lowerBound.ToString(), IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypePositiveInteger));
+            removeTriple(new IncompleteTriple(OWLTags.stdHasMultiReceiveLowerBound, this.lowerBound.ToString(),
+                IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypePositiveInteger));
             this.lowerBound = (lowerBound > 0) ? lowerBound : 1;
-            addTriple(new IncompleteTriple(OWLTags.stdHasMultiReceiveLowerBound, lowerBound.ToString(), IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypePositiveInteger));
+            addTriple(new IncompleteTriple(OWLTags.stdHasMultiReceiveLowerBound, lowerBound.ToString(),
+                IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypePositiveInteger));
         }
 
 
         public void setMultipleReceiveUpperBound(int upperBound)
         {
             if (this.upperBound == upperBound) return;
-            removeTriple(new IncompleteTriple(OWLTags.stdHasMultiReceiveUpperBound, this.upperBound.ToString(), IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypePositiveInteger));
+            removeTriple(new IncompleteTriple(OWLTags.stdHasMultiReceiveUpperBound, this.upperBound.ToString(),
+                IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypePositiveInteger));
             this.upperBound = (upperBound > 0) ? upperBound : 1;
-            addTriple(new IncompleteTriple(OWLTags.stdHasMultiReceiveUpperBound, upperBound.ToString(), IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypePositiveInteger));
+            addTriple(new IncompleteTriple(OWLTags.stdHasMultiReceiveUpperBound, upperBound.ToString(),
+                IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypePositiveInteger));
         }
 
 
-        public void setReceiveType(IReceiveType receiveType, int removeCascadeDepth = 0)
+        public void setReceiveType(ReceiveTypes receiveType)
         {
-            IReceiveType oldType = this.receiveType;
-            // Might set it to null
+            ReceiveTypes oldType = this.receiveType;
             this.receiveType = receiveType;
 
-            if (oldType != null)
-            {
-                if (oldType.Equals(receiveType)) return;
-                oldType.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdHasReceiveType, oldType.getUriModelComponentID()));
-            }
+            if (oldType.Equals(receiveType)) return;
 
-            if (!(receiveType is null))
-            {
-                publishElementAdded(receiveType);
-                receiveType.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdHasReceiveType, receiveType.getUriModelComponentID()));
-            }
+            removeTriple(new IncompleteTriple(OWLTags.stdHasReceiveType, receiveTypeOWLExportNames[(int)oldType]));
+            addTriple(new IncompleteTriple(OWLTags.stdHasReceiveType, receiveTypeOWLExportNames[(int)receiveType]));
         }
 
 
@@ -144,7 +159,7 @@ namespace alps.net.api.StandardPASS
         }
 
 
-        public IReceiveType getReceiveType()
+        public ReceiveTypes getReceiveType()
         {
             return receiveType;
         }
@@ -176,13 +191,20 @@ namespace alps.net.api.StandardPASS
                 setMultipleReceiveUpperBound(int.Parse(tmpUpperBound));
                 return true;
             }
+            else if (predicate.Contains(OWLTags.hasReceiveType))
+            {
+                foreach (int i in Enum.GetValues(typeof(ReceiveTypes)))
+                {
+                    if (objectContent.Contains(receiveTypeOWLNames[i]))
+                    {
+                        setReceiveType((ReceiveTypes)i);
+                        return true;
+                    }
+                }
+            }
             else if (element != null)
             {
-                if (predicate.Contains(OWLTags.hasReceiveType) && element is IReceiveType receiveType)
-                {
-                    setReceiveType(receiveType);
-                    return true;
-                }
+                
 
                 if (predicate.Contains(OWLTags.requiresMessageSentFrom) && element is ISubject subject)
                 {
@@ -202,8 +224,6 @@ namespace alps.net.api.StandardPASS
         public override ISet<IPASSProcessModelElement> getAllConnectedElements(ConnectedElementsSetSpecification specification)
         {
             ISet<IPASSProcessModelElement> baseElements = base.getAllConnectedElements(specification);
-            if (getReceiveType() != null)
-                baseElements.Add(getReceiveType());
             if (getMessageSentFrom() != null)
                 baseElements.Add(getMessageSentFrom());
             if (getReceptionOfMessage() != null)
@@ -216,7 +236,6 @@ namespace alps.net.api.StandardPASS
             base.updateRemoved(update, caller, removeCascadeDepth);
             if (update != null)
             {
-                if (update is IReceiveType type && type.Equals(getReceiveType())) setReceiveType(null, removeCascadeDepth);
                 if (update is ISubject subj && subj.Equals(getMessageSentFrom())) setMessageSentFrom(null, removeCascadeDepth);
                 if (update is IMessageSpecification specification && specification.Equals(getReceptionOfMessage())) setReceptionOfMessage(null, removeCascadeDepth);
             }

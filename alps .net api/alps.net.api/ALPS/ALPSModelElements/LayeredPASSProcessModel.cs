@@ -8,7 +8,7 @@ namespace alps.net.api.ALPS
     class LayeredPASSProcessModel : PASSProcessModel, IALPSModelElement, ILayeredPASSProcessModel
     {
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "LayeredPASSProcessModel";
 

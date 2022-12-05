@@ -6,6 +6,18 @@
     public interface ISendTransitionCondition : IMessageExchangeCondition
     {
         /// <summary>
+        /// The different send types as an enum.
+        /// </summary>
+        public enum SendTypes
+        {
+            STANDARD,
+            SEND_TO_NEW,
+            SEND_TO_KNOWN,
+            SEND_TO_ALL
+        }
+
+
+        /// <summary>
         /// Method that sets the lower bound attribute of the instance
         /// </summary>
         /// <param name="lowerBound">the lower bound</param>
@@ -34,13 +46,13 @@
         /// </summary>
         /// <param name="sendType">the send type</param>
         /// <param name="removeCascadeDepth">Parses the depth of a cascading delete for elements that are connected to the currently deleted one</param>
-        void setSendType(ISendType sendType, int removeCascadeDepth = 0);
+        void setSendType(SendTypes sendType);
 
         /// <summary>
         /// Method that returns the send type attribute of the instance
         /// </summary>
         /// <returns>The send type attribute of the instance</returns>
-        ISendType getSendType();
+        SendTypes getSendType();
 
         /// <summary>
         /// Sets the subject that must be the receiver of the <see cref="MessageSpecification"/> for this Condition to apply.

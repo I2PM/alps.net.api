@@ -6,17 +6,21 @@ using System.Collections.Generic;
 
 namespace alps.net.api.ALPS
 {
+    /// <summary>
+    /// From abstract pass ont: <br></br>
+    /// StateGroups/GroupStates and/or Checklist are model objects that can "contain" other SBD-Model elements as their Sub-Shapes in order to group them.
+    /// </summary>
     public class GroupState : State, IGroupState
     {
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
-        private const string className = "GroupState";
+        private const string CLASS_NAME = "GroupState";
         protected ICompatibilityDictionary<string, IBehaviorDescribingComponent> groupedComponents = new CompatibilityDictionary<string, IBehaviorDescribingComponent>();
 
         public override string getClassName()
         {
-            return className;
+            return CLASS_NAME;
         }
         public override IParseablePASSProcessModelElement getParsedInstance()
         {
@@ -24,13 +28,23 @@ namespace alps.net.api.ALPS
         }
 
        protected GroupState() { }
+
         /// <summary>
         /// Constructor that creates a new fully specified instance of the group state class
         /// </summary>
-        public GroupState(ISubjectBehavior behavior, string labelForID = null, IGuardBehavior guardBehavior = null,
+        /// <param name="behavior"></param>
+        /// <param name="labelForId">a string describing this element which is used to generate the unique model component id</param>
+        /// <param name="guardBehavior"></param>
+        /// <param name="functionSpecification"></param>
+        /// <param name="incomingTransition"></param>
+        /// <param name="outgoingTransition"></param>
+        /// <param name="comment"></param>
+        /// <param name="additionalLabel"></param>
+        /// <param name="additionalAttribute"></param>
+        public GroupState(ISubjectBehavior behavior, string labelForId = null, IGuardBehavior guardBehavior = null,
             IFunctionSpecification functionSpecification = null, ISet<ITransition> incomingTransition = null, ISet<ITransition> outgoingTransition = null,
             string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
-            : base(behavior, labelForID, guardBehavior, functionSpecification, incomingTransition, outgoingTransition, comment, additionalLabel, additionalAttribute)
+            : base(behavior, labelForId, guardBehavior, functionSpecification, incomingTransition, outgoingTransition, comment, additionalLabel, additionalAttribute)
         { }
 
         protected override string getExportTag()
@@ -42,14 +56,13 @@ namespace alps.net.api.ALPS
         public virtual bool addGroupedComponent(IBehaviorDescribingComponent component)
         {
             if (component is null) { return false; }
-            if (groupedComponents.TryAdd(component.getModelComponentID(), component))
-            {
-                publishElementAdded(component);
-                component.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdContains, component.getUriModelComponentID()));
-                return true;
-            }
-            return false;
+
+            if (!groupedComponents.TryAdd(component.getModelComponentID(), component)) return false;
+
+            publishElementAdded(component);
+            component.register(this);
+            addTriple(new IncompleteTriple(OWLTags.stdContains, component.getUriModelComponentID()));
+            return true;
         }
 
 
@@ -69,14 +82,13 @@ namespace alps.net.api.ALPS
         public virtual bool removeGroupedComponent(string id, int removeCascadeDepth = 0)
         {
             if (id is null) return false;
-            if (groupedComponents.TryGetValue(id, out IBehaviorDescribingComponent component))
-            {
-                groupedComponents.Remove(id);
-                component.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdContains, component.getUriModelComponentID()));
-                return true;
-            }
-            return false;
+
+            if (!groupedComponents.TryGetValue(id, out IBehaviorDescribingComponent component)) return false;
+
+            groupedComponents.Remove(id);
+            component.unregister(this, removeCascadeDepth);
+            removeTriple(new IncompleteTriple(OWLTags.stdContains, component.getUriModelComponentID()));
+            return true;
         }
         public IDictionary<string, IBehaviorDescribingComponent> getGroupedComponents()
         {

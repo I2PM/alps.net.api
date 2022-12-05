@@ -4,43 +4,52 @@ using System.Linq;
 
 namespace alps.net.api.parsing
 {
+
+    /// <summary>
+    /// A basic factory that creates standard ModelElements contained inside the alps.net.api library
+    /// </summary>
     public class BasicPASSProcessModelElementFactory : IPASSProcessModelElementFactory<IParseablePASSProcessModelElement>
     {
         public string createInstance(IDictionary<string, IList<(ITreeNode<IParseablePASSProcessModelElement>, int)>> parsingDict,
             IList<string> names, out IParseablePASSProcessModelElement element)
         {
             element = new PASSProcessModelElement();
-            HashSet<string> bestParseableNames = new HashSet<string>();
+            ISet<string> bestParseableNames = new HashSet<string>();
             int lowestParseDiff = int.MaxValue;
 
-            // Check how good the instanciations for the names are.
-            // Only use the names where instanciation-pairs have lowest numbers
+            // Check how good the instantiations for the names are.
+            // Only use the names where instantiation-pairs have lowest numbers
             foreach (string uriName in names)
             {
                 string name = removeUri(uriName);
-                if (parsingDict.ContainsKey(name))
-                {
+                if (!parsingDict.ContainsKey(name)) continue;
 
-                    int count = 0;
-                    foreach ((ITreeNode<IParseablePASSProcessModelElement>, int) pair in parsingDict[name])
+                // The Item2 for each item signalizes how far off the c# class is mapped to an owl class.
+                // Example: in owl, "BlueSubject" is subclass of "Subject". In c# we only know "Subject".
+                // The owl "Subject" class has a mapping score of 0 and is mapped to the c# class "Subject"
+                // The owl "BlueSubject" class has a mapping score of 1 and is mapped to the c# class "Subject", the last known parent class
+                foreach ((ITreeNode<IParseablePASSProcessModelElement>, int) pair in parsingDict[name])
+                {
+                    if (pair.Item2 > lowestParseDiff) continue;
+
+                    // If the mapping is equally good as the mappings which were already found, add it
+                    if (pair.Item2 == lowestParseDiff)
                     {
-                        if (pair.Item2 == lowestParseDiff)
-                        {
-                            bestParseableNames.Add(name);
-                        }
-                        if (pair.Item2 < lowestParseDiff)
-                        {
-                            lowestParseDiff = pair.Item2;
-                            bestParseableNames.Clear();
-                            bestParseableNames.Add(name);
-                        }
-                        count++;
+                        bestParseableNames.Add(name);
+                    }
+
+                    // If the mapping is better than the mappings which were already found, delete the old mappings and add it
+                    else
+                    {
+                        lowestParseDiff = pair.Item2;
+                        bestParseableNames.Clear();
+                        bestParseableNames.Add(name);
                     }
                 }
             }
 
             IDictionary<IParseablePASSProcessModelElement, string> possibleElements = new Dictionary<IParseablePASSProcessModelElement, string>();
-            // Gather all possible instanciations
+            // Gather all possible instantiations
             foreach (string name in bestParseableNames)
             {
                 foreach ((ITreeNode<IParseablePASSProcessModelElement>, int) pair in parsingDict[name])
@@ -58,16 +67,17 @@ namespace alps.net.api.parsing
                     IList<IParseablePASSProcessModelElement> remove = new List<IParseablePASSProcessModelElement>();
                     foreach (IParseablePASSProcessModelElement someElement in possibleElements.Keys)
                     {
-                        foreach (IParseablePASSProcessModelElement someOtherElement in possibleElements.Keys)
-                        {
-                            if (someElement != someOtherElement && someOtherElement.GetType().IsSubclassOf(someElement.GetType()))
-                            {
-                                remove.Add(someElement);
-                                foundSubclass = true;
-                                break;
-                            }
-                        }
+                        // If none of the elements are equal and no other type in the list is subclass of the current type, continue
+                        if (!possibleElements.Keys.Any(someOtherElement => someElement.Equals(someOtherElement) &&
+                                                                           someOtherElement.GetType()
+                                                                               .IsSubclassOf(someElement.GetType()))) continue;
+
+                        // Else add the redundant/parent type to be removed later 
+                        remove.Add(someElement);
+                        foundSubclass = true;
                     }
+
+                    // Delete after finishing iteration over list
                     foreach (IParseablePASSProcessModelElement someElement in remove)
                     {
                         possibleElements.Remove(someElement);
@@ -75,30 +85,33 @@ namespace alps.net.api.parsing
                 } while (foundSubclass);
             }
 
-            // Take the only element and return a new instance
-            if (possibleElements.Count == 1)
+            switch (possibleElements.Count)
             {
-                //element = ReflectiveEnumerator.createInstance<IParseablePASSProcessModelElement>(possibleElements.Keys.First().GetType());
-                element = possibleElements.Keys.First().getParsedInstance();
-                return possibleElements.Values.First();
-            }
-            // Still some elements left that are both
-            // - equally good in parsing
-            // - no superclass to another class
-            // parse the one having the longest matching name (longer name -> more specific instance ?)
-            else if (possibleElements.Count > 1)
-            {
-                KeyValuePair<IParseablePASSProcessModelElement, string> selectedPair = decideForElement(possibleElements);
-                element = selectedPair.Key.getParsedInstance();
-                return selectedPair.Value;
-            }
+                // Take the only element and return a new instance
+                case 1:
+                    element = possibleElements.Keys.First().getParsedInstance();
+                    return possibleElements.Values.First();
 
-            return null;
+                // Still some elements left that are both
+                // - equally good in parsing
+                // - no superclass to another class
+                // parse the one having the longest matching name (longer name -> more specific instance ?)
+                case > 1:
+                    {
+                        KeyValuePair<IParseablePASSProcessModelElement, string> selectedPair = decideForElement(possibleElements);
+                        element = selectedPair.Key.getParsedInstance();
+                        return selectedPair.Value;
+                    }
+                default:
+                    return null;
+            }
         }
-        private string removeUri(string stringWithUri)
+        private static string removeUri(string stringWithUri)
         {
             string[] splitStr = stringWithUri.Split('#');
-            return splitStr[splitStr.Length - 1];
+
+            // return only the last part
+            return splitStr[splitStr.Length -1 ];
         }
 
         protected virtual KeyValuePair<IParseablePASSProcessModelElement, string> decideForElement(IDictionary<IParseablePASSProcessModelElement, string> possibleElements)

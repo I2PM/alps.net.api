@@ -16,13 +16,13 @@ namespace alps.net.api.StandardPASS
     /// to use the functionality the state must be casted to IStateReference.
     /// <br></br>
     /// <br></br>
-    /// <b>This class is only for parsing reasons (loads refernces and converts them to states) and should not be used to model!</b>
+    /// <b>This class is only for parsing reasons (loads references and converts them to states) and should not be used to model!</b>
     /// </summary>
     public class ParsedStateReferenceStub : State, IStateReference
     {
         //protected IState referenceState;
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "StateReference";
 

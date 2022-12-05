@@ -6,14 +6,18 @@ using System.Collections.Generic;
 
 namespace alps.net.api.ALPS
 {
-    //Wie muss ich das verwenden ? Weil ich mir nicht sicher bin wie hier Extension behavior rein kommt
+    /// <summary>
+    /// From abstract pass ont:<br></br>
+    /// An actor extension is a standard or abstract subject that can/should only exist on layers that extend other layers.
+    /// The idea of this subject is, that it extends another subject on an underlying layer
+    /// </summary>
     public class SubjectExtension : Subject, ISubjectExtension
     {
         protected readonly ICompatibilityDictionary<string, ISubjectBehavior> extensionBehavior = new CompatibilityDictionary<string, ISubjectBehavior>();
         protected ISubject extendedSubj;
 
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "SubjectExtension";
 

@@ -16,7 +16,7 @@ namespace alps.net.api.StandardPASS
         protected ISubjectBehavior subjectBehavior;
 
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "BehaviorDescribingComponent";
 
@@ -60,9 +60,9 @@ namespace alps.net.api.StandardPASS
         }
 
 
-        public bool getContainedBy(out ISubjectBehavior subject)
+        public bool getContainedBy(out ISubjectBehavior behavior)
         {
-            subject = subjectBehavior;
+            behavior = subjectBehavior;
             return subjectBehavior != null;
         }
 
@@ -102,5 +102,11 @@ namespace alps.net.api.StandardPASS
             return allParseableElements;
         }
 
+        public void removeFromContainer()
+        {
+            if (subjectBehavior != null)
+                subjectBehavior.removeBehaviorDescribingComponent(getModelComponentID());
+            subjectBehavior = null;
+        }
     }
 }

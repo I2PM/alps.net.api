@@ -15,7 +15,7 @@ namespace alps.net.api.StandardPASS
         protected ICompatibilityDictionary<string, IMessageExchange> messageExchanges = new CompatibilityDictionary<string, IMessageExchange>();
 
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "MessageExchangeList";
 

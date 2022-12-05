@@ -10,7 +10,7 @@ namespace alps.net.api.StandardPASS
     public class ReceiveType : BehaviorDescribingComponent, IReceiveType
     {
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "ReceiveType";
 

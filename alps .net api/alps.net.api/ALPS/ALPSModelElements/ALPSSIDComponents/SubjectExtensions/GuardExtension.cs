@@ -9,9 +9,9 @@ namespace alps.net.api.ALPS
     public class GuardExtension : SubjectExtension, IGuardExtension
     {
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
-        private const string className = "GuardExtension";
+        private const string CLASS_NAME = "GuardExtension";
 
         /// <summary>
         /// Constructor that creates a new empty instance of the communication act class
@@ -20,7 +20,7 @@ namespace alps.net.api.ALPS
 
         public override string getClassName()
         {
-            return className;
+            return CLASS_NAME;
         }
 
         protected override string getExportTag()

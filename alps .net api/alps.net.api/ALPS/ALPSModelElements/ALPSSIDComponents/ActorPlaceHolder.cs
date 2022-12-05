@@ -6,12 +6,14 @@ using System.Collections.Generic;
 namespace alps.net.api.ALPS
 {
     /// <summary>
-    /// Method that repesents an actor place holder 
+    /// From abstract pass ont: <br></br>
+    /// An empty model component that may be the (empty) origin or target of a message exchange can later (in implementing layers) be substituted for any other subject 
+    /// Idea if the place is supposed to be left empty
     /// </summary>
-    class ActorPlaceHolder : ALPSSIDComponent, IActorPlaceHolder
+    public class ActorPlaceHolder : ALPSSIDComponent, IActorPlaceHolder
     {
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "ActorPlaceHolder";
 

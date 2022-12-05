@@ -22,7 +22,7 @@ namespace alps.net.api.StandardPASS
         private const string ABSTRACT_NAME = "AbstractPASSTransition";
 
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "Transition";
 
@@ -159,7 +159,7 @@ namespace alps.net.api.StandardPASS
 
         public virtual void setTransitionCondition(ITransitionCondition transitionCondition, int removeCascadeDepth = 0)
         {
-            ITransitionCondition oldCond = transitionCondition;
+            ITransitionCondition oldCond = this.transitionCondition;
             // Might set it to null
             this.transitionCondition = transitionCondition;
 

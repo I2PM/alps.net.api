@@ -18,7 +18,7 @@ namespace alps.net.api.StandardPASS
         protected IChoiceSegment segment;
 
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "ChoiceSegmentPath";
 
@@ -297,10 +297,17 @@ namespace alps.net.api.StandardPASS
         }
 
 
-        public bool getContainedBy(out IChoiceSegment subject)
+        public bool getContainedBy(out IChoiceSegment choiceSegment)
         {
-            subject = segment;
+            choiceSegment = segment;
             return segment != null;
+        }
+
+        public void removeFromContainer()
+        {
+            if (segment != null)
+                segment.removeChoiceSegmentPath(getModelComponentID());
+            segment = null;
         }
     }
 }

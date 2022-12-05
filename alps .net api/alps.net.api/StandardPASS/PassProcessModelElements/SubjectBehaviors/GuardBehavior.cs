@@ -20,7 +20,7 @@ namespace alps.net.api.StandardPASS
         protected IGuardsFunctionalityCapsule<ISubjectBehavior> behaviorGuardCapsule;
 
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "GuardBehavior";
 

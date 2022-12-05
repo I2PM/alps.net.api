@@ -13,7 +13,7 @@ namespace UnitTestProject
         [TestMethod]
         public void parsingTest()
         {
-            IList<IPASSProcessModel> models = Env.getIOHandler().loadModels(new List<string> { Env.getTestResourcePath() + "communicationRestrictionTest.owl" });
+            IList<IPASSProcessModel> models = Env.getIoHandler().loadModels(new List<string> { Env.getTestResourcePath() + "communicationRestrictionTest.owl" });
             Assert.IsTrue(models.Count > 0);
             IPASSProcessModel model = models[0];
             IList<ICommunicationRestriction> restrictions = model.getAllElements().Values.OfType<ICommunicationRestriction>().ToList();

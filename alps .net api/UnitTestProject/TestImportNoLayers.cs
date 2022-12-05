@@ -18,7 +18,7 @@ namespace UnitTestProject
         [TestMethod]
         public void test()
         {
-            var models = Env.getIOHandler().loadModels(new List<string> { Env.getTestResourcePath() + "TestNoLayers.owl" });
+            var models = Env.getIoHandler().loadModels(new List<string> { Env.getTestResourcePath() + "TestNoLayers.owl" });
             var model = models[0];
             Assert.IsTrue(model.getAllElements().Values.OfType<IModelLayer>().Count() == 2);
 

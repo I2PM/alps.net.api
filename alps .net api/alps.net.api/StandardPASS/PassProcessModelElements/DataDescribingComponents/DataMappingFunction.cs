@@ -15,7 +15,7 @@ namespace alps.net.api.StandardPASS
         protected string feelExpression;
         protected string toolSpecificDefinition;
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "DataMappingFunction";
 

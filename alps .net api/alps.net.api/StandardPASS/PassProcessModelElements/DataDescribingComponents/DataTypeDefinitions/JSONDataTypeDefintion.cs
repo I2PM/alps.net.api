@@ -11,7 +11,7 @@ namespace alps.net.api.StandardPASS
     public class JSONDataTypeDefinition : CustomOrExternalDataTypeDefinition, IJSONDataTypeDefinition
     {
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "JSONDataTypeDefinition";
 

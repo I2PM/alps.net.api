@@ -2,7 +2,7 @@
 
 namespace alps.net.api.ALPS
 {
-    interface IStatePlaceholder : IALPSSBDComponent, IState
+    public interface IStatePlaceholder : IALPSSBDComponent, IState
     {
     }
 }

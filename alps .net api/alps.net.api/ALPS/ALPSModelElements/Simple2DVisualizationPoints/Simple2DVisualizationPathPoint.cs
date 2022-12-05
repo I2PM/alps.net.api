@@ -11,7 +11,7 @@ namespace alps.net.api.ALPS
         protected ISimple2DVisualizationPathPoint nextPoint, previousPoint;
 
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "Simple2DVisualizationPathPoint";
 

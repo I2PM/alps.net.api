@@ -13,7 +13,7 @@ namespace alps.net.api.StandardPASS
     {
         protected int priorityNumber = 0;
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "DoTransition";
 

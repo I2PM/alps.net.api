@@ -12,7 +12,7 @@ using alps.net.api.util;
 namespace alps.net.api.parsing
 {
     /// <summary>
-    /// The main parser class.
+    /// The main parser class (Singleton).
     /// 
     /// To load a model contained in an owl/rdf formatted file, either use
     /// <br></br>
@@ -32,40 +32,29 @@ namespace alps.net.api.parsing
         /// </summary>
         private IPASSProcessModelElementFactory<IParseablePASSProcessModelElement> elementFactory = new BasicPASSProcessModelElementFactory();
 
+        /// <summary>
+        /// The matcher creates a mapping between owl classes (found in an owl file) and c# classes (found in the current assembly)
+        /// </summary>
+        private readonly IParsingTreeMatcher matcher = new ParsingTreeMatcher();
 
-        private ParsingTreeMatcher matcher = new();
-        private readonly IList<IPASSProcessModel> passProcessModells = new List<IPASSProcessModel>();
-        private readonly OntologyGraph parsingStructureOntologyGraph = new();
-        private readonly IList<OntologyGraph> loadedModelGraphs = new List<OntologyGraph>();
+        /// <summary>
+        /// A parsing dictionary that contains the mapping between ontology classes and a list of possible c# classes
+        /// </summary>
         private IDictionary<string, IList<(ITreeNode<IParseablePASSProcessModelElement>, int)>> parsingDict
             = new Dictionary<string, IList<(ITreeNode<IParseablePASSProcessModelElement>, int)>>();
 
-        public IList<OntologyGraph> getLoadedModelGraphs()
-        {
-            return loadedModelGraphs;
-        }
-
         /// <summary>
-        /// Creates an empty Instance of the OwlGraph Class
+        /// Holds the current instance of the PASSReaderWriter class.
+        /// The class is only instanciated once.
         /// </summary>
-        private PASSReaderWriter()
-        {
-            string path = Directory.GetCurrentDirectory();
-
-            if (File.Exists(path + "\\logs\\" + "logfile.txt"))
-            {
-                File.Delete(path + "\\logs\\" + "logfile.txt");
-            }
-
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                //.WriteTo.Console()
-                .WriteTo.File("logs\\logfile.txt")
-                .CreateLogger();
-        }
-
         private static PASSReaderWriter readerWriter;
 
+        /// <summary>
+        /// Get the current instance of the PASSReaderWriter class.
+        /// The class structure must only be loaded once, afterwards each class can instantly load models
+        /// without overwriting the parsing structure when fetching this instance.
+        /// </summary>
+        /// <returns>The instance of this PASSReaderWriter class</returns>
         public static PASSReaderWriter getInstance()
         {
             if (readerWriter is null)
@@ -75,11 +64,37 @@ namespace alps.net.api.parsing
             return readerWriter;
         }
 
+        /// <summary>
+        /// The private constructor that initializes logs
+        /// </summary>
+        private PASSReaderWriter()
+        {
+            string logName = "logfile.txt";
+            string path = Directory.GetCurrentDirectory();
+            string cutPath = path.Substring(0, path.IndexOf("bin")) + "logs\\";
+
+            Directory.CreateDirectory(cutPath);
+
+            if (File.Exists(cutPath + logName))
+            {
+                File.Delete(cutPath + logName);
+            }
+            Console.WriteLine("Writing logs to " + cutPath + logName);
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                //.WriteTo.Console()
+                .WriteTo.File(cutPath + logName)
+                .CreateLogger();
+        }
+
+        
+
         public IDictionary<string, IList<(ITreeNode<IParseablePASSProcessModelElement>, int)>> getParsingDict()
         {
             IDictionary<string, IList<(ITreeNode<IParseablePASSProcessModelElement>, int)>> newParsingDict =
                 new Dictionary<string, IList<(ITreeNode<IParseablePASSProcessModelElement>, int)>>();
-            foreach(KeyValuePair<string, IList<(ITreeNode<IParseablePASSProcessModelElement>, int)>> pair in parsingDict)
+            foreach (KeyValuePair<string, IList<(ITreeNode<IParseablePASSProcessModelElement>, int)>> pair in parsingDict)
             {
                 newParsingDict.Add(pair.Key, new List<(ITreeNode<IParseablePASSProcessModelElement>, int)>(pair.Value));
             }
@@ -89,6 +104,7 @@ namespace alps.net.api.parsing
         public void loadOWLParsingStructure(IList<string> filepathsToOWLFiles)
         {
             IList<OntologyGraph> owlStructureGraphs = new List<OntologyGraph>();
+            Log.Information("Beginnig to create parsing structure matching...");
             foreach (string filepath in filepathsToOWLFiles)
             {
                 try
@@ -106,23 +122,25 @@ namespace alps.net.api.parsing
                     // TODO error loggen
                 }
             }
-            parsingDict = matcher.loadOWLParsingStructure(owlStructureGraphs, parsingStructureOntologyGraph);
+            Log.Information("Read all structure defining ontology graphs.");
+            parsingDict = matcher.loadOWLParsingStructure(owlStructureGraphs);
 
         }
 
         public IList<IPASSProcessModel> loadModels(IList<string> filepaths, bool overrideOWLParsingStructure = false)
         {
-            ProgressBar bar = new ProgressBar(5);
-            passProcessModells.Clear();
-            loadedModelGraphs.Clear();
+            Console.Write("Reading input owl files...");
 
+            //IList<IPASSProcessModel> passProcessModels = new List<IPASSProcessModel>();
+            IList<OntologyGraph> loadedModelGraphs = new List<OntologyGraph>();
             IList<OntologyGraph> owlStructureGraphs = new List<OntologyGraph>();
+
             foreach (string filepath in filepaths)
             {
                 try
                 {
                     // Create a new OntologyGraph
-                    OntologyGraph owlGraph = new OntologyGraph();
+                    OntologyGraph owlGraph = new();
                     // Load files into it
                     owlGraph.LoadFromFile(filepath);
                     owlStructureGraphs.Add(owlGraph);
@@ -133,17 +151,43 @@ namespace alps.net.api.parsing
                 catch (RdfParseException parseException)
                 {
                     Log.Error("Parser Error when reading the new File " + parseException);
+                    Console.WriteLine("Error reading file.");
+                    return null;
+                }
+                catch (IOException parseException)
+                {
+                    Log.Error("Parser Error when reading the new File " + parseException);
+                    Console.WriteLine("Error reading file.");
+                    return null;
                 }
             }
+
+            Console.WriteLine("Done.");
             if (overrideOWLParsingStructure)
-                parsingDict = matcher.loadOWLParsingStructure(owlStructureGraphs, parsingStructureOntologyGraph, bar);
+                parsingDict = matcher.loadOWLParsingStructure(owlStructureGraphs);
 
-            createAllElements();
+            // Stores all found models across all graphs
+            IList<IPASSProcessModel> passProcessModels = new List<IPASSProcessModel>();
 
-            bar.increaseProgress();
-            Console.WriteLine("Finished loading the new in memory models");
+            Console.Write("Instantiating in memory models...");
+            ConsoleProgressBar bar = new ConsoleProgressBar();
+            int count = 0;
 
-            return passProcessModells;
+            foreach (OntologyGraph graph in loadedModelGraphs)
+            {
+                IDictionary<string, IList<string>> namedIndividualsDict = findAllNamedIndividualTriples(graph);
+                count++;
+                bar.Report((double)count / filepaths.Count*2);
+
+                // Get models with elements from the current graph and merge it in the list of all models
+                passProcessModels = passProcessModels.Union(createClassInstancesFromNamedIndividuals(graph, namedIndividualsDict)).ToList();
+                count++;
+                bar.Report((double)count / filepaths.Count * 2);
+            }
+            Console.WriteLine("Done.");
+            Console.WriteLine("Finished in-memory model creation");
+
+            return passProcessModels;
         }
 
         /// <summary>
@@ -169,50 +213,47 @@ namespace alps.net.api.parsing
         /// <summary>
         /// Finds and creates all the named individuals in the given files and creates a new list with all the individuals
         /// </summary>
-        private void createAllElements()
+        private IDictionary<string, IList<string>> findAllNamedIndividualTriples(IGraph graph)
         {
-            foreach (IGraph graph in loadedModelGraphs)
+            IEnumerable<Triple> triplesWithNamedIndividualSubject;
+            IList<Triple> namedIndividualsList = new List<Triple>();
+            IDictionary<string, IList<string>> namedIndividualsDict = new Dictionary<string, IList<string>>();
+
+            // Iterate over triples in the graph
+            foreach (Triple triple in graph.Triples)
             {
-                IEnumerable<Triple> triplesWithNamedIndividualSubject;
-                IList<Triple> namedIndividualsList = new List<Triple>();
-                IDictionary<string, IList<string>> namedIndividualsDict = new Dictionary<string, IList<string>>();
-
-                // Iterate over triples in the graph
-                foreach (Triple triple in graph.Triples)
+                // Add named individuals
+                if (triple.Object.ToString().Contains("NamedIndividual") && triple.Subject.ToString().Contains("#") && !isStandardPass(triple))
                 {
-                    // Add named individuals
-                    if (triple.Object.ToString().Contains("NamedIndividual") && triple.Subject.ToString().Contains("#") && !isStandardPass(triple))
-                    {
-                        namedIndividualsList.Add(triple);
-                    }
+                    namedIndividualsList.Add(triple);
                 }
+            }
 
 
-                foreach (Triple t in namedIndividualsList)
+            foreach (Triple t in namedIndividualsList)
+            {
+                triplesWithNamedIndividualSubject = graph.Triples.WithSubject(t.Subject);
+
+                foreach (Triple l in triplesWithNamedIndividualSubject)
                 {
-                    triplesWithNamedIndividualSubject = graph.Triples.WithSubject(t.Subject);
-
-                    foreach (Triple l in triplesWithNamedIndividualSubject)
+                    // Get the one triple that specifies type and does not contain NamedIndividual as object
+                    if (l.Predicate.ToString().Contains("type") && !l.Object.ToString().Contains("NamedIndividual"))
                     {
-                        // Get the one triple that specifies type and does not contain NamedIndividual as object
-                        if (l.Predicate.ToString().Contains("type") && !l.Object.ToString().Contains("NamedIndividual"))
+                        //this.namedIndiviualsType.Add(l);
+                        if (!namedIndividualsDict.ContainsKey(t.Subject.ToString()))
                         {
-                            //this.namedIndiviualsType.Add(l);
-                            if (!namedIndividualsDict.ContainsKey(t.Subject.ToString()))
-                            {
-                                namedIndividualsDict.Add(l.Subject.ToString(), new List<string> { l.Object.ToString() });
-                            }
-                            else
-                            {
-                                namedIndividualsDict[l.Subject.ToString()].Add(l.Object.ToString());
-                            }
+                            namedIndividualsDict.Add(l.Subject.ToString(), new List<string> { l.Object.ToString() });
+                        }
+                        else
+                        {
+                            namedIndividualsDict[l.Subject.ToString()].Add(l.Object.ToString());
                         }
                     }
                 }
-
-
-                createInstances(graph, namedIndividualsDict);
             }
+
+            return namedIndividualsDict;
+
         }
 
         /// <summary>
@@ -221,9 +262,10 @@ namespace alps.net.api.parsing
         /// <param name="namedIndividualsDict">A dictionary containing the uri for each NamedIndividual as key and the type(s) as value (in the form of a list)</param>
         /// <param name="graph">The graph used for parsing</param>
         /// <returns></returns>
-        private IList<IPASSProcessModel> createInstances(IGraph graph, IDictionary<string, IList<string>> namedIndividualsDict)
+        private IList<IPASSProcessModel> createClassInstancesFromNamedIndividuals(IGraph graph, IDictionary<string, IList<string>> namedIndividualsDict)
         {
             IDictionary<string, IParseablePASSProcessModelElement> createdElements = new Dictionary<string, IParseablePASSProcessModelElement>();
+            IList<IPASSProcessModel> passProcessModels = new List<IPASSProcessModel>();
 
             //Object:     owl:Ontology
             //Predicate:  rdf:type
@@ -255,7 +297,7 @@ namespace alps.net.api.parsing
 
                     if (modelElement is IPASSProcessModel passProcessModell)
                     {
-                        passProcessModells.Add(passProcessModell);
+                        passProcessModels.Add(passProcessModell);
                         passProcessModell.setBaseURI(baseUri);
                         IPASSGraph modelBaseGraph = passProcessModell.getBaseGraph();
 
@@ -278,17 +320,17 @@ namespace alps.net.api.parsing
             // Now all elements are instanciated and received their describing triples.
             // Triples that do not point to other elements have already been parsed (i.e. hasModelComponentID, hasComment ...)
 
-            if (passProcessModells.Count == 0)
+            if (passProcessModels.Count == 0)
             {
                 IPASSProcessModel passProcessModell = new PASSProcessModel(graph.BaseUri.ToString());
                 passProcessModell.createUniqueModelComponentID("defaultModelID");
-                passProcessModells.Add(passProcessModell);
+                passProcessModels.Add(passProcessModell);
             }
 
             // To parse all triples that link to other elements, the model is involved
             // The model is parsed top down; Every element that needs the reference to another can ask the model
             // by passing the suffix of the uri of the required element (which is also the ModelComponentID).
-            foreach (IPASSProcessModel model in passProcessModells)
+            foreach (IPASSProcessModel model in passProcessModels)
             {
                 if (model is IParseablePASSProcessModelElement parseable)
                     parseable.completeObject(ref createdElements);
@@ -296,7 +338,7 @@ namespace alps.net.api.parsing
 
             // ? Was tun mit elementen die in keinem Model sind? Wie prüfen ?
 
-            return passProcessModells;
+            return passProcessModels;
         }
 
 

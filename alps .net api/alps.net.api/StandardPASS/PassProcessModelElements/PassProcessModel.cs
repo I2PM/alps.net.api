@@ -34,7 +34,7 @@ namespace alps.net.api.StandardPASS
         protected readonly IImplementsFunctionalityCapsule<IPASSProcessModel> implCapsule;
 
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "PASSProcessModel";
 
@@ -120,6 +120,10 @@ namespace alps.net.api.StandardPASS
                             layerID = getBaseLayer().getModelComponentID();
                         }
                         justAddElementToLayer(pASSProcessModelElement, layerID);
+                        if (pASSProcessModelElement is ISubject subj && subj.isRole(ISubject.Role.StartSubject))
+                        {
+                            addStartSubject(subj);
+                        }
                     }
                 }
                 // if added, register and send signal to next higher observers so they can add and register as well
@@ -164,18 +168,24 @@ namespace alps.net.api.StandardPASS
                     {
                         if (getModelLayers().Count < 2) setIsLayered(false);
                     }
+
+                    // Might be a start subj
+                    if (element is ISubject subj)
+                        removeStartSubject(subj.getModelComponentID());
+
                     removeTriple(new IncompleteTriple(OWLTags.stdContains, element.getUriModelComponentID()));
                     element.unregister(this, removeCascadeDepth);
                     foreach (IPASSProcessModelElement otherComponent in getAllElements().Values)
                     {
                         otherComponent.updateRemoved(element, this, removeCascadeDepth);
                     }
+                    element.removeFromEverything();
                     if (getBaseLayer() != null)
                         if (getBaseLayer().getElements().Count() == 0)
                         {
                             baseLayer.removeFromEverything();
                         }
-                    element.removeFromEverything();
+                    
                 }
             }
         }
@@ -209,6 +219,7 @@ namespace alps.net.api.StandardPASS
             if (startSubject is null) { return; }
             if (startSubjects.TryAdd(startSubject.getModelComponentID(), startSubject))
             {
+                startSubject.assignRole(ISubject.Role.StartSubject);
                 addElement(startSubject);
                 addTriple(new IncompleteTriple(OWLTags.stdHasStartSubject, startSubject.getUriModelComponentID()));
             }
@@ -234,6 +245,7 @@ namespace alps.net.api.StandardPASS
             {
                 // Do not remove the element completely, only remove it as start subject
                 //removeElement(id, removeCascadeDepth);
+                subj.removeRole(ISubject.Role.StartSubject);
                 startSubjects.Remove(id);
                 removeTriple(new IncompleteTriple(OWLTags.stdHasStartSubject, subj.getUriModelComponentID()));
             }
@@ -337,6 +349,10 @@ namespace alps.net.api.StandardPASS
                 {
                     this.baseGraph = new PASSGraph(baseURI);
                     setExportGraph(ref baseGraph);
+                }
+                else
+                {
+                    this.baseGraph.changeBaseURI(baseURI);
                 }
             }
         }

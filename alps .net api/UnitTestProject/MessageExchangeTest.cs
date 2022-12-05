@@ -36,7 +36,7 @@ namespace UnitTestProject
             ISendState sendState = new SendState(behaviorHans, "SendState");
             IDoState doState = new DoState(behaviorHans, "DoState");
             ISendTransition trans = new SendTransition(sendState, doState);
-            ISendTransitionCondition cond = new SendTransitionCondition(trans, "cond", null, exchange, 0, 0, null, subjHans, spec);
+            ISendTransitionCondition cond = new SendTransitionCondition(trans, "cond", null, exchange, 0, 0, ISendTransitionCondition.SendTypes.STANDARD,  subjHans, spec);
             model.removeElement(exchange.getModelComponentID());
             Assert.IsTrue(cond.getRequiresPerformedMessageExchange() is null);
         }

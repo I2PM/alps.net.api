@@ -5,6 +5,17 @@
     /// </summary>
     public interface ITimeTransitionCondition : ITransitionCondition
     {
+
+        public enum TimeTransitionConditionType
+        {
+            TimeBasedReminder,
+            BusinessDayTimer,
+            CalendarBasedReminder,
+            DayTimeTimer,
+            YearMonthTimer
+        }
+
+
         /// <summary>
         /// Method that sets the time value attribute of the instance
         /// </summary>
@@ -16,6 +27,10 @@
         /// </summary>
         /// <returns>The time value attribute of the instance</returns>
         string getTimeValue();
+
+        public void setTimeTransitionConditionType(TimeTransitionConditionType type);
+
+        public TimeTransitionConditionType getTimeTransitionType();
     }
 
 }

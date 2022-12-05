@@ -14,7 +14,7 @@ namespace alps.net.api.StandardPASS
         protected IMessageExchange messageExchange;
 
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "MessageExchangeCondition";
 

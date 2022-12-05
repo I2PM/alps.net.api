@@ -2,7 +2,7 @@
 
 namespace alps.net.api.ALPS
 {
-    interface IFinalizedMessageExchange : IALPSSIDComponent, IMessageExchange
+    public interface IFinalizedMessageExchange : IALPSSIDComponent, IMessageExchange
     {
     }
 }

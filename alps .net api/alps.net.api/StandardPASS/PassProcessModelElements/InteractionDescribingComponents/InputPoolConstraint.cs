@@ -15,7 +15,7 @@ namespace alps.net.api.StandardPASS
         protected IInputPoolConstraintHandlingStrategy inputPoolConstraintHandlingStrategy;
         protected int limit = 0;
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "InputPoolConstraint";
 

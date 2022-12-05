@@ -17,7 +17,7 @@ namespace alps.net.api.StandardPASS
         protected ISubjectDataDefinition subjectDataDefinition;
         protected ICompatibilityDictionary<string, IInputPoolConstraint> inputPoolConstraints = new CompatibilityDictionary<string, IInputPoolConstraint>();
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "FullySpecifiedSubject";
 
@@ -127,6 +127,7 @@ namespace alps.net.api.StandardPASS
                     setBaseBehavior(null, removeCascadeDepth);
                 subjectBehaviors.Remove(id);
                 behavior.unregister(this, removeCascadeDepth);
+                behavior.setSubject(null);
                 removeTriple(new IncompleteTriple(OWLTags.stdContainsBehavior, behavior.getUriModelComponentID()));
                 return true;
             }

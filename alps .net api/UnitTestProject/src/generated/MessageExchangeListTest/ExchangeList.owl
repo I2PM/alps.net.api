@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE rdf:RDF [
+	<!ENTITY rdf 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+	<!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+	<!ENTITY xsd 'http://www.w3.org/2001/XMLSchema#'>
+	<!ENTITY owl 'http://www.w3.org/2002/07/owl#'>
+	<!ENTITY xml 'http://www.w3.org/XML/1998/namespace'>
+	<!ENTITY swrla 'http://swrl.stanford.edu/ontologies/3.3/swrla.owl#'>
+	<!ENTITY abstract-pass-ont 'http://www.imi.kit.edu/abstract-pass-ont#'>
+	<!ENTITY standard-pass-ont 'http://www.i2pm.net/standard-pass-ont#'>
+	<!ENTITY baseuri 'http://www.exampletesturi.com/#'>
+]>
+<rdf:RDF xml:base="http://www.exampletesturi.com/" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:xml="http://www.w3.org/XML/1998/namespace" xmlns:swrla="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#" xmlns:abstract-pass-ont="http://www.imi.kit.edu/abstract-pass-ont#" xmlns:standard-pass-ont="http://www.i2pm.net/standard-pass-ont#" xmlns="http://www.exampletesturi.com/#" xmlns:baseuri="http://www.exampletesturi.com/#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <owl:Ontology rdf:about="http://www.exampletesturi.com/">
+    <owl:imports rdf:resource="http://www.i2pm.net/standard-pass-ont" />
+    <owl:imports rdf:resource="http://www.imi.kit.edu/abstract-pass-ont" />
+  </owl:Ontology>
+  <owl:NamedIndividual rdf:about="&baseuri;FullySpecifiedSubject-17c4a3c8-70f4-4d50-9e3a-342bb0a48f7d">
+    <standard-pass-ont:containsBaseBehavior rdf:resource="&baseuri;defaultBehavior-c7e80c6e-c491-4267-a313-fca035e511bd" />
+    <standard-pass-ont:containsBehavior rdf:resource="&baseuri;defaultBehavior-c7e80c6e-c491-4267-a313-fca035e511bd" />
+    <standard-pass-ont:hasMaximumSubjectInstanceRestriction rdf:datatype="&xsd;nonNegativeInteger">1</standard-pass-ont:hasMaximumSubjectInstanceRestriction>
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">FullySpecifiedSubject-17c4a3c8-70f4-4d50-9e3a-342bb0a48f7d</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasOutgoingMessageExchange rdf:resource="&baseuri;messageExchange2-f54e2c71-6f20-45ad-baf5-be0836df7f8b" />
+    <rdf:type rdf:resource="&standard-pass-ont;FullySpecifiedSubject" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;FullySpecifiedSubject-2ae85dfb-8ce9-4706-97ac-386fceb809cf">
+    <standard-pass-ont:containsBaseBehavior rdf:resource="&baseuri;defaultBehavior-ee972fc0-01f6-4bb1-8841-714a12d4262b" />
+    <standard-pass-ont:containsBehavior rdf:resource="&baseuri;defaultBehavior-ee972fc0-01f6-4bb1-8841-714a12d4262b" />
+    <standard-pass-ont:hasIncomingMessageExchange rdf:resource="&baseuri;messageExchange2-f54e2c71-6f20-45ad-baf5-be0836df7f8b" />
+    <standard-pass-ont:hasMaximumSubjectInstanceRestriction rdf:datatype="&xsd;nonNegativeInteger">1</standard-pass-ont:hasMaximumSubjectInstanceRestriction>
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">FullySpecifiedSubject-2ae85dfb-8ce9-4706-97ac-386fceb809cf</standard-pass-ont:hasModelComponentID>
+    <rdf:type rdf:resource="&standard-pass-ont;FullySpecifiedSubject" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;FullySpecifiedSubject-307697c0-587e-4562-9244-0b8054ef0179">
+    <standard-pass-ont:containsBaseBehavior rdf:resource="&baseuri;defaultBehavior-f3b774a6-3367-481d-b207-64edc496c0ef" />
+    <standard-pass-ont:containsBehavior rdf:resource="&baseuri;defaultBehavior-f3b774a6-3367-481d-b207-64edc496c0ef" />
+    <standard-pass-ont:hasMaximumSubjectInstanceRestriction rdf:datatype="&xsd;nonNegativeInteger">1</standard-pass-ont:hasMaximumSubjectInstanceRestriction>
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">FullySpecifiedSubject-307697c0-587e-4562-9244-0b8054ef0179</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasOutgoingMessageExchange rdf:resource="&baseuri;messageExchange0-71904a44-09a5-4968-be03-78cc2a1fc6a4" />
+    <rdf:type rdf:resource="&standard-pass-ont;FullySpecifiedSubject" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;FullySpecifiedSubject-4407f2e5-9aba-45a3-b902-83222fa038ba">
+    <standard-pass-ont:containsBaseBehavior rdf:resource="&baseuri;defaultBehavior-5344dc8a-dbf0-4857-bbed-df8d12711020" />
+    <standard-pass-ont:containsBehavior rdf:resource="&baseuri;defaultBehavior-5344dc8a-dbf0-4857-bbed-df8d12711020" />
+    <standard-pass-ont:hasIncomingMessageExchange rdf:resource="&baseuri;messageExchange4-0ff74844-7bca-46e3-94ab-548724e7e0a0" />
+    <standard-pass-ont:hasMaximumSubjectInstanceRestriction rdf:datatype="&xsd;nonNegativeInteger">1</standard-pass-ont:hasMaximumSubjectInstanceRestriction>
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">FullySpecifiedSubject-4407f2e5-9aba-45a3-b902-83222fa038ba</standard-pass-ont:hasModelComponentID>
+    <rdf:type rdf:resource="&standard-pass-ont;FullySpecifiedSubject" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;FullySpecifiedSubject-574db031-c187-4a65-9802-1f5e7f36db0d">
+    <standard-pass-ont:containsBaseBehavior rdf:resource="&baseuri;defaultBehavior-11e1a805-9d58-4098-bf3e-8542bc8a7e9d" />
+    <standard-pass-ont:containsBehavior rdf:resource="&baseuri;defaultBehavior-11e1a805-9d58-4098-bf3e-8542bc8a7e9d" />
+    <standard-pass-ont:hasMaximumSubjectInstanceRestriction rdf:datatype="&xsd;nonNegativeInteger">1</standard-pass-ont:hasMaximumSubjectInstanceRestriction>
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">FullySpecifiedSubject-574db031-c187-4a65-9802-1f5e7f36db0d</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasOutgoingMessageExchange rdf:resource="&baseuri;messageExchange3-c51f1e8d-195e-427d-89e2-34d6b95aeaa9" />
+    <rdf:type rdf:resource="&standard-pass-ont;FullySpecifiedSubject" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;FullySpecifiedSubject-5c84e4f6-ebf2-44fb-a37d-8411200fc4ca">
+    <standard-pass-ont:containsBaseBehavior rdf:resource="&baseuri;defaultBehavior-cb910d67-014d-490b-8465-71be574419ea" />
+    <standard-pass-ont:containsBehavior rdf:resource="&baseuri;defaultBehavior-cb910d67-014d-490b-8465-71be574419ea" />
+    <standard-pass-ont:hasMaximumSubjectInstanceRestriction rdf:datatype="&xsd;nonNegativeInteger">1</standard-pass-ont:hasMaximumSubjectInstanceRestriction>
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">FullySpecifiedSubject-5c84e4f6-ebf2-44fb-a37d-8411200fc4ca</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasOutgoingMessageExchange rdf:resource="&baseuri;messageExchange4-0ff74844-7bca-46e3-94ab-548724e7e0a0" />
+    <rdf:type rdf:resource="&standard-pass-ont;FullySpecifiedSubject" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;FullySpecifiedSubject-79f5b70d-e448-45bc-90ac-ac9a3d297ed1">
+    <standard-pass-ont:containsBaseBehavior rdf:resource="&baseuri;defaultBehavior-d9493c78-9102-454a-afca-49b2708f3c74" />
+    <standard-pass-ont:containsBehavior rdf:resource="&baseuri;defaultBehavior-d9493c78-9102-454a-afca-49b2708f3c74" />
+    <standard-pass-ont:hasIncomingMessageExchange rdf:resource="&baseuri;messageExchange0-71904a44-09a5-4968-be03-78cc2a1fc6a4" />
+    <standard-pass-ont:hasMaximumSubjectInstanceRestriction rdf:datatype="&xsd;nonNegativeInteger">1</standard-pass-ont:hasMaximumSubjectInstanceRestriction>
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">FullySpecifiedSubject-79f5b70d-e448-45bc-90ac-ac9a3d297ed1</standard-pass-ont:hasModelComponentID>
+    <rdf:type rdf:resource="&standard-pass-ont;FullySpecifiedSubject" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;FullySpecifiedSubject-823645ab-0358-4997-8b74-a380a73eab52">
+    <standard-pass-ont:containsBaseBehavior rdf:resource="&baseuri;defaultBehavior-895d1f8c-d123-4c14-a5c8-010cb7381f18" />
+    <standard-pass-ont:containsBehavior rdf:resource="&baseuri;defaultBehavior-895d1f8c-d123-4c14-a5c8-010cb7381f18" />
+    <standard-pass-ont:hasMaximumSubjectInstanceRestriction rdf:datatype="&xsd;nonNegativeInteger">1</standard-pass-ont:hasMaximumSubjectInstanceRestriction>
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">FullySpecifiedSubject-823645ab-0358-4997-8b74-a380a73eab52</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasOutgoingMessageExchange rdf:resource="&baseuri;messageExchange1-14bdc235-c5e8-4657-bbc8-30cea1d96199" />
+    <rdf:type rdf:resource="&standard-pass-ont;FullySpecifiedSubject" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;FullySpecifiedSubject-cc4dfb63-54a3-4cb1-a5ea-98768d7ead42">
+    <standard-pass-ont:containsBaseBehavior rdf:resource="&baseuri;defaultBehavior-a1ba2a96-80d6-49e9-a23f-f75b338400ef" />
+    <standard-pass-ont:containsBehavior rdf:resource="&baseuri;defaultBehavior-a1ba2a96-80d6-49e9-a23f-f75b338400ef" />
+    <standard-pass-ont:hasIncomingMessageExchange rdf:resource="&baseuri;messageExchange3-c51f1e8d-195e-427d-89e2-34d6b95aeaa9" />
+    <standard-pass-ont:hasMaximumSubjectInstanceRestriction rdf:datatype="&xsd;nonNegativeInteger">1</standard-pass-ont:hasMaximumSubjectInstanceRestriction>
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">FullySpecifiedSubject-cc4dfb63-54a3-4cb1-a5ea-98768d7ead42</standard-pass-ont:hasModelComponentID>
+    <rdf:type rdf:resource="&standard-pass-ont;FullySpecifiedSubject" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;FullySpecifiedSubject-dccd3ef9-a563-46ba-b994-99855a67c04e">
+    <standard-pass-ont:containsBaseBehavior rdf:resource="&baseuri;defaultBehavior-096892e8-7b4e-4d48-b195-d8f341e96ad7" />
+    <standard-pass-ont:containsBehavior rdf:resource="&baseuri;defaultBehavior-096892e8-7b4e-4d48-b195-d8f341e96ad7" />
+    <standard-pass-ont:hasIncomingMessageExchange rdf:resource="&baseuri;messageExchange1-14bdc235-c5e8-4657-bbc8-30cea1d96199" />
+    <standard-pass-ont:hasMaximumSubjectInstanceRestriction rdf:datatype="&xsd;nonNegativeInteger">1</standard-pass-ont:hasMaximumSubjectInstanceRestriction>
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">FullySpecifiedSubject-dccd3ef9-a563-46ba-b994-99855a67c04e</standard-pass-ont:hasModelComponentID>
+    <rdf:type rdf:resource="&standard-pass-ont;FullySpecifiedSubject" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;FullySpecifiedSubject-e198edee-988b-4db1-b782-1d7c708203c0">
+    <standard-pass-ont:containsBaseBehavior rdf:resource="&baseuri;defaultBehavior-e306454a-ada2-4c53-8214-88cb788ae18f" />
+    <standard-pass-ont:containsBehavior rdf:resource="&baseuri;defaultBehavior-e306454a-ada2-4c53-8214-88cb788ae18f" />
+    <standard-pass-ont:hasMaximumSubjectInstanceRestriction rdf:datatype="&xsd;nonNegativeInteger">1</standard-pass-ont:hasMaximumSubjectInstanceRestriction>
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">FullySpecifiedSubject-e198edee-988b-4db1-b782-1d7c708203c0</standard-pass-ont:hasModelComponentID>
+    <rdf:type rdf:resource="&standard-pass-ont;FullySpecifiedSubject" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;PASSProcessModel-306138e1-299d-4b01-84c1-ebabd17cd6a3">
+    <standard-pass-ont:contains rdf:resource="&baseuri;defaultBaseLayer-ab6440ac-7f8a-43d7-b86c-aac85134c03c" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">PASSProcessModel-306138e1-299d-4b01-84c1-ebabd17cd6a3</standard-pass-ont:hasModelComponentID>
+    <rdf:type rdf:resource="&standard-pass-ont;PASSProcessModel" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;defaultBaseLayer-ab6440ac-7f8a-43d7-b86c-aac85134c03c">
+    <standard-pass-ont:contains rdf:resource="&baseuri;FullySpecifiedSubject-17c4a3c8-70f4-4d50-9e3a-342bb0a48f7d" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;FullySpecifiedSubject-2ae85dfb-8ce9-4706-97ac-386fceb809cf" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;FullySpecifiedSubject-307697c0-587e-4562-9244-0b8054ef0179" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;FullySpecifiedSubject-4407f2e5-9aba-45a3-b902-83222fa038ba" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;FullySpecifiedSubject-574db031-c187-4a65-9802-1f5e7f36db0d" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;FullySpecifiedSubject-5c84e4f6-ebf2-44fb-a37d-8411200fc4ca" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;FullySpecifiedSubject-79f5b70d-e448-45bc-90ac-ac9a3d297ed1" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;FullySpecifiedSubject-823645ab-0358-4997-8b74-a380a73eab52" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;FullySpecifiedSubject-cc4dfb63-54a3-4cb1-a5ea-98768d7ead42" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;FullySpecifiedSubject-dccd3ef9-a563-46ba-b994-99855a67c04e" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;FullySpecifiedSubject-e198edee-988b-4db1-b782-1d7c708203c0" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;defaultBehavior-096892e8-7b4e-4d48-b195-d8f341e96ad7" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;defaultBehavior-11e1a805-9d58-4098-bf3e-8542bc8a7e9d" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;defaultBehavior-5344dc8a-dbf0-4857-bbed-df8d12711020" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;defaultBehavior-895d1f8c-d123-4c14-a5c8-010cb7381f18" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;defaultBehavior-a1ba2a96-80d6-49e9-a23f-f75b338400ef" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;defaultBehavior-c7e80c6e-c491-4267-a313-fca035e511bd" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;defaultBehavior-cb910d67-014d-490b-8465-71be574419ea" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;defaultBehavior-d9493c78-9102-454a-afca-49b2708f3c74" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;defaultBehavior-e306454a-ada2-4c53-8214-88cb788ae18f" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;defaultBehavior-ee972fc0-01f6-4bb1-8841-714a12d4262b" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;defaultBehavior-f3b774a6-3367-481d-b207-64edc496c0ef" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;messageExchange0-71904a44-09a5-4968-be03-78cc2a1fc6a4" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;messageExchange1-14bdc235-c5e8-4657-bbc8-30cea1d96199" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;messageExchange2-f54e2c71-6f20-45ad-baf5-be0836df7f8b" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;messageExchange3-c51f1e8d-195e-427d-89e2-34d6b95aeaa9" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;messageExchange4-0ff74844-7bca-46e3-94ab-548724e7e0a0" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;messageList4" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;specification0" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;specification1" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;specification2" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;specification3" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;specification4" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">defaultBaseLayer-ab6440ac-7f8a-43d7-b86c-aac85134c03c</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">defaultBaseLayer</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&abstract-pass-ont;ModelLayer" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;defaultBehavior-096892e8-7b4e-4d48-b195-d8f341e96ad7">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;FullySpecifiedSubject-dccd3ef9-a563-46ba-b994-99855a67c04e" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">defaultBehavior-096892e8-7b4e-4d48-b195-d8f341e96ad7</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">defaultBehavior</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;SubjectBehavior" />
+    <rdfs:comment xml:lang="en">This is the subject behavior to the fully specified subject: FullySpecifiedSubject-dccd3ef9-a563-46ba-b994-99855a67c04e</rdfs:comment>
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;defaultBehavior-11e1a805-9d58-4098-bf3e-8542bc8a7e9d">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;FullySpecifiedSubject-574db031-c187-4a65-9802-1f5e7f36db0d" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">defaultBehavior-11e1a805-9d58-4098-bf3e-8542bc8a7e9d</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">defaultBehavior</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;SubjectBehavior" />
+    <rdfs:comment xml:lang="en">This is the subject behavior to the fully specified subject: FullySpecifiedSubject-574db031-c187-4a65-9802-1f5e7f36db0d</rdfs:comment>
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;defaultBehavior-5344dc8a-dbf0-4857-bbed-df8d12711020">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;FullySpecifiedSubject-4407f2e5-9aba-45a3-b902-83222fa038ba" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">defaultBehavior-5344dc8a-dbf0-4857-bbed-df8d12711020</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">defaultBehavior</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;SubjectBehavior" />
+    <rdfs:comment xml:lang="en">This is the subject behavior to the fully specified subject: FullySpecifiedSubject-4407f2e5-9aba-45a3-b902-83222fa038ba</rdfs:comment>
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;defaultBehavior-895d1f8c-d123-4c14-a5c8-010cb7381f18">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;FullySpecifiedSubject-823645ab-0358-4997-8b74-a380a73eab52" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">defaultBehavior-895d1f8c-d123-4c14-a5c8-010cb7381f18</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">defaultBehavior</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;SubjectBehavior" />
+    <rdfs:comment xml:lang="en">This is the subject behavior to the fully specified subject: FullySpecifiedSubject-823645ab-0358-4997-8b74-a380a73eab52</rdfs:comment>
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;defaultBehavior-a1ba2a96-80d6-49e9-a23f-f75b338400ef">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;FullySpecifiedSubject-cc4dfb63-54a3-4cb1-a5ea-98768d7ead42" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">defaultBehavior-a1ba2a96-80d6-49e9-a23f-f75b338400ef</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">defaultBehavior</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;SubjectBehavior" />
+    <rdfs:comment xml:lang="en">This is the subject behavior to the fully specified subject: FullySpecifiedSubject-cc4dfb63-54a3-4cb1-a5ea-98768d7ead42</rdfs:comment>
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;defaultBehavior-c7e80c6e-c491-4267-a313-fca035e511bd">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;FullySpecifiedSubject-17c4a3c8-70f4-4d50-9e3a-342bb0a48f7d" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">defaultBehavior-c7e80c6e-c491-4267-a313-fca035e511bd</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">defaultBehavior</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;SubjectBehavior" />
+    <rdfs:comment xml:lang="en">This is the subject behavior to the fully specified subject: FullySpecifiedSubject-17c4a3c8-70f4-4d50-9e3a-342bb0a48f7d</rdfs:comment>
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;defaultBehavior-cb910d67-014d-490b-8465-71be574419ea">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;FullySpecifiedSubject-5c84e4f6-ebf2-44fb-a37d-8411200fc4ca" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">defaultBehavior-cb910d67-014d-490b-8465-71be574419ea</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">defaultBehavior</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;SubjectBehavior" />
+    <rdfs:comment xml:lang="en">This is the subject behavior to the fully specified subject: FullySpecifiedSubject-5c84e4f6-ebf2-44fb-a37d-8411200fc4ca</rdfs:comment>
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;defaultBehavior-d9493c78-9102-454a-afca-49b2708f3c74">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;FullySpecifiedSubject-79f5b70d-e448-45bc-90ac-ac9a3d297ed1" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">defaultBehavior-d9493c78-9102-454a-afca-49b2708f3c74</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">defaultBehavior</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;SubjectBehavior" />
+    <rdfs:comment xml:lang="en">This is the subject behavior to the fully specified subject: FullySpecifiedSubject-79f5b70d-e448-45bc-90ac-ac9a3d297ed1</rdfs:comment>
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;defaultBehavior-e306454a-ada2-4c53-8214-88cb788ae18f">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;FullySpecifiedSubject-e198edee-988b-4db1-b782-1d7c708203c0" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">defaultBehavior-e306454a-ada2-4c53-8214-88cb788ae18f</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">defaultBehavior</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;SubjectBehavior" />
+    <rdfs:comment xml:lang="en">This is the subject behavior to the fully specified subject: FullySpecifiedSubject-e198edee-988b-4db1-b782-1d7c708203c0</rdfs:comment>
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;defaultBehavior-ee972fc0-01f6-4bb1-8841-714a12d4262b">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;FullySpecifiedSubject-2ae85dfb-8ce9-4706-97ac-386fceb809cf" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">defaultBehavior-ee972fc0-01f6-4bb1-8841-714a12d4262b</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">defaultBehavior</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;SubjectBehavior" />
+    <rdfs:comment xml:lang="en">This is the subject behavior to the fully specified subject: FullySpecifiedSubject-2ae85dfb-8ce9-4706-97ac-386fceb809cf</rdfs:comment>
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;defaultBehavior-f3b774a6-3367-481d-b207-64edc496c0ef">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;FullySpecifiedSubject-307697c0-587e-4562-9244-0b8054ef0179" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">defaultBehavior-f3b774a6-3367-481d-b207-64edc496c0ef</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">defaultBehavior</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;SubjectBehavior" />
+    <rdfs:comment xml:lang="en">This is the subject behavior to the fully specified subject: FullySpecifiedSubject-307697c0-587e-4562-9244-0b8054ef0179</rdfs:comment>
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;messageExchange0-71904a44-09a5-4968-be03-78cc2a1fc6a4">
+    <standard-pass-ont:hasMessageType rdf:resource="&baseuri;specification0" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">messageExchange0-71904a44-09a5-4968-be03-78cc2a1fc6a4</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">messageExchange0</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:hasReceiver rdf:resource="&baseuri;FullySpecifiedSubject-79f5b70d-e448-45bc-90ac-ac9a3d297ed1" />
+    <standard-pass-ont:hasSender rdf:resource="&baseuri;FullySpecifiedSubject-307697c0-587e-4562-9244-0b8054ef0179" />
+    <rdf:type rdf:resource="&standard-pass-ont;MessageExchange" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;messageExchange1-14bdc235-c5e8-4657-bbc8-30cea1d96199">
+    <standard-pass-ont:hasMessageType rdf:resource="&baseuri;specification1" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">messageExchange1-14bdc235-c5e8-4657-bbc8-30cea1d96199</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">messageExchange1</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:hasReceiver rdf:resource="&baseuri;FullySpecifiedSubject-dccd3ef9-a563-46ba-b994-99855a67c04e" />
+    <standard-pass-ont:hasSender rdf:resource="&baseuri;FullySpecifiedSubject-823645ab-0358-4997-8b74-a380a73eab52" />
+    <rdf:type rdf:resource="&standard-pass-ont;MessageExchange" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;messageExchange2-f54e2c71-6f20-45ad-baf5-be0836df7f8b">
+    <standard-pass-ont:hasMessageType rdf:resource="&baseuri;specification2" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">messageExchange2-f54e2c71-6f20-45ad-baf5-be0836df7f8b</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">messageExchange2</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:hasReceiver rdf:resource="&baseuri;FullySpecifiedSubject-2ae85dfb-8ce9-4706-97ac-386fceb809cf" />
+    <standard-pass-ont:hasSender rdf:resource="&baseuri;FullySpecifiedSubject-17c4a3c8-70f4-4d50-9e3a-342bb0a48f7d" />
+    <rdf:type rdf:resource="&standard-pass-ont;MessageExchange" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;messageExchange3-c51f1e8d-195e-427d-89e2-34d6b95aeaa9">
+    <standard-pass-ont:hasMessageType rdf:resource="&baseuri;specification3" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">messageExchange3-c51f1e8d-195e-427d-89e2-34d6b95aeaa9</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">messageExchange3</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:hasReceiver rdf:resource="&baseuri;FullySpecifiedSubject-cc4dfb63-54a3-4cb1-a5ea-98768d7ead42" />
+    <standard-pass-ont:hasSender rdf:resource="&baseuri;FullySpecifiedSubject-574db031-c187-4a65-9802-1f5e7f36db0d" />
+    <rdf:type rdf:resource="&standard-pass-ont;MessageExchange" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;messageExchange4-0ff74844-7bca-46e3-94ab-548724e7e0a0">
+    <standard-pass-ont:hasMessageType rdf:resource="&baseuri;specification4" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">messageExchange4-0ff74844-7bca-46e3-94ab-548724e7e0a0</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">messageExchange4</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:hasReceiver rdf:resource="&baseuri;FullySpecifiedSubject-4407f2e5-9aba-45a3-b902-83222fa038ba" />
+    <standard-pass-ont:hasSender rdf:resource="&baseuri;FullySpecifiedSubject-5c84e4f6-ebf2-44fb-a37d-8411200fc4ca" />
+    <rdf:type rdf:resource="&standard-pass-ont;MessageExchange" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;messageList4">
+    <standard-pass-ont:contains rdf:resource="&baseuri;messageExchange0-71904a44-09a5-4968-be03-78cc2a1fc6a4" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;messageExchange1-14bdc235-c5e8-4657-bbc8-30cea1d96199" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;messageExchange2-f54e2c71-6f20-45ad-baf5-be0836df7f8b" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;messageExchange3-c51f1e8d-195e-427d-89e2-34d6b95aeaa9" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;messageExchange4-0ff74844-7bca-46e3-94ab-548724e7e0a0" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">messageList4</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">list</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;MessageExchangeList" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;specification0">
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">specification0</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">specification0</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;MessageSpecification" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;specification1">
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">specification1</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">specification1</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;MessageSpecification" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;specification2">
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">specification2</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">specification2</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;MessageSpecification" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;specification3">
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">specification3</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">specification3</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;MessageSpecification" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="&baseuri;specification4">
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">specification4</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">specification4</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;MessageSpecification" />
+  </owl:NamedIndividual>
+</rdf:RDF>

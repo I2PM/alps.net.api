@@ -12,7 +12,7 @@ namespace alps.net.api.StandardPASS
     {
         protected IDataTypeDefinition dataTypeDefintion;
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "DataObjectDefinition";
 

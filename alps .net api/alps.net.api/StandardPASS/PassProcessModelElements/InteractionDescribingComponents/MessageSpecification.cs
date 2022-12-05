@@ -16,7 +16,7 @@ namespace alps.net.api.StandardPASS
         protected string message;
 
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "MessageSpecification";
 

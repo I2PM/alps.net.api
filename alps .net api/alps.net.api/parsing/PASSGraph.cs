@@ -23,6 +23,7 @@ namespace alps.net.api.parsing
         }
 
         public const string EXAMPLE_BASE_URI_PLACEHOLDER = "baseuri:";
+        public const string EXAMPLE_BASE_URI_PLACEHOLDER_MAPPING_KEY = "baseuri";
 
         private ICompatibilityDictionary<string, IGraphCallback> elements = new CompatibilityDictionary<string, IGraphCallback>();
 
@@ -59,7 +60,7 @@ namespace alps.net.api.parsing
                 this.baseURI = EXAMPLE_BASE_URI;
             else
                 this.baseURI = baseURI;
-            namespaceMappings.Add(EXAMPLE_BASE_URI_PLACEHOLDER.Replace(":", ""), baseURI + "#");
+            namespaceMappings.Add(EXAMPLE_BASE_URI_PLACEHOLDER_MAPPING_KEY, baseURI + "#");
 
             OntologyGraph exportGraph = new OntologyGraph();
 
@@ -96,6 +97,21 @@ namespace alps.net.api.parsing
             exportGraph.Assert(triple);
 
             baseGraph = exportGraph;
+        }
+
+        public void changeBaseURI(string newUri)
+        {
+            if (newUri is null)
+                this.baseURI = EXAMPLE_BASE_URI;
+            else
+                this.baseURI = newUri;
+
+            namespaceMappings[EXAMPLE_BASE_URI_PLACEHOLDER_MAPPING_KEY] = baseURI + "#";
+            // baseGraph.NamespaceMap.RemoveNamespace("");
+            // baseGraph.NamespaceMap.RemoveNamespace(EXAMPLE_BASE_URI_PLACEHOLDER_MAPPING_KEY);
+            baseGraph.NamespaceMap.AddNamespace("", new Uri(baseURI + "#"));
+            baseGraph.NamespaceMap.AddNamespace(EXAMPLE_BASE_URI_PLACEHOLDER_MAPPING_KEY, new Uri(baseURI + "#"));
+            //exportGraph.NamespaceMap.AddNamespace("", new Uri(baseURI + "#"));
         }
 
         public IGraph getGraph()

@@ -11,10 +11,10 @@ namespace UnitTestProject
 
 
         [TestMethod]
-        public void testSimpleDelete()
+        public void test()
         {
             
-            IPASSReaderWriter io =  Env.getIOHandler();
+            IPASSReaderWriter io =  Env.getIoHandler();
             if (io is PASSReaderWriter readerWriter)
             {
                 Assert.IsTrue(readerWriter.getParsingDict().TryGetValue("FullySpecifiedSubject", out IList<(ITreeNode<IParseablePASSProcessModelElement>, int)> listOfNodes));

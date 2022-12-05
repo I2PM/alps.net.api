@@ -14,7 +14,7 @@ namespace alps.net.api.StandardPASS
         protected IMacroBehavior referenceMacroBehavior;
         protected readonly ICompatibilityDictionary<string, IStateReference> stateReferences = new CompatibilityDictionary<string, IStateReference>();
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "Macrostate";
 

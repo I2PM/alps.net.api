@@ -81,5 +81,7 @@ namespace alps.net.api.parsing
         /// </summary>
         /// <param name="filepath"></param>
         void exportTo(string filepath);
+
+        public void changeBaseURI(string newUri);
     }
 }

@@ -12,7 +12,7 @@ namespace UnitTestProject
         [TestMethod]
         public void testEualsOperator()
         {
-            IPASSReaderWriter io = Env.getIOHandler();
+            IPASSReaderWriter io = Env.getIoHandler();
             IList<IPASSProcessModel> model =  io.loadModels(new List<string> { Env.getTestResourcePath() + "TestDrawingWithStates.owl" });
             Assert.IsTrue(model.Count > 0);
         }

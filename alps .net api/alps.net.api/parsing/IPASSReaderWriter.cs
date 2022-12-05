@@ -49,6 +49,12 @@ namespace alps.net.api.parsing
         /// <returns>The full filepath to the file that was exported</returns>
         string exportModel(IPASSProcessModel model, string filepath);
 
+        /// <summary>
+        /// Allows to set another factory to create the elements.
+        /// The standard factory <see cref="BasicPASSProcessModelElementFactory"/> is used automatically and decides on mapped elements based on the name similarity.
+        /// If the factory should choose other elements, a new factory can be inserted here.
+        /// </summary>
+        /// <param name="factory"></param>
         void setModelElementFactory(IPASSProcessModelElementFactory<IParseablePASSProcessModelElement> factory);
     }
 }

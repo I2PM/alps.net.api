@@ -15,7 +15,7 @@ namespace alps.net.api.StandardPASS
         protected IFullySpecifiedSubject referencedSubject;
 
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "InterfaceSubject";
 
@@ -29,10 +29,12 @@ namespace alps.net.api.StandardPASS
         }
 
        protected InterfaceSubject() { }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="label"></param>
+        /// <param name="referencedSubject">If the InterfaceSubject is referencing another FullySpecifiedSubject, this can be passed here</param>
         /// <param name="comment"></param>
         /// <param name="incomingMessageExchange"></param>
         /// <param name="outgoingMessageExchange"></param>
@@ -40,11 +42,11 @@ namespace alps.net.api.StandardPASS
         /// <param name="additionalAttribute"></param>
         /// <param name="fullySpecifiedSubject"></param>
         public InterfaceSubject(IModelLayer layer, string labelForID = null,  ISet<IMessageExchange> incomingMessageExchange = null,
-            ISet<IMessageExchange> outgoingMessageExchange = null, int maxSubjectInstanceRestriction = 1, IFullySpecifiedSubject fullySpecifiedSubject = null,
+            ISet<IMessageExchange> outgoingMessageExchange = null, int maxSubjectInstanceRestriction = 1, IFullySpecifiedSubject referencedSubject = null,
             string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
             : base(layer, labelForID,  incomingMessageExchange, outgoingMessageExchange, maxSubjectInstanceRestriction, comment, additionalLabel, additionalAttribute)
         {
-            setReferencedSubject(fullySpecifiedSubject);
+            setReferencedSubject(referencedSubject);
         }
 
 

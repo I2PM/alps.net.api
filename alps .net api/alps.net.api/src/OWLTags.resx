@@ -129,6 +129,18 @@
   <data name="belongsTo" xml:space="preserve">
     <value>belongsTo</value>
   </data>
+  <data name="BusinessDayTimerTransitionClassName" xml:space="preserve">
+    <value>BusinessDayTimerTransition</value>
+  </data>
+  <data name="BusinessDayTimerTransitionConditionClassName" xml:space="preserve">
+    <value>BusinessDayTimerTransitionCondition</value>
+  </data>
+  <data name="CalendarBasedReminderTransitionClassName" xml:space="preserve">
+    <value>CalendarBasedReminderTransition</value>
+  </data>
+  <data name="CalendarBasedReminderTransitionConditionClassName" xml:space="preserve">
+    <value>CalendarBasedReminderTransitionCondition</value>
+  </data>
   <data name="contains" xml:space="preserve">
     <value>contains</value>
   </data>
@@ -140,6 +152,12 @@
   </data>
   <data name="containsPayloadDescription" xml:space="preserve">
     <value>containsPayloadDescription</value>
+  </data>
+  <data name="DayTimeTimerTransitionClassName" xml:space="preserve">
+    <value>DayTimeTimerTransition</value>
+  </data>
+  <data name="DayTimeTimerTransitionConditionClassName" xml:space="preserve">
+    <value>DayTimeTimerTransitionCondition</value>
   </data>
   <data name="extends" xml:space="preserve">
     <value>extends</value>
@@ -156,6 +174,12 @@
   <data name="guardsState" xml:space="preserve">
     <value>guardsState</value>
   </data>
+  <data name="hasBusinessDayDurationTimeOutTime" xml:space="preserve">
+    <value>hasBusinessDayDurationTimeOutTime</value>
+  </data>
+  <data name="hasCalendarBasedFrequencyOrDate" xml:space="preserve">
+    <value>hasCalendarBasedFrequencyOrDate</value>
+  </data>
   <data name="hasCorrespondent" xml:space="preserve">
     <value>hasCorrespondent</value>
   </data>
@@ -170,6 +194,12 @@
   </data>
   <data name="hasDataType" xml:space="preserve">
     <value>hasDataType</value>
+  </data>
+  <data name="hasDayTimeDurationTimeOutTime" xml:space="preserve">
+    <value>hasDayTimeDurationTimeOutTime</value>
+  </data>
+  <data name="hasDurationTimeOutTime" xml:space="preserve">
+    <value>hasDurationTimeOutTime</value>
   </data>
   <data name="hasEndState" xml:space="preserve">
     <value>hasEndState</value>
@@ -243,6 +273,9 @@
   <data name="hasReceiveType" xml:space="preserve">
     <value>hasReceiveType</value>
   </data>
+  <data name="hasReoccuranceFrequenyOrDate" xml:space="preserve">
+    <value>hasReoccuranceFrequenyOrDate</value>
+  </data>
   <data name="hasSender" xml:space="preserve">
     <value>hasSender</value>
   </data>
@@ -258,6 +291,9 @@
   <data name="hasTargetState" xml:space="preserve">
     <value>hasTargetState</value>
   </data>
+  <data name="hasTimeBasedReoccuranceFrequencyOrDate" xml:space="preserve">
+    <value>hasTimeBasedReoccuranceFrequencyOrDate</value>
+  </data>
   <data name="hasTimeValue" xml:space="preserve">
     <value>hasTimeValue</value>
   </data>
@@ -266,6 +302,9 @@
   </data>
   <data name="hasTransitionCondition" xml:space="preserve">
     <value>hasTransitionCondition</value>
+  </data>
+  <data name="hasYearMonthDurationTimeOutTime" xml:space="preserve">
+    <value>hasYearMonthDurationTimeOutTime</value>
   </data>
   <data name="implements" xml:space="preserve">
     <value>implements</value>
@@ -287,6 +326,15 @@
   </data>
   <data name="receiver" xml:space="preserve">
     <value>receiver</value>
+  </data>
+  <data name="receiveTypeReceiveFromAll" xml:space="preserve">
+    <value>ReceiveTypeMultiReceiveFromAllKnown</value>
+  </data>
+  <data name="receiveTypeReceiveFromKnown" xml:space="preserve">
+    <value>ReceiveTypeMultiReceiveFromKnwon</value>
+  </data>
+  <data name="receiveTypeStandard" xml:space="preserve">
+    <value>ReceiveTypeStandard</value>
   </data>
   <data name="references" xml:space="preserve">
     <value>references</value>
@@ -311,6 +359,18 @@
   </data>
   <data name="sender" xml:space="preserve">
     <value>sender</value>
+  </data>
+  <data name="sendTypeSendToAll" xml:space="preserve">
+    <value>SendTypeMultiSendToAll</value>
+  </data>
+  <data name="sendTypeSendToKnown" xml:space="preserve">
+    <value>SendTypeMultiSendToKnown</value>
+  </data>
+  <data name="sendTypeSendToNew" xml:space="preserve">
+    <value>SendTypeMultiSendToNew</value>
+  </data>
+  <data name="sendTypeStandard" xml:space="preserve">
+    <value>SendTypeStandard</value>
   </data>
   <data name="std" xml:space="preserve">
     <value>standard-pass-ont:</value>
@@ -342,6 +402,12 @@
   <data name="stdGuardsState" xml:space="preserve">
     <value>standard-pass-ont:guardsState</value>
   </data>
+  <data name="stdHasBusinessDayDurationTimeOutTime" xml:space="preserve">
+    <value>standard-pass-ont:hasBusinessDayDurationTimeOutTime</value>
+  </data>
+  <data name="stdHasCalendarBasedFrequencyOrDate" xml:space="preserve">
+    <value>standard-pass-ont:hasCalendarBasedFrequencyOrDate</value>
+  </data>
   <data name="stdHasCorrespondent" xml:space="preserve">
     <value>standard-pass-ont:hasCorrespondent</value>
   </data>
@@ -356,6 +422,12 @@
   </data>
   <data name="stdHasDataType" xml:space="preserve">
     <value>standard-pass-ont:hasDataType</value>
+  </data>
+  <data name="stdHasDayTimeDurationTimeOutTime" xml:space="preserve">
+    <value>standard-pass-ont:hasDayTimeDurationTimeOutTime</value>
+  </data>
+  <data name="stdHasDurationTimeOutTime" xml:space="preserve">
+    <value>standard-pass-ont:hasDurationTimeOutTime</value>
   </data>
   <data name="stdHasEndState" xml:space="preserve">
     <value>standard-pass-ont:hasEndState</value>
@@ -380,9 +452,6 @@
   </data>
   <data name="stdHasInitialState" xml:space="preserve">
     <value>standard-pass-ont:hasInitialState</value>
-  </data>
-  <data name="stdHasInitialStateOfBehavior" xml:space="preserve">
-    <value>standard-pass-ont:hasInitialStateOfBehavior</value>
   </data>
   <data name="stdHasInputPoolConstraint" xml:space="preserve">
     <value>standard-pass-ont:hasInputPoolConstraint</value>
@@ -429,6 +498,9 @@
   <data name="stdHasReceiveType" xml:space="preserve">
     <value>standard-pass-ont:hasReceiveType</value>
   </data>
+  <data name="stdHasReoccuranceFrequenyOrDate" xml:space="preserve">
+    <value>standard-pass-ont:hasReoccuranceFrequenyOrDate</value>
+  </data>
   <data name="stdHasSender" xml:space="preserve">
     <value>standard-pass-ont:hasSender</value>
   </data>
@@ -444,6 +516,9 @@
   <data name="stdHasTargetState" xml:space="preserve">
     <value>standard-pass-ont:hasTargetState</value>
   </data>
+  <data name="stdHasTimeBasedReoccuranceFrequencyOrDate" xml:space="preserve">
+    <value>standard-pass-ont:hasTimeBasedReoccuranceFrequencyOrDate</value>
+  </data>
   <data name="stdHasTimeValue" xml:space="preserve">
     <value>standard-pass-ont:hasTimeValue</value>
   </data>
@@ -452,6 +527,9 @@
   </data>
   <data name="stdHasTransitionCondition" xml:space="preserve">
     <value>standard-pass-ont:hasTransitionCondition</value>
+  </data>
+  <data name="stdHasYearMonthDurationTimeOutTime" xml:space="preserve">
+    <value>standard-pass-ont:hasYearMonthDurationTimeOutTime</value>
   </data>
   <data name="stdIsOptionalToEndChoiceSegmentPath" xml:space="preserve">
     <value>standard-pass-ont:isOptionalToEndChoiceSegmentPath</value>
@@ -464,6 +542,15 @@
   </data>
   <data name="stdReceiver" xml:space="preserve">
     <value>standard-pass-ont:receiver</value>
+  </data>
+  <data name="stdReceiveTypeReceiveFromAll" xml:space="preserve">
+    <value>standard-pass-ont:ReceiveTypeMultiReceiveFromAllKnown</value>
+  </data>
+  <data name="stdReceiveTypeReceiveFromKnown" xml:space="preserve">
+    <value>standard-pass-ont:ReceiveTypeMultiReceiveFromKnwon</value>
+  </data>
+  <data name="stdReceiveTypeStandard" xml:space="preserve">
+    <value>standard-pass-ont:ReceiveTypeStandard</value>
   </data>
   <data name="stdReferences" xml:space="preserve">
     <value>standard-pass-ont:references</value>
@@ -489,6 +576,27 @@
   <data name="stdSender" xml:space="preserve">
     <value>standard-pass-ont:sender</value>
   </data>
+  <data name="stdSendTypeSendToAll" xml:space="preserve">
+    <value>standard-pass-ont:SendTypeMultiSendToAll</value>
+  </data>
+  <data name="stdSendTypeSendToKnown" xml:space="preserve">
+    <value>standard-pass-ont:SendTypeMultiSendToKnown</value>
+  </data>
+  <data name="stdSendTypeSendToNew" xml:space="preserve">
+    <value>standard-pass-ont:SendTypeMultiSendToNew</value>
+  </data>
+  <data name="stdSendTypeStandard" xml:space="preserve">
+    <value>standard-pass-ont:SendTypeStandard</value>
+  </data>
+  <data name="stdStartSubject" xml:space="preserve">
+    <value>standard-pass-ont:StartSubject</value>
+  </data>
+  <data name="TimeBasedReminderTransitionClassName" xml:space="preserve">
+    <value>TimeBasedReminderTransition</value>
+  </data>
+  <data name="TimeBasedReminderTransitionConditionClassName" xml:space="preserve">
+    <value>TimeBasedReminderTransitionCondition</value>
+  </data>
   <data name="type" xml:space="preserve">
     <value>type</value>
   </data>
@@ -500,5 +608,17 @@
   </data>
   <data name="xsdDataTypeString" xml:space="preserve">
     <value>xsd:string</value>
+  </data>
+  <data name="xsdDayTimeDuration" xml:space="preserve">
+    <value>xsd:dayTimeDuration</value>
+  </data>
+  <data name="xsdYearMonthDuration" xml:space="preserve">
+    <value>xsd:yearMonthDuration</value>
+  </data>
+  <data name="YearMonthTimerTransitionClassName" xml:space="preserve">
+    <value>YearMonthTimerTransition</value>
+  </data>
+  <data name="YearMonthTimerTransitionConditionClassName" xml:space="preserve">
+    <value>YearMonthTimerTransitionCondition</value>
   </data>
 </root>

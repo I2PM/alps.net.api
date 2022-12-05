@@ -12,7 +12,7 @@ namespace alps.net.api.StandardPASS
     public class InputPoolConstraintHandlingStrategy : InteractionDescribingComponent, IInputPoolConstraintHandlingStrategy
     {
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "InputPoolContstraintHandlingStrategy";
 
@@ -31,7 +31,7 @@ namespace alps.net.api.StandardPASS
         /// 
         /// </summary>
         /// <param name="layer"></param>
-        /// <param name="labelForID"></param>
+        /// <param name="labelForID">a string describing this element which is used to generate the unique model component id</param>
         /// <param name="comment"></param>
         /// <param name="additionalLabel"></param>
         /// <param name="additionalAttribute"></param>

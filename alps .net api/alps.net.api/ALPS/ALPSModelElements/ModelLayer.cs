@@ -36,7 +36,7 @@ namespace alps.net.api.ALPS
             extendsCapsule = new ExtendsFunctionalityCapsule<IModelLayer>(this);
         }
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "ModelLayer";
         protected string exportClassname = className;
@@ -183,6 +183,8 @@ namespace alps.net.api.ALPS
             {
                 elements.Remove(modelComponentID);
                 element.unregister(this, removeCascadeDepth);
+                if (element is IContainableElement<IModelLayer> containable && containable.getContainedBy(out IModelLayer layer) && layer == this)
+                    containable.removeFromContainer();
                 removeTriple(new IncompleteTriple(OWLTags.stdContains, element.getUriModelComponentID()));
                 checkLayerTypes();
 
@@ -610,7 +612,13 @@ namespace alps.net.api.ALPS
         {
             return extendsCapsule.isExtension();
         }
-    
+
+        public void removeFromContainer()
+        {
+            if (model != null)
+            model.removeElement(getModelComponentID());
+            model = null;
+        }
     }
 }
 

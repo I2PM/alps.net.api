@@ -18,7 +18,7 @@ namespace alps.net.api.StandardPASS
         protected ICompatibilityDictionary<string, ITransition> transitions = new CompatibilityDictionary<string, ITransition>();
 
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "Action";
 

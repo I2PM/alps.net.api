@@ -23,5 +23,7 @@
         /// <param name="container">the container instance</param>
         /// <returns>true if the container is not null and the element is currently contained by another instance</returns>
         bool getContainedBy(out T container);
+
+        void removeFromContainer();
     }
 }

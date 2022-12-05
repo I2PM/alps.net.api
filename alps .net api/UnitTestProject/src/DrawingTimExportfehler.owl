@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE rdf:RDF [
+	<!ENTITY rdf 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+	<!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+	<!ENTITY xsd 'http://www.w3.org/2001/XMLSchema#'>
+	<!ENTITY owl 'http://www.w3.org/2002/07/owl#'>
+	<!ENTITY xml 'http://www.w3.org/XML/1998/namespace'>
+	<!ENTITY swrla 'http://swrl.stanford.edu/ontologies/3.3/swrla.owl#'>
+	<!ENTITY abstract-pass-ont 'http://www.imi.kit.edu/abstract-pass-ont#'>
+	<!ENTITY standard-pass-ont 'http://www.i2pm.net/standard-pass-ont#'>
+	<!ENTITY baseuri 'http://subjective-me.jimdo.com/s-bpm/processmodels/2022-05-18/tim/#'>
+]>
+<rdf:RDF xml:base="http://subjective-me.jimdo.com/s-bpm/processmodels/2022-05-18/tim/" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:xml="http://www.w3.org/XML/1998/namespace" xmlns:swrla="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#" xmlns:abstract-pass-ont="http://www.imi.kit.edu/abstract-pass-ont#" xmlns:standard-pass-ont="http://www.i2pm.net/standard-pass-ont#" xmlns="http://subjective-me.jimdo.com/s-bpm/processmodels/2022-05-18/tim/#" xmlns:baseuri="http://subjective-me.jimdo.com/s-bpm/processmodels/2022-05-18/tim/#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <owl:NamedIndividual rdf:about="baseuri:ActionForempfangen-95dccab1-41ca-403d-a08f-75c064d6763d">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;Tim_Behavior-82496c33-1d6b-45e3-9345-4062f8f6b03a" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;empfangen-52240f18-e9f5-48a6-ab63-96f13849fe69" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;von_empfangen_zu_essen2-b5bf8792-211c-4355-939b-d0a13a737e15" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;von_empfangen_zu_essen3-cd1177a9-5c1a-4209-86c7-548391a3d1ce" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">ActionForempfangen-95dccab1-41ca-403d-a08f-75c064d6763d</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">ActionForempfangen</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;Action" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:ActionForessen-e4a17fb9-7e36-4a04-bf7b-e8607ad6fcb9">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;Tim_Behavior-82496c33-1d6b-45e3-9345-4062f8f6b03a" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;essen-a4320c74-f426-4478-b79d-f0a504fa5875" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;essen_zu_senden-9c6958f1-c47f-49f9-ba89-8802ca956ca7" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">ActionForessen-e4a17fb9-7e36-4a04-bf7b-e8607ad6fcb9</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">ActionForessen</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;Action" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:ActionForessen2-68483a19-8bbe-482e-8a08-7bb631fe1808">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;Tim_Behavior-82496c33-1d6b-45e3-9345-4062f8f6b03a" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;essen2-e4d9aee5-04a5-4613-bcdc-8cf238c46d0c" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">ActionForessen2-68483a19-8bbe-482e-8a08-7bb631fe1808</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">ActionForessen2</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;Action" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:ActionForessen3-fb3c14ab-712b-42c9-8abc-0b121df653ef">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;Tim_Behavior-82496c33-1d6b-45e3-9345-4062f8f6b03a" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;essen3-d66707f7-a6e2-4132-adfe-7e084da0a297" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">ActionForessen3-fb3c14ab-712b-42c9-8abc-0b121df653ef</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">ActionForessen3</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;Action" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:ActionForsenden-fbc5188b-4d70-40ed-be28-d6e8a9886d16">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;Tim_Behavior-82496c33-1d6b-45e3-9345-4062f8f6b03a" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;senden-404d6416-e56a-4e13-a226-9d6771262999" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;senden_zu_empfangen-fa2addec-7955-45fa-a1cd-6f462c2808af" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">ActionForsenden-fbc5188b-4d70-40ed-be28-d6e8a9886d16</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">ActionForsenden</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;Action" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:Drawing1-5db85886-5900-4964-89f0-42718907bded">
+    <standard-pass-ont:contains rdf:resource="&baseuri;SID_1-a56ea23c-f2f8-4855-a56a-5e9d55d74908" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">Drawing1-5db85886-5900-4964-89f0-42718907bded</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">Drawing1</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;PASSProcessModel" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:Gemma_Essen_von_Tim_an_Lukas-09e3811a-b80f-42cc-acd0-5a28af1e5802">
+    <standard-pass-ont:hasMessageType rdf:resource="&baseuri;Gemma_essen-7db6783c-8bbe-4540-a598-aac05c1f4d3e" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">Gemma Essen von Tim an Lukas-09e3811a-b80f-42cc-acd0-5a28af1e5802</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">Gemma Essen von Tim an Lukas</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:hasReceiver rdf:resource="&baseuri;Lukas-7535620f-5b83-43d0-b6ed-9c21ebbe80cf" />
+    <standard-pass-ont:hasSender rdf:resource="&baseuri;Tim-bd5620e4-f537-4421-aff5-751af03bf506" />
+    <rdf:type rdf:resource="&standard-pass-ont;MessageExchange" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:Gemma_essen-7db6783c-8bbe-4540-a598-aac05c1f4d3e">
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">Gemma essen-7db6783c-8bbe-4540-a598-aac05c1f4d3e</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">Gemma essen</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;MessageSpecification" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:Jo-aa881578-1f28-4958-b1b4-5237fa434be3">
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">Jo-aa881578-1f28-4958-b1b4-5237fa434be3</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">Jo</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;MessageSpecification" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:Jo_von_Lukas_an_Tim-6abbcbdf-add9-4cdb-83a0-a2ac6a16acf0">
+    <standard-pass-ont:hasMessageType rdf:resource="&baseuri;Jo-aa881578-1f28-4958-b1b4-5237fa434be3" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">Jo von Lukas an Tim-6abbcbdf-add9-4cdb-83a0-a2ac6a16acf0</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">Jo von Lukas an Tim</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:hasReceiver rdf:resource="&baseuri;Tim-bd5620e4-f537-4421-aff5-751af03bf506" />
+    <standard-pass-ont:hasSender rdf:resource="&baseuri;Lukas-7535620f-5b83-43d0-b6ed-9c21ebbe80cf" />
+    <rdf:type rdf:resource="&standard-pass-ont;MessageExchange" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:Lukas-7535620f-5b83-43d0-b6ed-9c21ebbe80cf">
+    <standard-pass-ont:containsBaseBehavior rdf:resource="&baseuri;Lukas_Behavior-83bf2276-d3f1-457e-a464-166651047454" />
+    <standard-pass-ont:containsBehavior rdf:resource="&baseuri;Lukas_Behavior-83bf2276-d3f1-457e-a464-166651047454" />
+    <standard-pass-ont:hasIncomingMessageExchange rdf:resource="&baseuri;Gemma_Essen_von_Tim_an_Lukas-09e3811a-b80f-42cc-acd0-5a28af1e5802" />
+    <standard-pass-ont:hasMaximumSubjectInstanceRestriction rdf:datatype="&xsd;nonNegativeInteger">1</standard-pass-ont:hasMaximumSubjectInstanceRestriction>
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">Lukas-7535620f-5b83-43d0-b6ed-9c21ebbe80cf</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">Lukas</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:hasOutgoingMessageExchange rdf:resource="&baseuri;Jo_von_Lukas_an_Tim-6abbcbdf-add9-4cdb-83a0-a2ac6a16acf0" />
+    <standard-pass-ont:hasOutgoingMessageExchange rdf:resource="&baseuri;Na_von_Lukas_an_Tim-5bb9e515-da7a-40e1-975b-38175f3a3a3b" />
+    <rdf:type rdf:resource="&standard-pass-ont;FullySpecifiedSubject" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:LukasToTim-afe7d121-a18c-4970-b2eb-0f87ae61df07">
+    <standard-pass-ont:contains rdf:resource="&baseuri;Jo_von_Lukas_an_Tim-6abbcbdf-add9-4cdb-83a0-a2ac6a16acf0" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;Na_von_Lukas_an_Tim-5bb9e515-da7a-40e1-975b-38175f3a3a3b" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">LukasToTim-afe7d121-a18c-4970-b2eb-0f87ae61df07</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">LukasToTim</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;MessageExchangeList" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:Lukas_Behavior-83bf2276-d3f1-457e-a464-166651047454">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;Lukas-7535620f-5b83-43d0-b6ed-9c21ebbe80cf" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">Lukas_Behavior-83bf2276-d3f1-457e-a464-166651047454</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">Lukas_Behavior</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;SubjectBaseBehavior" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:Na-6c3242b0-3048-4b79-aaec-3526b418f957">
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">Na-6c3242b0-3048-4b79-aaec-3526b418f957</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">Na</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;MessageSpecification" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:Na_von_Lukas_an_Tim-5bb9e515-da7a-40e1-975b-38175f3a3a3b">
+    <standard-pass-ont:hasMessageType rdf:resource="&baseuri;Na-6c3242b0-3048-4b79-aaec-3526b418f957" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">Na von Lukas an Tim-5bb9e515-da7a-40e1-975b-38175f3a3a3b</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">Na von Lukas an Tim</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:hasReceiver rdf:resource="&baseuri;Tim-bd5620e4-f537-4421-aff5-751af03bf506" />
+    <standard-pass-ont:hasSender rdf:resource="&baseuri;Lukas-7535620f-5b83-43d0-b6ed-9c21ebbe80cf" />
+    <rdf:type rdf:resource="&standard-pass-ont;MessageExchange" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:Receive_Transition_Condition-7e5dc745-45dc-4a30-b751-e02dc4f3b521">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;Tim_Behavior-82496c33-1d6b-45e3-9345-4062f8f6b03a" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">Receive Transition Condition-7e5dc745-45dc-4a30-b751-e02dc4f3b521</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">Receive Transition Condition</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:requiresMessageSentFrom rdf:resource="&baseuri;Lukas-7535620f-5b83-43d0-b6ed-9c21ebbe80cf" />
+    <standard-pass-ont:requiresPerformedMessageExchange rdf:resource="&baseuri;Na_von_Lukas_an_Tim-5bb9e515-da7a-40e1-975b-38175f3a3a3b" />
+    <standard-pass-ont:requiresReceptionOfMessage rdf:resource="&baseuri;Na-6c3242b0-3048-4b79-aaec-3526b418f957" />
+    <rdf:type rdf:resource="&standard-pass-ont;ReceiveTransitionCondition" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:Receive_Transition_Vondition-e0f80c45-230a-483b-89e5-694873bfb5a7">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;Tim_Behavior-82496c33-1d6b-45e3-9345-4062f8f6b03a" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">Receive Transition Vondition-e0f80c45-230a-483b-89e5-694873bfb5a7</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">Receive Transition Vondition</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:requiresMessageSentFrom rdf:resource="&baseuri;Lukas-7535620f-5b83-43d0-b6ed-9c21ebbe80cf" />
+    <standard-pass-ont:requiresPerformedMessageExchange rdf:resource="&baseuri;Jo_von_Lukas_an_Tim-6abbcbdf-add9-4cdb-83a0-a2ac6a16acf0" />
+    <standard-pass-ont:requiresReceptionOfMessage rdf:resource="&baseuri;Jo-aa881578-1f28-4958-b1b4-5237fa434be3" />
+    <rdf:type rdf:resource="&standard-pass-ont;ReceiveTransitionCondition" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:SID_1-a56ea23c-f2f8-4855-a56a-5e9d55d74908">
+    <standard-pass-ont:contains rdf:resource="&baseuri;Gemma_Essen_von_Tim_an_Lukas-09e3811a-b80f-42cc-acd0-5a28af1e5802" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;Gemma_essen-7db6783c-8bbe-4540-a598-aac05c1f4d3e" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;Jo-aa881578-1f28-4958-b1b4-5237fa434be3" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;Jo_von_Lukas_an_Tim-6abbcbdf-add9-4cdb-83a0-a2ac6a16acf0" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;Lukas-7535620f-5b83-43d0-b6ed-9c21ebbe80cf" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;LukasToTim-afe7d121-a18c-4970-b2eb-0f87ae61df07" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;Lukas_Behavior-83bf2276-d3f1-457e-a464-166651047454" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;Na-6c3242b0-3048-4b79-aaec-3526b418f957" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;Na_von_Lukas_an_Tim-5bb9e515-da7a-40e1-975b-38175f3a3a3b" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;Tim-bd5620e4-f537-4421-aff5-751af03bf506" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;TimToLukas-240a4ef2-bbb1-4283-9e11-efd0619271ad" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;Tim_Behavior-82496c33-1d6b-45e3-9345-4062f8f6b03a" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">SID_1-a56ea23c-f2f8-4855-a56a-5e9d55d74908</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">SID_1</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&abstract-pass-ont;ModelLayer" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:Send_Transition_Condition-ad33dc7f-4555-4da5-84c0-e21b25220c11">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;Tim_Behavior-82496c33-1d6b-45e3-9345-4062f8f6b03a" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">Send Transition Condition-ad33dc7f-4555-4da5-84c0-e21b25220c11</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">Send Transition Condition</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:requiresMessageSentTo rdf:resource="&baseuri;Lukas-7535620f-5b83-43d0-b6ed-9c21ebbe80cf" />
+    <standard-pass-ont:requiresPerformedMessageExchange rdf:resource="&baseuri;Gemma_Essen_von_Tim_an_Lukas-09e3811a-b80f-42cc-acd0-5a28af1e5802" />
+    <standard-pass-ont:requiresSendingOfMessage rdf:resource="&baseuri;Gemma_essen-7db6783c-8bbe-4540-a598-aac05c1f4d3e" />
+    <rdf:type rdf:resource="&standard-pass-ont;SendTransitionCondition" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:Tim-bd5620e4-f537-4421-aff5-751af03bf506">
+    <standard-pass-ont:containsBaseBehavior rdf:resource="&baseuri;Tim_Behavior-82496c33-1d6b-45e3-9345-4062f8f6b03a" />
+    <standard-pass-ont:containsBehavior rdf:resource="&baseuri;Tim_Behavior-82496c33-1d6b-45e3-9345-4062f8f6b03a" />
+    <standard-pass-ont:hasIncomingMessageExchange rdf:resource="&baseuri;Jo_von_Lukas_an_Tim-6abbcbdf-add9-4cdb-83a0-a2ac6a16acf0" />
+    <standard-pass-ont:hasIncomingMessageExchange rdf:resource="&baseuri;Na_von_Lukas_an_Tim-5bb9e515-da7a-40e1-975b-38175f3a3a3b" />
+    <standard-pass-ont:hasMaximumSubjectInstanceRestriction rdf:datatype="&xsd;nonNegativeInteger">1</standard-pass-ont:hasMaximumSubjectInstanceRestriction>
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">Tim-bd5620e4-f537-4421-aff5-751af03bf506</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">Tim</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:hasOutgoingMessageExchange rdf:resource="&baseuri;Gemma_Essen_von_Tim_an_Lukas-09e3811a-b80f-42cc-acd0-5a28af1e5802" />
+    <rdf:type rdf:resource="&standard-pass-ont;FullySpecifiedSubject" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:TimToLukas-240a4ef2-bbb1-4283-9e11-efd0619271ad">
+    <standard-pass-ont:contains rdf:resource="&baseuri;Gemma_Essen_von_Tim_an_Lukas-09e3811a-b80f-42cc-acd0-5a28af1e5802" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">TimToLukas-240a4ef2-bbb1-4283-9e11-efd0619271ad</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">TimToLukas</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;MessageExchangeList" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:Tim_Behavior-82496c33-1d6b-45e3-9345-4062f8f6b03a">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;Tim-bd5620e4-f537-4421-aff5-751af03bf506" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;ActionForempfangen-95dccab1-41ca-403d-a08f-75c064d6763d" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;ActionForessen-e4a17fb9-7e36-4a04-bf7b-e8607ad6fcb9" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;ActionForessen2-68483a19-8bbe-482e-8a08-7bb631fe1808" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;ActionForessen3-fb3c14ab-712b-42c9-8abc-0b121df653ef" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;ActionForsenden-fbc5188b-4d70-40ed-be28-d6e8a9886d16" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;Receive_Transition_Condition-7e5dc745-45dc-4a30-b751-e02dc4f3b521" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;Receive_Transition_Vondition-e0f80c45-230a-483b-89e5-694873bfb5a7" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;Send_Transition_Condition-ad33dc7f-4555-4da5-84c0-e21b25220c11" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;essen_zu_senden-9c6958f1-c47f-49f9-ba89-8802ca956ca7" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;senden_zu_empfangen-fa2addec-7955-45fa-a1cd-6f462c2808af" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;von_empfangen_zu_essen2-b5bf8792-211c-4355-939b-d0a13a737e15" />
+    <standard-pass-ont:contains rdf:resource="&baseuri;von_empfangen_zu_essen3-cd1177a9-5c1a-4209-86c7-548391a3d1ce" />
+    <standard-pass-ont:hasEndState rdf:resource="&baseuri;essen2-e4d9aee5-04a5-4613-bcdc-8cf238c46d0c" />
+    <standard-pass-ont:hasEndState rdf:resource="&baseuri;essen3-d66707f7-a6e2-4132-adfe-7e084da0a297" />
+    <standard-pass-ont:hasInitialStateOfBehavior rdf:resource="&baseuri;essen-a4320c74-f426-4478-b79d-f0a504fa5875" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">Tim_Behavior-82496c33-1d6b-45e3-9345-4062f8f6b03a</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">Tim_Behavior</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;SubjectBaseBehavior" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:empfangen-52240f18-e9f5-48a6-ab63-96f13849fe69">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;ActionForempfangen-95dccab1-41ca-403d-a08f-75c064d6763d" />
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;Tim_Behavior-82496c33-1d6b-45e3-9345-4062f8f6b03a" />
+    <standard-pass-ont:hasIncomingTransition rdf:resource="&baseuri;senden_zu_empfangen-fa2addec-7955-45fa-a1cd-6f462c2808af" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">empfangen-52240f18-e9f5-48a6-ab63-96f13849fe69</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">empfangen</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:hasOutgoingTransition rdf:resource="&baseuri;von_empfangen_zu_essen2-b5bf8792-211c-4355-939b-d0a13a737e15" />
+    <standard-pass-ont:hasOutgoingTransition rdf:resource="&baseuri;von_empfangen_zu_essen3-cd1177a9-5c1a-4209-86c7-548391a3d1ce" />
+    <rdf:type rdf:resource="&standard-pass-ont;ReceiveState" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:essen-a4320c74-f426-4478-b79d-f0a504fa5875">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;ActionForessen-e4a17fb9-7e36-4a04-bf7b-e8607ad6fcb9" />
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;Tim_Behavior-82496c33-1d6b-45e3-9345-4062f8f6b03a" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">essen-a4320c74-f426-4478-b79d-f0a504fa5875</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">essen</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:hasOutgoingTransition rdf:resource="&baseuri;essen_zu_senden-9c6958f1-c47f-49f9-ba89-8802ca956ca7" />
+    <rdf:type rdf:resource="&standard-pass-ont;DoState" />
+    <rdf:type rdf:resource="&standard-pass-ont;InitialStateOfBehavior" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:essen2-e4d9aee5-04a5-4613-bcdc-8cf238c46d0c">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;ActionForessen2-68483a19-8bbe-482e-8a08-7bb631fe1808" />
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;Tim_Behavior-82496c33-1d6b-45e3-9345-4062f8f6b03a" />
+    <standard-pass-ont:hasIncomingTransition rdf:resource="&baseuri;von_empfangen_zu_essen2-b5bf8792-211c-4355-939b-d0a13a737e15" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">essen2-e4d9aee5-04a5-4613-bcdc-8cf238c46d0c</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">essen2</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;DoState" />
+    <rdf:type rdf:resource="&standard-pass-ont;EndState" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:essen3-d66707f7-a6e2-4132-adfe-7e084da0a297">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;ActionForessen3-fb3c14ab-712b-42c9-8abc-0b121df653ef" />
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;Tim_Behavior-82496c33-1d6b-45e3-9345-4062f8f6b03a" />
+    <standard-pass-ont:hasIncomingTransition rdf:resource="&baseuri;von_empfangen_zu_essen3-cd1177a9-5c1a-4209-86c7-548391a3d1ce" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">essen3-d66707f7-a6e2-4132-adfe-7e084da0a297</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">essen3</standard-pass-ont:hasModelComponentLabel>
+    <rdf:type rdf:resource="&standard-pass-ont;DoState" />
+    <rdf:type rdf:resource="&standard-pass-ont;EndState" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:essen_zu_senden-9c6958f1-c47f-49f9-ba89-8802ca956ca7">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;ActionForessen-e4a17fb9-7e36-4a04-bf7b-e8607ad6fcb9" />
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;Tim_Behavior-82496c33-1d6b-45e3-9345-4062f8f6b03a" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">essen zu senden-9c6958f1-c47f-49f9-ba89-8802ca956ca7</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">essen zu senden</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:hasSourceState rdf:resource="&baseuri;essen-a4320c74-f426-4478-b79d-f0a504fa5875" />
+    <standard-pass-ont:hasTargetState rdf:resource="&baseuri;senden-404d6416-e56a-4e13-a226-9d6771262999" />
+    <rdf:type rdf:resource="&standard-pass-ont;DoTransition" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:senden-404d6416-e56a-4e13-a226-9d6771262999">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;ActionForsenden-fbc5188b-4d70-40ed-be28-d6e8a9886d16" />
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;Tim_Behavior-82496c33-1d6b-45e3-9345-4062f8f6b03a" />
+    <standard-pass-ont:hasIncomingTransition rdf:resource="&baseuri;essen_zu_senden-9c6958f1-c47f-49f9-ba89-8802ca956ca7" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">senden-404d6416-e56a-4e13-a226-9d6771262999</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">senden</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:hasOutgoingTransition rdf:resource="&baseuri;senden_zu_empfangen-fa2addec-7955-45fa-a1cd-6f462c2808af" />
+    <rdf:type rdf:resource="&standard-pass-ont;SendState" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:senden_zu_empfangen-fa2addec-7955-45fa-a1cd-6f462c2808af">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;ActionForsenden-fbc5188b-4d70-40ed-be28-d6e8a9886d16" />
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;Tim_Behavior-82496c33-1d6b-45e3-9345-4062f8f6b03a" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">senden zu empfangen-fa2addec-7955-45fa-a1cd-6f462c2808af</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">senden zu empfangen</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:hasSourceState rdf:resource="&baseuri;senden-404d6416-e56a-4e13-a226-9d6771262999" />
+    <standard-pass-ont:hasTargetState rdf:resource="&baseuri;empfangen-52240f18-e9f5-48a6-ab63-96f13849fe69" />
+    <standard-pass-ont:hasTransitionCondition rdf:resource="&baseuri;Send_Transition_Condition-ad33dc7f-4555-4da5-84c0-e21b25220c11" />
+    <rdf:type rdf:resource="&standard-pass-ont;SendTransition" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:von_empfangen_zu_essen2-b5bf8792-211c-4355-939b-d0a13a737e15">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;ActionForempfangen-95dccab1-41ca-403d-a08f-75c064d6763d" />
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;Tim_Behavior-82496c33-1d6b-45e3-9345-4062f8f6b03a" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">von empfangen zu essen2-b5bf8792-211c-4355-939b-d0a13a737e15</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">von empfangen zu essen2</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:hasPriorityNumber rdf:datatype="&xsd;positiveInteger">1</standard-pass-ont:hasPriorityNumber>
+    <standard-pass-ont:hasSourceState rdf:resource="&baseuri;empfangen-52240f18-e9f5-48a6-ab63-96f13849fe69" />
+    <standard-pass-ont:hasTargetState rdf:resource="&baseuri;essen2-e4d9aee5-04a5-4613-bcdc-8cf238c46d0c" />
+    <standard-pass-ont:hasTransitionCondition rdf:resource="&baseuri;Receive_Transition_Vondition-e0f80c45-230a-483b-89e5-694873bfb5a7" />
+    <rdf:type rdf:resource="&standard-pass-ont;ReceiveTransition" />
+  </owl:NamedIndividual>
+  <owl:NamedIndividual rdf:about="baseuri:von_empfangen_zu_essen3-cd1177a9-5c1a-4209-86c7-548391a3d1ce">
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;ActionForempfangen-95dccab1-41ca-403d-a08f-75c064d6763d" />
+    <standard-pass-ont:belongsTo rdf:resource="&baseuri;Tim_Behavior-82496c33-1d6b-45e3-9345-4062f8f6b03a" />
+    <standard-pass-ont:hasModelComponentID rdf:datatype="&xsd;string">von empfangen zu essen3-cd1177a9-5c1a-4209-86c7-548391a3d1ce</standard-pass-ont:hasModelComponentID>
+    <standard-pass-ont:hasModelComponentLabel xml:lang="en">von empfangen zu essen3</standard-pass-ont:hasModelComponentLabel>
+    <standard-pass-ont:hasPriorityNumber rdf:datatype="&xsd;positiveInteger">1</standard-pass-ont:hasPriorityNumber>
+    <standard-pass-ont:hasSourceState rdf:resource="&baseuri;empfangen-52240f18-e9f5-48a6-ab63-96f13849fe69" />
+    <standard-pass-ont:hasTargetState rdf:resource="&baseuri;essen3-d66707f7-a6e2-4132-adfe-7e084da0a297" />
+    <standard-pass-ont:hasTransitionCondition rdf:resource="&baseuri;Receive_Transition_Condition-7e5dc745-45dc-4a30-b751-e02dc4f3b521" />
+    <rdf:type rdf:resource="&standard-pass-ont;ReceiveTransition" />
+  </owl:NamedIndividual>
+  <owl:Ontology rdf:about="http://subjective-me.jimdo.com/s-bpm/processmodels/2022-05-18/tim/">
+    <owl:imports rdf:resource="http://www.i2pm.net/standard-pass-ont" />
+    <owl:imports rdf:resource="http://www.imi.kit.edu/abstract-pass-ont" />
+  </owl:Ontology>
+</rdf:RDF>

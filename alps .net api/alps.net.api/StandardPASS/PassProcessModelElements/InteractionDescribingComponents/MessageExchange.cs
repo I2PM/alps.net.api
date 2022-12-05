@@ -17,7 +17,7 @@ namespace alps.net.api.StandardPASS
         protected ISubject receiver;
         protected ISubject sender;
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "MessageExchange";
 

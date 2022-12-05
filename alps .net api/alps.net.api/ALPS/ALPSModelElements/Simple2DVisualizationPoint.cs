@@ -12,7 +12,7 @@ namespace alps.net.api.ALPS
         protected double posx, posy;
 
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "Simple2DVisualizationPoint";
 

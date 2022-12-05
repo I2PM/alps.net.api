@@ -13,7 +13,7 @@ namespace alps.net.api.StandardPASS
         // TODO check only keyword for source state
 
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "SendingFailedTransition";
 

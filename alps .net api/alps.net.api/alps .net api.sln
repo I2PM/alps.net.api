@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "alps.net.api", "alps.net.ap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestProject", "..\UnitTestProject\UnitTestProject.csproj", "{0CF5AD1C-7C71-40C7-B857-53F25C3A101B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryExample", "..\LibraryExample\LibraryExample.csproj", "{371C79C3-AC46-42F0-931A-9F84AF2A344C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{0CF5AD1C-7C71-40C7-B857-53F25C3A101B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CF5AD1C-7C71-40C7-B857-53F25C3A101B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CF5AD1C-7C71-40C7-B857-53F25C3A101B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{371C79C3-AC46-42F0-931A-9F84AF2A344C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{371C79C3-AC46-42F0-931A-9F84AF2A344C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{371C79C3-AC46-42F0-931A-9F84AF2A344C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{371C79C3-AC46-42F0-931A-9F84AF2A344C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

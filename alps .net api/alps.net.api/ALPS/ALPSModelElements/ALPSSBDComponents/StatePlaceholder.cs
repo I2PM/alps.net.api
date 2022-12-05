@@ -6,17 +6,17 @@ using System.Collections.Generic;
 
 namespace alps.net.api.ALPS
 {
-    class StatePlaceholder : State, IStatePlaceholder
+    public class StatePlaceholder : State, IStatePlaceholder
     {
         /// <summary>
-        /// Name of the class
+        /// Name of the class, needed for parsing
         /// </summary>
-        private const string className = "StatePlaceholder";
+        private const string CLASS_NAME = "StatePlaceholder";
 
 
         public override string getClassName()
         {
-            return className;
+            return CLASS_NAME;
         }
 
         protected override string getExportTag()
@@ -29,10 +29,23 @@ namespace alps.net.api.ALPS
         }
 
         protected StatePlaceholder() { }
-        public StatePlaceholder(ISubjectBehavior behavior, string labelForID = null, IGuardBehavior guardBehavior = null,
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="behavior"></param>
+        /// <param name="labelForId"></param>
+        /// <param name="guardBehavior"></param>
+        /// <param name="functionSpecification"></param>
+        /// <param name="incomingTransition"></param>
+        /// <param name="outgoingTransition"></param>
+        /// <param name="comment"></param>
+        /// <param name="additionalLabel"></param>
+        /// <param name="additionalAttribute"></param>
+        public StatePlaceholder(ISubjectBehavior behavior, string labelForId = null, IGuardBehavior guardBehavior = null,
             IFunctionSpecification functionSpecification = null, ISet<ITransition> incomingTransition = null, ISet<ITransition> outgoingTransition = null,
             string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
-            : base(behavior, labelForID, guardBehavior, functionSpecification, incomingTransition, outgoingTransition, comment, additionalLabel, additionalAttribute)
+            : base(behavior, labelForId, guardBehavior, functionSpecification, incomingTransition, outgoingTransition, comment, additionalLabel, additionalAttribute)
         { }
 
 
