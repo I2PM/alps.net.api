@@ -172,7 +172,9 @@ namespace alps.net.api.StandardPASS
                 removeTriple(new IncompleteTriple(OWLTags.stdHasInitialState, oldInitialState.getUriModelComponentID()));
             }
 
-            if (!(initialStateOfBehavior is null))
+            this.initialStateOfBehavior = initialStateOfBehavior;
+
+            if (initialStateOfBehavior != null)
             {
                 addBehaviorDescribingComponent(initialStateOfBehavior);
                 initialStateOfBehavior.setIsStateType(IState.StateType.InitialStateOfBehavior);

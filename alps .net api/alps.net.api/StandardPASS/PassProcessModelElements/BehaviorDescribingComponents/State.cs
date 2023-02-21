@@ -305,11 +305,15 @@ namespace alps.net.api.StandardPASS
 
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
-        {
+        { 
             if (implCapsule != null && implCapsule.parseAttribute(predicate, objectContent, lang, dataType, element))
+            {
                 return true;
+            }
             else if (element != null)
             {
+                //Console.Write("Parsing non null parseAttribute for State: " + this.getModelComponentID());
+                //Console.WriteLine(" - predicate: " + predicate);
                 if (element is ITransition transition)
                 {
                     if (predicate.Contains(OWLTags.hasIncomingTransition))
@@ -341,25 +345,27 @@ namespace alps.net.api.StandardPASS
                     generateAction(action);
                     return true;
                 }
-                else if (predicate.Contains(OWLTags.type))
+            }
+
+            if (predicate.Contains(OWLTags.type))
+            {
+                if (objectContent.ToLower().Contains("endstate") && !(objectContent.ToLower().Contains("sendstate")))
                 {
-                    if (objectContent.ToLower().Contains("endstate"))
-                    {
-                        setIsStateType(StateType.EndState);
-                        return true;
-                    }
-                    else if (objectContent.ToLower().Contains("initialstateofbehavior"))
-                    {
-                        setIsStateType(StateType.InitialStateOfBehavior);
-                        return true;
-                    }
-                    else if (objectContent.ToLower().Contains("initialstateofchoicesegmentpath"))
-                    {
-                        setIsStateType(StateType.InitialStateOfChoiceSegmentPath);
-                        return true;
-                    }
+                    setIsStateType(StateType.EndState);
+                    return true;
+                }
+                else if (objectContent.ToLower().Contains("initialstateofbehavior"))
+                {
+                    setIsStateType(StateType.InitialStateOfBehavior);
+                    return true;
+                }
+                else if (objectContent.ToLower().Contains("initialstateofchoicesegmentpath"))
+                {
+                    setIsStateType(StateType.InitialStateOfChoiceSegmentPath);
+                    return true;
                 }
             }
+
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
 

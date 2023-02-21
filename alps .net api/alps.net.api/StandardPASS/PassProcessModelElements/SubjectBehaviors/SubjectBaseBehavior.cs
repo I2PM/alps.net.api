@@ -2,7 +2,9 @@
 using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.util;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace alps.net.api.StandardPASS
@@ -48,8 +50,10 @@ namespace alps.net.api.StandardPASS
         {
             if (element != null)
             {
+                Console.WriteLine("Parsing Attribut: " + predicate);
                 if (predicate.Contains(OWLTags.hasEndState) && element is IState endState)
                 {
+                    Console.WriteLine("   - found End state: " + endState.getModelComponentID());
                     addBehaviorDescribingComponent(endState);
                     endState.setIsStateType(IState.StateType.EndState);
                     return true;

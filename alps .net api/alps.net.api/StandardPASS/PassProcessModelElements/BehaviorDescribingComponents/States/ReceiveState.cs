@@ -115,7 +115,7 @@ namespace alps.net.api.StandardPASS
                             removeStateType(StateType.Abstract);
                         break;
                     default:
-                        if (!stateType.Equals(StateType.EndState)) { base.setIsStateType(stateType); }
+                        base.setIsStateType(stateType);
                         break;
                 }
             }

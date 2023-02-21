@@ -13,7 +13,7 @@ namespace alps.net.api.ALPS
         /// <summary>
         /// Name of the class, needed for parsing
         /// </summary>
-        private const string className = "StandaloneMacroSubject";
+        private const string className = "StandAloneMacroSubject";
 
         public override string getClassName()
         {
