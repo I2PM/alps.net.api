@@ -9,8 +9,6 @@ namespace alps.net.api.ALPS
     public class Simple2DVisualizationPoint : ALPSModelElement, ISimple2DVisualizationPoint
     {
 
-        protected double posx, posy;
-
         /// <summary>
         /// Name of the class, needed for parsing
         /// </summary>
