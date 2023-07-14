@@ -1,4 +1,5 @@
-﻿namespace alps.net.api.StandardPASS
+﻿using System.Xml;
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Interface to the interface subject class
@@ -21,6 +22,10 @@
         /// </summary>
         /// <returns>the referenced subject</returns>
         IFullySpecifiedSubject getReferencedSubject();
+
+        void setSimpleSimInterfaceSubjectResponseDefinition(string simpleSimInterfaceSubjectResponseDefinitionString);
+        void setSimpleSimInterfaceSubjectResponseDefinition(XmlNode simpleSimInterfaceSubjectResponseDefinition);
+        XmlNode getSimpleSimInterfaceSubjectResponseDefinition(); 
 
     }
 

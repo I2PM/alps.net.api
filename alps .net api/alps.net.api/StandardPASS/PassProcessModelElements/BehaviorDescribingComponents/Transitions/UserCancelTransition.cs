@@ -1,5 +1,7 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.src;
 using alps.net.api.util;
+using Serilog;
 using System.Collections.Generic;
 
 namespace alps.net.api.StandardPASS
@@ -14,6 +16,17 @@ namespace alps.net.api.StandardPASS
         /// </summary>
         private const string className = "UserCancelTransition";
 
+        private double _sisiChoiceChance;
+        public double getSisiChoiceChance()
+        {
+            return this._sisiChoiceChance;
+        }
+
+        public void setSisiChoiceChance(double value)
+        {
+            if (value >= 0.0) { _sisiChoiceChance = value; }
+            else { throw new System.ArgumentOutOfRangeException("_sisiChoiceChance", "Value must be between 0.0 and 1.0."); }
+        }
 
         public override string getClassName()
         {
@@ -35,5 +48,24 @@ namespace alps.net.api.StandardPASS
             string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
             : base(behavior, labelForID, sourceState, targetState, transitionCondition, transitionType, comment, additionalLabel, additionalAttribute) { }
 
+        protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
+        {
+
+            if (predicate.Contains(OWLTags.abstrHasSimpleSimTransitionChoiceChance))
+            {
+                try
+                {
+                    this.setSisiChoiceChance(double.Parse(objectContent));
+                }
+                catch (System.Exception e)
+                {
+                    Log.Warning("could not parse the value " + objectContent + " as valid double");
+                }
+                return true;
+            }
+            return base.parseAttribute(predicate, objectContent, lang, dataType, element);
+
+
+        }
     }
 }

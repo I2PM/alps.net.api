@@ -1,6 +1,7 @@
 ﻿using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.util;
+using Serilog;
 using System.Collections.Generic;
 using static alps.net.api.StandardPASS.IState;
 
@@ -17,8 +18,10 @@ namespace alps.net.api.StandardPASS
         private const string className = "SendState";
         protected string exportTag = OWLTags.std;
         protected string exportClassname = className;
+        protected ISiSiTimeDistribution sisiExecutionDuration;
+        protected double sisiCostPerExecution;
 
-
+        
         public override string getClassName()
         {
             return exportClassname;
@@ -173,6 +176,54 @@ namespace alps.net.api.StandardPASS
                     return true;
                 }
             }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimDurationMeanValue))
+            {
+                if (this.sisiExecutionDuration == null)
+                {
+                    this.sisiExecutionDuration = new SisiTimeDistribution();
+                }
+                this.sisiExecutionDuration.meanValue = SisiTimeDistribution.ConvertXSDDurationStringToFractionsOfDay(objectContent);
+                return true;
+            }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimDurationDeviation))
+            {
+                if (this.sisiExecutionDuration == null)
+                {
+                    this.sisiExecutionDuration = new SisiTimeDistribution();
+                }
+                this.sisiExecutionDuration.standardDeviation = SisiTimeDistribution.ConvertXSDDurationStringToFractionsOfDay(objectContent);
+                return true;
+            }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimDurationMinValue))
+            {
+                if (this.sisiExecutionDuration == null)
+                {
+                    this.sisiExecutionDuration = new SisiTimeDistribution();
+                }
+                this.sisiExecutionDuration.minValue = SisiTimeDistribution.ConvertXSDDurationStringToFractionsOfDay(objectContent);
+                return true;
+            }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimDurationMaxValue))
+            {
+                if (this.sisiExecutionDuration == null)
+                {
+                    this.sisiExecutionDuration = new SisiTimeDistribution();
+                }
+                this.sisiExecutionDuration.maxValue = SisiTimeDistribution.ConvertXSDDurationStringToFractionsOfDay(objectContent);
+                return true;
+            }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimCostPerExecution))
+            {
+                try
+                {
+                    this.sisiCostPerExecution = double.Parse(objectContent);
+                }
+                catch (System.Exception e)
+                {
+                    Log.Warning("could not parse the value " + objectContent + " as valid double");
+                }
+                return true;
+            }
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
 
@@ -232,6 +283,27 @@ namespace alps.net.api.StandardPASS
                         break;
                 }
             }
+        }
+
+        public ISiSiTimeDistribution getSisiExecutionDuration()
+        {
+            return this.sisiExecutionDuration;
+        }
+
+        public void setSisiExecutionDuration(ISiSiTimeDistribution sisiExecutionDuration)
+        {
+            this.sisiExecutionDuration = sisiExecutionDuration; 
+        }
+
+
+        public double getSisiCostPerExecution()
+        {
+            return this.sisiCostPerExecution;
+        }
+
+        public void setSisiCostPerExecution(double sisiCostPerExecution)
+        {
+            this.sisiCostPerExecution = sisiCostPerExecution;   
         }
     }
 }

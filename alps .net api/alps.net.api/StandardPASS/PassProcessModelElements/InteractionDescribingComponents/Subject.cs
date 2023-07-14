@@ -3,6 +3,7 @@ using alps.net.api.FunctionalityCapsules;
 using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.util;
+using System;
 using System.Collections.Generic;
 
 namespace alps.net.api.StandardPASS
@@ -31,6 +32,96 @@ namespace alps.net.api.StandardPASS
         /// </summary>
         private const string className = "Subject";
 
+        private double has2DPageRatio;
+        private double hasRelative2D_Height;
+        private double hasRelative2D_Width;
+        private double hasRelative2D_PosX;
+        private double hasRelative2D_PosY;
+
+        public double get2DPageRatio()
+        {
+            return has2DPageRatio;
+        }
+
+        public void set2DPageRatio(double has2DPageRatio)
+        {
+            if (has2DPageRatio >= 0)
+            {
+                this.has2DPageRatio = has2DPageRatio;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("has2DPageRatio", "Value must be a positive double or 0.");
+            }
+        }
+
+        public double getRelative2DHeight()
+        {
+            return hasRelative2D_Height;
+        }
+
+        public void setRelative2DHeight(double relative2DHeight)
+        {
+            if (relative2DHeight >= 0 && relative2DHeight <= 1)
+            {
+                hasRelative2D_Height = relative2DHeight;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("relative2DHeight", "Value must be between 0 and 1 (inclusive).");
+            }
+        }
+
+        public double getRelative2DWidth()
+        {
+            return hasRelative2D_Width;
+        }
+
+        public void setRelative2DWidth(double relative2DWidth)
+        {
+            if (relative2DWidth >= 0 && relative2DWidth <= 1)
+            {
+                hasRelative2D_Width = relative2DWidth;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("relative2DWidth", "Value must be between 0 and 1 (inclusive).");
+            }
+        }
+
+        public double getRelative2DPosX()
+        {
+            return hasRelative2D_PosX;
+        }
+
+        public void setRelative2DPosX(double relative2DPosX)
+        {
+            if (relative2DPosX >= 0 && relative2DPosX <= 1)
+            {
+                hasRelative2D_PosX = relative2DPosX;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("relative2DPosX", "Value must be between 0 and 1 (inclusive).");
+            }
+        }
+
+        public double getRelative2DPosY()
+        {
+            return hasRelative2D_PosY;
+        }
+
+        public void setRelative2DPosY(double relative2DPosY)
+        {
+            if (relative2DPosY >= 0 && relative2DPosY <= 1)
+            {
+                hasRelative2D_PosY = relative2DPosY;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("relative2DPosY", "Value must be between 0 and 1 (inclusive).");
+            }
+        }
 
         public override string getClassName()
         {
@@ -375,5 +466,7 @@ namespace alps.net.api.StandardPASS
         {
             return extendsCapsule.isExtension();
         }
+
+        
     }
 }

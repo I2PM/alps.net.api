@@ -24,31 +24,7 @@ namespace alps.net.api.StandardPASS
         /// <returns>the macro behavior</returns>
         IMacroBehavior getReferencedMacroBehavior();
 
-        /// <summary>
-        /// Adds a StateReference to the set of contained StateReferences.
-        /// </summary>
-        /// <param name="stateReference">the new state reference</param>
-        void addStateReference(IStateReference stateReference);
-
-        /// <summary>
-        /// Remove a StateReference from the list of current StateReferences
-        /// </summary>
-        /// <param name="stateRefID">the id of the reference</param>
-        /// <param name="removeCascadeDepth">Parses the depth of a cascading delete for elements that are connected to the currently deleted one</param>
-        void removeStateReference(string stateRefID, int removeCascadeDepth = 0);
-
-        /// <summary>
-        /// Overrides all current StateReferences
-        /// </summary>
-        /// <param name="references">the new references</param>
-        /// <param name="removeCascadeDepth">Parses the depth of a cascading delete for elements that are connected to the currently deleted one</param>
-        void setStateReferences(ISet<IStateReference> references, int removeCascadeDepth = 0);
-
-        /// <summary>
-        /// Return all the StateReferences
-        /// </summary>
-        /// <returns>all references</returns>
-        IDictionary<string, IStateReference> getStateReferences();
-
+    
+       
     }
 }

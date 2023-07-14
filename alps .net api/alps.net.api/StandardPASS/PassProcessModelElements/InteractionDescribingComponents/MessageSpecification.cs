@@ -2,6 +2,8 @@
 using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.util;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 
 namespace alps.net.api.StandardPASS
@@ -20,6 +22,8 @@ namespace alps.net.api.StandardPASS
         /// </summary>
         private const string className = "MessageSpecification";
 
+        public ISiSiTimeDistribution simpleSimTransmissionTime { get; set; }
+        public SimpleSimVSMMessageTypes simpleSimVSMMessageType { get; set; }
 
         public override string getClassName()
         {
@@ -85,7 +89,78 @@ namespace alps.net.api.StandardPASS
                     return true;
                 }
             }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimDurationMeanValue))
+            {
+                if (this.simpleSimTransmissionTime == null)
+                {
+                    this.simpleSimTransmissionTime = new SisiTimeDistribution();
+                }
+                this.simpleSimTransmissionTime.meanValue = SisiTimeDistribution.ConvertXSDDurationStringToFractionsOfDay(objectContent);
+                return true;
+            }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimDurationDeviation))
+            {
+                if (this.simpleSimTransmissionTime == null)
+                {
+                    this.simpleSimTransmissionTime = new SisiTimeDistribution();
+                }
+                this.simpleSimTransmissionTime.standardDeviation = SisiTimeDistribution.ConvertXSDDurationStringToFractionsOfDay(objectContent);
+                return true;
+            }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimDurationMinValue))
+            {
+                if (this.simpleSimTransmissionTime == null)
+                {
+                    this.simpleSimTransmissionTime = new SisiTimeDistribution();
+                }
+                this.simpleSimTransmissionTime.minValue = SisiTimeDistribution.ConvertXSDDurationStringToFractionsOfDay(objectContent);
+                return true;
+            }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimDurationMaxValue))
+            {
+                if (this.simpleSimTransmissionTime == null)
+                {
+                    this.simpleSimTransmissionTime = new SisiTimeDistribution();
+                }
+                this.simpleSimTransmissionTime.maxValue = SisiTimeDistribution.ConvertXSDDurationStringToFractionsOfDay(objectContent);
+                return true;
+            }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimVSMMessageType))
+            {
+                this.simpleSimVSMMessageType = parseSimpleSimVSMMessageType(objectContent);
+                return true;
+            }
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
+        }
+
+        /// <summary>
+        /// parse message type of Messag 
+        /// Standard;Conveyance Time (internal);Conveyance Time (external);
+        /// Information Flow (internal);Information Flow (external);
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private SimpleSimVSMMessageTypes parseSimpleSimVSMMessageType(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                value = "nothing correct";
+            }
+
+            if (value.ToLower().Contains("conveyance") )
+            {
+                if (value.ToLower().Contains("external")) return SimpleSimVSMMessageTypes.ConveyanceTimeExternal;
+                else return SimpleSimVSMMessageTypes.ConveyanceTimeInternal;
+            }
+            else if (value.ToLower().Contains("information"))
+            {
+                if (value.ToLower().Contains("external")) return SimpleSimVSMMessageTypes.InformationFlowExternal;
+                else return SimpleSimVSMMessageTypes.InformationFlowInternal;
+            }
+            else
+            {
+                return SimpleSimVSMMessageTypes.Standard;
+            }
         }
 
         public override ISet<IPASSProcessModelElement> getAllConnectedElements(ConnectedElementsSetSpecification specification)

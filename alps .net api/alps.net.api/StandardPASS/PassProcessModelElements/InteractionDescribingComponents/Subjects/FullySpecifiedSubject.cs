@@ -2,7 +2,9 @@
 using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.util;
+using Serilog;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace alps.net.api.StandardPASS
 {
@@ -16,11 +18,20 @@ namespace alps.net.api.StandardPASS
         protected ICompatibilityDictionary<string, ISubjectBehavior> subjectBehaviors = new CompatibilityDictionary<string, ISubjectBehavior>();
         protected ISubjectDataDefinition subjectDataDefinition;
         protected ICompatibilityDictionary<string, IInputPoolConstraint> inputPoolConstraints = new CompatibilityDictionary<string, IInputPoolConstraint>();
+        protected ISubjectExecutionMapping subjectExecutionMapping;
         /// <summary>
         /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "FullySpecifiedSubject";
 
+        //simple simulation (sisi) related elements
+
+        public double sisiExecutionCostPerHour { get; set; } = 0;
+        public SimpleSimVSMSubjectTypes sisiVSMSubjectType { get; set; } = SimpleSimVSMSubjectTypes.Standard;
+        public double sisiVSMInventory { get; set; } = 0;
+        public double sisiVSMProcessQuantity { get; set; } = 0;     
+        public double sisiVSMQualityRate { get; set; } = 0; 
+        public double sisiVSMAvailability { get; set; } = 0;    
 
         public override string getClassName()
         {
@@ -225,6 +236,9 @@ namespace alps.net.api.StandardPASS
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
         {
+            CultureInfo customCulture = new CultureInfo("en-US");
+            customCulture.NumberFormat.NumberDecimalSeparator = ".";
+
             if (element != null)
             {
                 if (element is ISubjectBehavior subjectBehavior)
@@ -254,7 +268,80 @@ namespace alps.net.api.StandardPASS
                     return true;
                 }
 
+                else if (predicate.Contains(OWLTags.hasSubjectExecutionMapping) && element is ISubjectExecutionMapping mapping)
+                {
+                    setSubjectExecutionMapping(mapping);
+                    return true;
+                }
+
             }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimExecutionCostPerHour))
+            {
+                try
+                {
+                    this.sisiExecutionCostPerHour = double.Parse(objectContent, customCulture);
+                }
+                catch (System.Exception e)
+                {
+                    Log.Warning("could not parse the value " + objectContent + " as valid double");
+                }
+                return true;
+            }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimVSMSubjectType))
+            {
+               this.sisiVSMSubjectType = parseSimpleSimVSMSubjectType(objectContent);                
+                return true;
+            }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimVSMAvailability))
+            {
+                try
+                {
+                    this.sisiVSMInventory = double.Parse(objectContent, customCulture  );
+                }
+                catch (System.Exception e)
+                {
+                    Log.Warning("could not parse the value " + objectContent + " as valid double");
+                }
+                return true;
+            }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimiVSMProcessQuantity))
+            {
+                try
+                {
+                    this.sisiVSMProcessQuantity = double.Parse(objectContent, customCulture);
+                }
+                catch (System.Exception e)
+                {
+                    Log.Warning("could not parse the value " + objectContent + " as valid double");
+                }
+                return true;
+            }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimiVSMQualityRate))
+            {
+                try
+                {
+                    this.sisiVSMQualityRate = double.Parse(objectContent, customCulture );
+                }
+                catch (System.Exception e)
+                {
+                    Log.Warning("could not parse the value " + objectContent + " as valid double");
+                }
+                return true;
+            }
+            else if (predicate.Contains(OWLTags.hasExecutionMappingDefinition))
+            {
+                //System.Console.WriteLine("Found an Execution Mapping: " + objectContent);
+                if (this.subjectExecutionMapping != null) {
+                    string newlabel = "SubjectExecutionMappingOf" + this.modelComponentID;
+                    string newID = newlabel;
+                    ISubjectExecutionMapping newMappingObject =
+                        new SubjectExecutionMapping(this.layer,newlabel,objectContent);
+                    this.subjectExecutionMapping = newMappingObject;    
+                }
+                return true;
+            }
+            
+
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
 
@@ -310,6 +397,36 @@ namespace alps.net.api.StandardPASS
             base.notifyModelComponentIDChanged(oldID, newID);
         }
 
+        private static SimpleSimVSMSubjectTypes parseSimpleSimVSMSubjectType(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                value = "nothing correct";
+            }
+
+            if (value.ToLower().Contains("production"))
+            {
+                return SimpleSimVSMSubjectTypes.ProductionSubject;
+            }
+            else if (value.ToLower().Contains("storage"))
+            {
+                return SimpleSimVSMSubjectTypes.StorageSubject;
+            }
+            else
+            {
+                return SimpleSimVSMSubjectTypes.Standard;
+            }
+        }
+
+        public ISubjectExecutionMapping getSubjectExecutionMapping()
+        {
+            return this.subjectExecutionMapping;
+        }
+
+        public void setSubjectExecutionMapping(ISubjectExecutionMapping subjectExecutionMapping)
+        {
+            this.subjectExecutionMapping= subjectExecutionMapping;  
+        }
     }
 
 }

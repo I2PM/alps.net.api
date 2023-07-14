@@ -1,9 +1,10 @@
-﻿namespace alps.net.api.StandardPASS
+﻿using alps.net.api.util;
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Interface to the time transition class
     /// </summary>
-    public interface ITimeTransition : ITransition
+    public interface ITimeTransition : ITransition, IHasSiSiChoiceChance
     {
 
         public enum TimeTransitionType

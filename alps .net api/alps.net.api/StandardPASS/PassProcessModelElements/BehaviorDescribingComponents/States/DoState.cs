@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using alps.net.api.parsing;
 using alps.net.api.src;
 using static alps.net.api.StandardPASS.IState;
+using alps.net.api.StandardPASS.PassProcessModelElements.DataDescribingComponents;
+using Serilog;
+using Serilog.Configuration;
+using System;
 
 namespace alps.net.api.StandardPASS
 {
@@ -12,6 +16,7 @@ namespace alps.net.api.StandardPASS
 
     public class DoState : StandardPASSState, IDoState
     {
+        protected readonly ICompatibilityDictionary<string, IDataMappingFunction> generalDataMappingFunctions = new CompatibilityDictionary<string, IDataMappingFunction>();
         protected readonly ICompatibilityDictionary<string, IDataMappingIncomingToLocal> dataMappingIncomingToLocalDict = new CompatibilityDictionary<string, IDataMappingIncomingToLocal>();
         protected readonly ICompatibilityDictionary<string, IDataMappingLocalToOutgoing> dataMappingLocalToOutgoingDict = new CompatibilityDictionary<string, IDataMappingLocalToOutgoing>();
 
@@ -23,8 +28,69 @@ namespace alps.net.api.StandardPASS
         protected string exportClassname = className;
 
 
+        protected ISiSiTimeDistribution sisiExecutionDuration;
+        protected double sisiCostPerExecution;
+        //public ISiSiTimeDistribution sisiExecutionDuration { get; set; }
+        //public double sisiCostPerExecution { get; set; } = 0;
+        private double _sisiEndStayChance = 0;
+
+        public ISiSiTimeDistribution getSisiExecutionDuration()
+        {
+            return this.sisiExecutionDuration;
+        }
+
+        public void setSisiExecutionDuration(ISiSiTimeDistribution sisiExecutionDuration)
+        {
+            this.sisiExecutionDuration = sisiExecutionDuration;
+        }
+
+
+        public double getSisiCostPerExecution()
+        {
+            return this.sisiCostPerExecution;
+        }
+
+        public void setSisiCostPerExecution(double sisiCostPerExecution)
+        {
+            this.sisiCostPerExecution = sisiCostPerExecution;
+        }
+        public double getSisiEndStayChance(){ return this._sisiEndStayChance; }
+        public void setSisiEndStayChance(double value)
+        {
+            // Add validation logic
+            if (value >= 0.0 && value <= 1.0)
+            {
+                _sisiEndStayChance = value;
+            }
+            else
+            {
+                if (value < 0)
+                {
+                    _sisiEndStayChance = 0;
+                    Log.Warning("Value for sisiEndStayChance is smaller than 0. Setting it to 0.");
+                }
+                else if (value > 1)
+                {
+                    _sisiEndStayChance = 1;
+                    Log.Warning("Value for sisiEndStayChance is larger than 1. Setting it to 1.");
+                }
+            }
+
+        }
+
+        protected SimpleSimTimeCategory sisiVSMTimeCategory;
+
+        public SimpleSimTimeCategory getSisiVSMTimeCategory() { return this.sisiVSMTimeCategory; }
+
+        public void setSisiVSMTimeCategory(SimpleSimTimeCategory simpleSimTimeCategory)
+        {
+            this.sisiVSMTimeCategory = simpleSimTimeCategory;
+        }
+
+
         public override string getClassName()
         {
+            
             return exportClassname;
         }
 
@@ -119,6 +185,8 @@ namespace alps.net.api.StandardPASS
             }
         }
 
+        
+
         public IDictionary<string, IDataMappingLocalToOutgoing> getDataMappingFunctionsLocalToOutgoing()
         {
             return new Dictionary<string, IDataMappingLocalToOutgoing>(dataMappingLocalToOutgoingDict);
@@ -128,6 +196,35 @@ namespace alps.net.api.StandardPASS
         {
             if (id is null) return;
             if (dataMappingLocalToOutgoingDict.TryGetValue(id, out IDataMappingLocalToOutgoing mapping))
+            {
+                dataMappingLocalToOutgoingDict.Remove(id);
+                mapping.unregister(this, removeCascadeDepth);
+                removeTriple(new IncompleteTriple(OWLTags.stdHasDataMappingFunction, mapping.getUriModelComponentID()));
+            }
+        }
+
+
+        public void addDataMappingFunction(IDataMappingFunction dataMappingFunction)
+        {
+            if (dataMappingFunction is null) { return; }
+            if (generalDataMappingFunctions.TryAdd(dataMappingFunction.getModelComponentID(), dataMappingFunction))
+            {
+                publishElementAdded(dataMappingFunction);
+                dataMappingFunction.register(this);
+                addTriple(new IncompleteTriple(OWLTags.stdHasDataMappingFunction, dataMappingFunction.getUriModelComponentID()));
+            }
+        }
+
+        public IDictionary<string, IDataMappingFunction> getDataMappingFunctions()
+        {
+            return new Dictionary<string, IDataMappingFunction>(generalDataMappingFunctions);
+        }
+
+
+        public void removeDataMappingFunction(string id, int removeCascadeDepth = 0)
+        {
+            if (id is null) return;
+            if (generalDataMappingFunctions.TryGetValue(id, out IDataMappingFunction mapping))
             {
                 dataMappingLocalToOutgoingDict.Remove(id);
                 mapping.unregister(this, removeCascadeDepth);
@@ -178,11 +275,22 @@ namespace alps.net.api.StandardPASS
                 {
                     addDataMappingFunctionLocalToOutgoing(outgoingMapping);
                     return true;
+
+                }
+                else if (predicate.Contains(OWLTags.hasDataMappingFunction) && element is IDataMappingFunction functionMapping)
+                {
+                    addDataMappingFunction(functionMapping);
+                    return true;
                 }
                 else if (predicate.Contains(OWLTags.hasFunctionSpecification) && element is IDoFunction function)
                 {
                     setFunctionSpecification(function);
                     return true;
+                }
+                
+                if (predicate.Contains(OWLTags.abstrHasSimpleSimDurationMeanValue))
+                {
+                   
                 }
             }
             else if (predicate.Contains(OWLTags.type))
@@ -197,6 +305,71 @@ namespace alps.net.api.StandardPASS
                     setIsStateType(StateType.Finalized);
                     return true;
                 }
+            }else if (predicate.Contains(OWLTags.abstrHasSimpleSimDurationMeanValue))
+            { 
+                if (this.sisiExecutionDuration == null)
+                {
+                    this.sisiExecutionDuration = new SisiTimeDistribution();
+                }
+                this.sisiExecutionDuration.meanValue = SisiTimeDistribution.ConvertXSDDurationStringToFractionsOfDay(objectContent);
+                return true;
+            }else if(predicate.Contains(OWLTags.abstrHasSimpleSimDurationDeviation))
+            {
+                if (this.sisiExecutionDuration == null)
+                {
+                    this.sisiExecutionDuration = new SisiTimeDistribution();
+                }
+                this.sisiExecutionDuration.standardDeviation = SisiTimeDistribution.ConvertXSDDurationStringToFractionsOfDay(objectContent);
+                return true;
+            }else if(predicate.Contains(OWLTags.abstrHasSimpleSimDurationMinValue))
+            {
+                if (this.sisiExecutionDuration == null)
+                {
+                    this.sisiExecutionDuration = new SisiTimeDistribution();
+                }
+                this.sisiExecutionDuration.minValue = SisiTimeDistribution.ConvertXSDDurationStringToFractionsOfDay(objectContent);
+                return true;
+            }else if (predicate.Contains(OWLTags.abstrHasSimpleSimDurationMaxValue))
+            {
+                if (this.sisiExecutionDuration == null)
+                {
+                    this.sisiExecutionDuration = new SisiTimeDistribution();
+                }
+                this.sisiExecutionDuration.maxValue = SisiTimeDistribution.ConvertXSDDurationStringToFractionsOfDay(objectContent);
+                return true;
+            }else if (predicate.Contains(OWLTags.abstrHasSimpleSimCostPerExecution))
+            {
+                try
+                {
+                    this.sisiCostPerExecution = double.Parse(objectContent);
+                }
+                catch (System.Exception e)
+                {
+                    Log.Warning("could not parse the value " + objectContent + " as valid double");
+                }
+                return true;
+            }else if (predicate.Contains(OWLTags.abstrHasSimpleSimEndStayChance))
+            {
+                try
+                {
+                    _sisiEndStayChance = double.Parse(objectContent);
+                }
+                catch (System.Exception e)
+                {
+                    Log.Warning("could not parse the value " + objectContent + " as valid double");
+                }
+                return true;
+            }else if (predicate.Contains(OWLTags.abstrHasSimpleSimVSMTimeCategory))
+            {
+                try
+                {
+                    this.sisiVSMTimeCategory = parseSimpleSimTimeCategory(objectContent);
+                }
+                catch (System.Exception e)
+                {
+                    Log.Warning("could not parse the value " + objectContent + " as valid Time Category");
+                }
+                return true;
             }
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
@@ -300,6 +473,54 @@ namespace alps.net.api.StandardPASS
             }
 
             base.notifyModelComponentIDChanged(oldID, newID);
+        }
+
+        public void setEndState(bool isEndState)
+        {
+            if (isEndState)
+            {
+                if (!this.isStateType(StateType.EndState))
+                {
+                    this.setIsStateType(StateType.EndState);
+                }
+            }else
+            {
+                if (this.isStateType(StateType.EndState))
+                {
+                    this.removeStateType(StateType.EndState);
+                }
+            }
+        }
+
+        public bool isEndState()
+        {
+            return this.isStateType(StateType.EndState);
+        }
+
+        /// <summary>
+        /// The method will try to pars a given value and return on the the according enum types
+        /// If pasring is not possible the default value will be given.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        private static SimpleSimTimeCategory parseSimpleSimTimeCategory(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                value = "nothing correct";
+            }
+
+            foreach (SimpleSimTimeCategory type in Enum.GetValues(typeof(SimpleSimTimeCategory)))
+            {
+                if (value.ToLower().Contains(type.ToString().ToLower()))
+                {
+                    return type;
+                }
+            }
+
+            return SimpleSimTimeCategory.Standard;
+            
         }
     }
 }

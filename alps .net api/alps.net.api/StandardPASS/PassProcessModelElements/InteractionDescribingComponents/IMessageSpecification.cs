@@ -1,4 +1,6 @@
-﻿namespace alps.net.api.StandardPASS
+﻿using alps.net.api.util;
+
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Interface for the MessageSpecification class
@@ -18,6 +20,31 @@
         /// </summary>
         /// <returns>the payload description</returns>
         IPayloadDescription getContainedPayloadDescription();
+
+
+        /// <summary>
+        /// For simple simulation of processes: The (expected) transmission time of this kind of message. Necessary only for simulation purposes
+        /// </summary>
+        ISiSiTimeDistribution simpleSimTransmissionTime { get; set; }
+
+        /// <summary>
+        /// for values streamm analysisefine what type of Messag this is. Standard;Conveyance Time (internal);Conveyance Time (external);Information Flow (internal);Information Flow (external);
+        /// </summary>
+        SimpleSimVSMMessageTypes simpleSimVSMMessageType { get; set; }
+
+    }
+
+    /// <summary>
+    /// Message types for Value Stream Mapping Analysis
+    /// Values shoudl be: Standard;Conveyance Time (internal);Conveyance Time (external);Information Flow (internal);Information Flow (external);
+    /// </summary>
+    public enum SimpleSimVSMMessageTypes
+    {
+        Standard,
+        ConveyanceTimeInternal,
+        ConveyanceTimeExternal,
+        InformationFlowInternal,
+        InformationFlowExternal
     }
 
 }

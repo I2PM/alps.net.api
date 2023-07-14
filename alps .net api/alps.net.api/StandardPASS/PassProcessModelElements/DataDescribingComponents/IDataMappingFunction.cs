@@ -1,4 +1,4 @@
-﻿namespace alps.net.api.StandardPASS
+﻿namespace alps.net.api.StandardPASS.PassProcessModelElements.DataDescribingComponents
 {
     /// <summary>
     /// Interface to the data mapping function class

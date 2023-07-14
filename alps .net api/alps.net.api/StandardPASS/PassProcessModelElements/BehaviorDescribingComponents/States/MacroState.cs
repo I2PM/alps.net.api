@@ -1,6 +1,7 @@
 ﻿using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.util;
+using System;
 using System.Collections.Generic;
 
 namespace alps.net.api.StandardPASS
@@ -9,6 +10,7 @@ namespace alps.net.api.StandardPASS
     /// Class that represents an macro state
     /// </summary>
 
+    [Obsolete]
     public class MacroState : State, IMacroState
     {
         protected IMacroBehavior referenceMacroBehavior;

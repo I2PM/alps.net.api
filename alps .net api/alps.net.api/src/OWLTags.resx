@@ -121,7 +121,105 @@
     <value>abstract-pass-ont:</value>
   </data>
   <data name="abstrExtends" xml:space="preserve">
-    <value>abstract-pass-ont:extends</value>
+    <value>extends</value>
+  </data>
+  <data name="abstrHas2DPageRatio" xml:space="preserve">
+    <value>has2DPageRatio</value>
+  </data>
+  <data name="abstrHasRelative2D_BeginX" xml:space="preserve">
+    <value>hasRelative2D_BeginX</value>
+    <comment>for elements that are visually represented by Lines</comment>
+  </data>
+  <data name="abstrHasRelative2D_BeginY" xml:space="preserve">
+    <value>abtsrHasRelative2D_BeginY</value>
+    <comment>for elements that are visually represented by Lines</comment>
+  </data>
+  <data name="abstrHasRelative2D_EndX" xml:space="preserve">
+    <value>hasRelative2D_EndX</value>
+    <comment>for elements that are visually represented by Lines</comment>
+  </data>
+  <data name="abstrHasRelative2D_EndY" xml:space="preserve">
+    <value>hasRelative2D_EndY</value>
+    <comment>for elements that are visually represented by Lines</comment>
+  </data>
+  <data name="abstrHasRelative2D_Height" xml:space="preserve">
+    <value>hasRelative2D_Height</value>
+    <comment>for elements that are visually represented by boxes</comment>
+  </data>
+  <data name="abstrHasRelative2D_PosX" xml:space="preserve">
+    <value>hasRelative2D_PosX</value>
+    <comment>for elements that are visually represented by boxes</comment>
+  </data>
+  <data name="abstrHasRelative2D_PosY" xml:space="preserve">
+    <value>hasRelative2D_PosY</value>
+    <comment>for elements that are visually represented by boxes</comment>
+  </data>
+  <data name="abstrHasRelative2D_Width" xml:space="preserve">
+    <value>hasRelative2D_Width</value>
+    <comment>for elements that are visually represented by boxes</comment>
+  </data>
+  <data name="abstrHasSimpleSimBilledWaitingTime" xml:space="preserve">
+    <value>hasSimpleSimBilledWaitingTime</value>
+    <comment>For ReceiveStates</comment>
+  </data>
+  <data name="abstrHasSimpleSimCostPerExecution" xml:space="preserve">
+    <value>hasSimpleSimCostPerExecution</value>
+    <comment>For States (Do  + Send)</comment>
+  </data>
+  <data name="abstrHasSimpleSimDurationDeviation" xml:space="preserve">
+    <value>hasSimpleSimDurationDeviation</value>
+    <comment>For Time Distributions</comment>
+  </data>
+  <data name="abstrHasSimpleSimDurationMaxValue" xml:space="preserve">
+    <value>hasSimpleSimDurationMaxValue</value>
+    <comment>For Time Distributions</comment>
+  </data>
+  <data name="abstrHasSimpleSimDurationMeanValue" xml:space="preserve">
+    <value>hasSimpleSimDurationMeanValue</value>
+    <comment>For Time Distributions</comment>
+  </data>
+  <data name="abstrHasSimpleSimDurationMinValue" xml:space="preserve">
+    <value>hasSimpleSimDurationMinValue</value>
+    <comment>For Time Distributions</comment>
+  </data>
+  <data name="abstrHasSimpleSimEndStayChance" xml:space="preserve">
+    <value>hasSimpleSimEndStayChance</value>
+    <comment>For Do states (that can be left again)</comment>
+  </data>
+  <data name="abstrHasSimpleSimExecutionCostPerHour" xml:space="preserve">
+    <value>hasExecutionCostPerHour</value>
+    <comment>For Subjects</comment>
+  </data>
+  <data name="abstrHasSimpleSimInterfaceSubjectResponseDefinition" xml:space="preserve">
+    <value>hasSimpleSimInterfaceSubjectResponseDefinition</value>
+  </data>
+  <data name="abstrHasSimpleSimiVSMProcessQuantity" xml:space="preserve">
+    <value>hasSimpleSimiVSMProcessQuantity</value>
+    <comment>For Subjects (Value Stream Mapping)</comment>
+  </data>
+  <data name="abstrHasSimpleSimiVSMQualityRate" xml:space="preserve">
+    <value>hasSimpleSimiVSMQualityRate</value>
+    <comment>For Subjects (Value Stream Mapping)</comment>
+  </data>
+  <data name="abstrHasSimpleSimTransitionChoiceChance" xml:space="preserve">
+    <value>hasSimpleSimChoiceChance</value>
+    <comment>For Do/Timer/User Cancel Transitions</comment>
+  </data>
+  <data name="abstrHasSimpleSimVSMAvailability" xml:space="preserve">
+    <value>hasSimpleSimVSMAvailability</value>
+    <comment>For Subjects (Value Stream Mapping)</comment>
+  </data>
+  <data name="abstrHasSimpleSimVSMMessageType" xml:space="preserve">
+    <value>hasSimpleSimVSMMessageType</value>
+    <comment>For Messages</comment>
+  </data>
+  <data name="abstrHasSimpleSimVSMSubjectType" xml:space="preserve">
+    <value>hasSimpleSimVSMSubjectType</value>
+    <comment>For Subjects (Value Stream Mapping)</comment>
+  </data>
+  <data name="abstrHasSimpleSimVSMTimeCategory" xml:space="preserve">
+    <value>hasSimpleSimVSMTimeCategory</value>
+    <comment>for States</comment>
   </data>
   <data name="abstrImplements" xml:space="preserve">
     <value>abstract-pass-ont:implements</value>
@@ -206,6 +304,7 @@
   </data>
   <data name="hasExecutionMappingDefinition" xml:space="preserve">
     <value>hasExecutionMappingDefinition</value>
+    <comment>A direct String correctly attached to an "Execution Mapping" Object - could (incorrectly) also be attached to a subject. not to be confused with "hasSubjectExecutionMapping" </comment>
   </data>
   <data name="hasFeelExpressionAsDataMapping" xml:space="preserve">
     <value>hasFeelExpressionAsDataMapping</value>
@@ -287,6 +386,10 @@
   </data>
   <data name="hasStartSubject" xml:space="preserve">
     <value>hasStartSubject</value>
+  </data>
+  <data name="hasSubjectExecutionMapping" xml:space="preserve">
+    <value>hasSubjectExecutionMapping</value>
+    <comment>Linking Subjects to individual mapping objects containing a "hasExecutionMappingDefinition"</comment>
   </data>
   <data name="hasTargetState" xml:space="preserve">
     <value>hasTargetState</value>

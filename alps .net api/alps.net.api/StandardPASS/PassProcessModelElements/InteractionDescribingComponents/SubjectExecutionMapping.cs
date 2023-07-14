@@ -8,12 +8,14 @@ namespace alps.net.api.StandardPASS
 {
     public class SubjectExecutionMapping : InteractionDescribingComponent, ISubjectExecutionMapping
     {
-        protected string executionMapping;
+        private string _executionMapping;
 
         /// <summary>
         /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "SubjectExecutionMapping";
+
+        public SubjectExecutionMappingTypes executionMappingType { get; set; }
 
         public override string getClassName()
         {
@@ -38,32 +40,30 @@ namespace alps.net.api.StandardPASS
             string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
             : base(layer, labelForID, comment, additionalLabel, additionalAttribute)
         {
-            setExecutionMapping(executionMapping);
+            setExecutionMappingDefinition(executionMapping);
+            executionMappingType = SubjectExecutionMappingTypes.GeneralExecutionMapping;
         }
 
-        public string getExecutionMapping()
+        public string getExecutionMappingDefinition()
         {
-            return executionMapping;
+            return this._executionMapping;
         }
 
-        public void setExecutionMapping(string mapping)
+        public void setExecutionMappingDefinition(string mapping)
         {
-            if (mapping != null && mapping.Equals(this.executionMapping)) return;
-            removeTriple(new IncompleteTriple(OWLTags.stdHasExecutionMappingDefinition, mapping, IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeString));
-            executionMapping = (mapping is null || mapping.Equals("")) ? null : mapping;
-            if (mapping != null && !mapping.Equals(""))
-                addTriple(new IncompleteTriple(OWLTags.stdBelongsTo, mapping, IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeString));
+            this._executionMapping= mapping;    
         }
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
         {
             if (predicate.Contains(OWLTags.hasExecutionMappingDefinition))
             {
-                setExecutionMapping(objectContent);
+                setExecutionMappingDefinition(objectContent);
                 return true;
             }
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
 
+       
     }
 }

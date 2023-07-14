@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using alps.net.api.util;
 
 namespace alps.net.api.StandardPASS
 {
@@ -6,7 +7,7 @@ namespace alps.net.api.StandardPASS
     /// Interface to the message exchange list class
     /// </summary>
 
-    public interface IMessageExchangeList : IInteractionDescribingComponent
+    public interface IMessageExchangeList : IInteractionDescribingComponent, IHasSimple2DVisualizationLine
     {
         /// <summary>
         /// Adds a message exchange to the exchange list

@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using alps.net.api.util;
+using System.Collections.Generic;
 
 namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Interface to the state class
     /// </summary>
-    public interface IState : IBehaviorDescribingComponent, IImplementingElement<IState>
+    public interface IState : IBehaviorDescribingComponent, IImplementingElement<IState>, IHasSimple2DVisualizationBox
     {
         /// <summary>
         /// Method that sets the incoming transition attribute of the instance

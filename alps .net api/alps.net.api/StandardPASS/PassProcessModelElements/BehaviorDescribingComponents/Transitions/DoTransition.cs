@@ -1,6 +1,7 @@
 ﻿using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.util;
+using Serilog;
 using System.Collections.Generic;
 
 namespace alps.net.api.StandardPASS
@@ -17,6 +18,7 @@ namespace alps.net.api.StandardPASS
         /// </summary>
         private const string className = "DoTransition";
 
+        private double _sisiChoiceChance = 0;
 
         public override string getClassName()
         {
@@ -74,9 +76,37 @@ namespace alps.net.api.StandardPASS
                 string prio = objectContent;
                 setPriorityNumber(int.Parse(prio));
                 return true;
+            }else if (predicate.Contains(OWLTags.abstrHasSimpleSimTransitionChoiceChance))
+            {
+                try
+                {
+                    this.setSisiChoiceChance(double.Parse(objectContent));
+                }
+                catch (System.Exception e)
+                {
+                    Log.Warning("could not parse the value " + objectContent + " as valid double");
+                }
+                return true;
             }
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
 
+        public double getSisiChoiceChance()
+        {
+            return this._sisiChoiceChance;
+        }
+
+        public void setSisiChoiceChance(double value)
+        {
+            if (value >= 0.0)
+            {
+                _sisiChoiceChance = value;
+            }
+            else
+            {
+                _sisiChoiceChance = 0;
+                Log.Warning("Value for _sisiChoiceChance is smaller than 0. Setting it to 0.");
+            }
+        }
     }
 }

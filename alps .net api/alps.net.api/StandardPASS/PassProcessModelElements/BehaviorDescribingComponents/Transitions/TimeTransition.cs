@@ -1,6 +1,7 @@
 ﻿using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.util;
+using Serilog;
 using System.Collections.Generic;
 using static alps.net.api.StandardPASS.ITimeTransition;
 
@@ -34,6 +35,17 @@ namespace alps.net.api.StandardPASS
 
         private TimeTransitionType timeTransitionType = TimeTransitionType.BusinessDayTimer;
 
+        public double _sisiChoiceChance;
+        public double getSisiChoiceChance()
+        {
+            return this._sisiChoiceChance;
+        }
+
+        public void setSisiChoiceChance(double value)
+        {
+            if (value >= 0.0) { _sisiChoiceChance = value; }
+            else { throw new System.ArgumentOutOfRangeException("_sisiChoiceChance", "Value must be between 0.0 and 1.0."); }
+        }
 
         public override IParseablePASSProcessModelElement getParsedInstance()
         {
@@ -115,6 +127,17 @@ namespace alps.net.api.StandardPASS
                         return true;
                     }
                 }
+            }else if (predicate.Contains(OWLTags.abstrHasSimpleSimTransitionChoiceChance))
+            {
+                try
+                {
+                    this.setSisiChoiceChance(double.Parse(objectContent));
+                }
+                catch (System.Exception e)
+                {
+                    Log.Warning("could not parse the value " + objectContent + " as valid double");
+                }
+                return true;
             }
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
 

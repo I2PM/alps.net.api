@@ -1,9 +1,11 @@
-﻿namespace alps.net.api.StandardPASS
+﻿using alps.net.api.util;
+
+namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Interface to the transition class
     /// </summary>
-    public interface ITransition : IBehaviorDescribingComponent, IImplementingElement<ITransition>, IAbstractElement
+    public interface ITransition : IBehaviorDescribingComponent, IImplementingElement<ITransition>, IAbstractElement, IHasSimple2DVisualizationLine
     {
         /// <summary>
         /// enum which describes all the possible states a transition can have

@@ -3,7 +3,7 @@ using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
 
-namespace alps.net.api.StandardPASS
+namespace alps.net.api.StandardPASS.PassProcessModelElements.DataDescribingComponents
 {
 
     /// <summary>
@@ -30,7 +30,7 @@ namespace alps.net.api.StandardPASS
             return new DataMappingFunction();
         }
 
-       protected DataMappingFunction() { }
+        protected DataMappingFunction() { }
 
         public DataMappingFunction(IPASSProcessModel model, string labelForID = null, string dataMappingString = null, string feelExpression = null,
             string toolSpecificDefinition = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
@@ -46,10 +46,10 @@ namespace alps.net.api.StandardPASS
         {
             if (dataMappingString != null && dataMappingString.Equals(this.dataMappingString)) return;
             removeTriple(new IncompleteTriple(OWLTags.stdHasDataMappingString, this.dataMappingString, IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeString));
-            this.dataMappingString = (dataMappingString is null || dataMappingString.Equals("")) ? null : dataMappingString;
+            this.dataMappingString = dataMappingString is null || dataMappingString.Equals("") ? null : dataMappingString;
             if (dataMappingString != null)
                 addTriple(new IncompleteTriple(OWLTags.stdHasDataMappingString, dataMappingString, IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeString));
-            
+
         }
 
 
@@ -57,7 +57,7 @@ namespace alps.net.api.StandardPASS
         {
             if (feelExpression != null && feelExpression.Equals(this.feelExpression)) return;
             removeTriple(new IncompleteTriple(OWLTags.stdHasFeelExpressionAsDataMapping, this.feelExpression, IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeString));
-            this.feelExpression = (feelExpression is null || feelExpression.Equals("")) ? null : feelExpression;
+            this.feelExpression = feelExpression is null || feelExpression.Equals("") ? null : feelExpression;
             if (feelExpression != null)
             {
                 addTriple(new IncompleteTriple(OWLTags.stdHasFeelExpressionAsDataMapping, feelExpression, IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeString));
@@ -70,7 +70,7 @@ namespace alps.net.api.StandardPASS
         {
             if (toolSpecificDefinition != null && toolSpecificDefinition.Equals(this.toolSpecificDefinition)) return;
             removeTriple(new IncompleteTriple(OWLTags.stdHasToolSpecificDefinition, this.toolSpecificDefinition, IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeString));
-            this.toolSpecificDefinition = (toolSpecificDefinition is null || toolSpecificDefinition.Equals("")) ? null : toolSpecificDefinition;
+            this.toolSpecificDefinition = toolSpecificDefinition is null || toolSpecificDefinition.Equals("") ? null : toolSpecificDefinition;
             if (toolSpecificDefinition != null)
             {
                 addTriple(new IncompleteTriple(OWLTags.stdHasToolSpecificDefinition, toolSpecificDefinition, IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeString));

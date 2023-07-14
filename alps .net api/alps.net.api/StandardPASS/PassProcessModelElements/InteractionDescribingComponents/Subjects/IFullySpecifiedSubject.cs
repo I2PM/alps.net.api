@@ -91,6 +91,52 @@ namespace alps.net.api.StandardPASS
         /// <returns>A dictionary of input pool constraints</returns>
         IDictionary<string, IInputPoolConstraint> getInputPoolConstraints();
 
+        /// <summary>
+        /// Returns an object containing a subject execution mapping
+        /// </summary>
+        /// <returns></returns>
+        ISubjectExecutionMapping getSubjectExecutionMapping();
+
+        /// <summary>
+        /// Set the reference to an object containting the 
+        /// </summary>
+        /// <param name="subjectExecutionMapping">a reference to the accoring execution mapping object</param>
+        void setSubjectExecutionMapping(ISubjectExecutionMapping subjectExecutionMapping);
+
+
+        /// <summary>
+        /// For simple simulation the costs that one subject has per hour of execution.
+        /// </summary>
+        double sisiExecutionCostPerHour { get; set; }
+
+        /// <summary>
+        /// Define what type of Subject this is. Standard; Production Subject, Storage Subject
+        /// </summary>
+        SimpleSimVSMSubjectTypes sisiVSMSubjectType { get; set; }
+
+        double sisiVSMInventory { get; set; }
+
+        /// <summary>
+        /// Enter a number that represents the amout of inventory in that facility. 
+        /// Mind the unit that you have chosen to consider in your VSM analisys and keep 
+        /// it konstant over all Storage Subjects
+        /// </summary>
+        double sisiVSMProcessQuantity { get; set; }
+
+        double sisiVSMQualityRate { get; set; }
+
+        double sisiVSMAvailability { get; set; }
+    }
+
+    /// <summary>
+    /// Message types for Value Stream Mapping Analysis
+    /// Values shoudl be:  Product Subject, Storage Subject, or Standard
+    /// </summary>
+    public enum SimpleSimVSMSubjectTypes
+    {
+        Standard,
+        ProductionSubject,
+        StorageSubject
     }
 
 }

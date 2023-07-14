@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using alps.net.api.util;
+using System.Collections.Generic;
 
 namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Interface to the subject class
     /// </summary>
-    public interface ISubject : IInteractionDescribingComponent, IImplementingElement<ISubject>, IExtendingElement<ISubject>, IAbstractElement
+    public interface ISubject : IHasSimple2DVisualizationBox, IInteractionDescribingComponent, IImplementingElement<ISubject>, IExtendingElement<ISubject>, IAbstractElement
     {
 
         /// <summary>
@@ -98,6 +99,6 @@ namespace alps.net.api.StandardPASS
         /// </summary>
         /// <param name="role">the role to be removed</param>
         void removeRole(Role role);
-    }
 
+    }
 }

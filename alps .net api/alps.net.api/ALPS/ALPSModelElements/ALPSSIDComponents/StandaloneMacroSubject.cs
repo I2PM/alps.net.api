@@ -3,6 +3,7 @@ using alps.net.api.src;
 using alps.net.api.StandardPASS;
 using alps.net.api.util;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace alps.net.api.ALPS
 {
@@ -70,6 +71,16 @@ namespace alps.net.api.ALPS
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
         {
+            /*
+            if (predicate.Contains(OWLTags.containsBehavior))
+            {
+                Debug.Print("Parsing Attribute of Stand laone macro: " + predicate.ToString());
+                if (element != null)
+                {
+                    Debug.Print("Element Type: " + element.GetType().ToString() + " - is macroB: " + (element is IMacroBehavior));
+                }
+            }*/
+            
             if (element is IMacroBehavior subjectBehavior && predicate.Contains(OWLTags.containsBehavior))
             {
                 setBehavior(subjectBehavior);

@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using alps.net.api.util;
+using System.Collections.Generic;
 
 namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Interface to the send type class
     /// </summary>
-    public interface ISendState : IStandardPASSState
+    public interface ISendState : IStandardPASSState, IHasDuration, IHasSiSiCostPerExecution
     {
 
         /// <summary>

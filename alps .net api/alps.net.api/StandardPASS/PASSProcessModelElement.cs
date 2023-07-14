@@ -616,8 +616,8 @@ namespace alps.net.api.StandardPASS
                 return true;
             }
 
-            
 
+            //Console.WriteLine("not parsed element: " + predicate);
             return false;
         }
 

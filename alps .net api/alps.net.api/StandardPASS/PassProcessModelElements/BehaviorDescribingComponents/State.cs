@@ -4,13 +4,17 @@ using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.FunctionalityCapsules;
 using static alps.net.api.StandardPASS.IState;
+using System.Diagnostics;
+using System;
+using System.Globalization;
+using Serilog;
 
 namespace alps.net.api.StandardPASS
 {
     /// <summary>
     /// Class that represents a state
     /// </summary>
-    public class State : BehaviorDescribingComponent, IStateReference
+    public class State : BehaviorDescribingComponent, IStateReference, IMacroState //IState
     {
         protected readonly ICompatibilityDictionary<string, ITransition> incomingTransitions = new CompatibilityDictionary<string, ITransition>();
         protected readonly ICompatibilityDictionary<string, ITransition> outgoingTransitions = new CompatibilityDictionary<string, ITransition>();
@@ -20,6 +24,145 @@ namespace alps.net.api.StandardPASS
         protected IGuardBehavior guardBehavior;
         protected IAction action;
         protected IState referenceState;
+        protected IMacroBehavior referenceMacroBehavior;
+        protected readonly ICompatibilityDictionary<string, IStateReference> stateReferences = new CompatibilityDictionary<string, IStateReference>();
+
+        private double has2DPageRatio;
+        private double hasRelative2D_Height;
+        private double hasRelative2D_Width;
+        private double hasRelative2D_PosX;
+        private double hasRelative2D_PosY;
+
+        public double get2DPageRatio()
+        {
+            return has2DPageRatio;
+        }
+
+        public void set2DPageRatio(double has2DPageRatio)
+        {
+            if (has2DPageRatio > 0)
+            {
+                this.has2DPageRatio = has2DPageRatio;
+            }
+            if (has2DPageRatio == 0)
+            {
+                this.has2DPageRatio = 1;
+                Log.Warning("found 2D page ratio of 0. This is impossible. changed it to 1");
+            }
+            else
+            {
+                this.has2DPageRatio = Math.Abs(has2DPageRatio);
+                Log.Warning("found negative 2d page ratio. Changed it to positive value");
+            }
+        }
+
+        public double getRelative2DHeight()
+        {
+            return hasRelative2D_Height;
+        }
+
+        public void setRelative2DHeight(double relative2DHeight)
+        {
+            if (relative2DHeight >= 0 && relative2DHeight <= 1)
+            {
+                hasRelative2D_Height = relative2DHeight;
+            }
+            else
+            {
+                if (relative2DHeight < 0)
+                {
+                    hasRelative2D_Height = 0;
+                    Log.Warning("Value for relative2DHeight is smaller than 0. Setting it to 0.");
+                }
+                else if (relative2DHeight > 1)
+                {
+                    hasRelative2D_Height = 1;
+                    Log.Warning("Value for relative2DHeight is larger than 1. Setting it to 1.");
+                }
+            }
+
+        }
+
+        public double getRelative2DWidth()
+        {
+            return hasRelative2D_Width;
+        }
+
+        public void setRelative2DWidth(double relative2DWidth)
+        {
+            
+            if (relative2DWidth >= 0 && relative2DWidth <= 1)
+            {
+                hasRelative2D_Width = relative2DWidth;
+            }
+            else
+            {
+                if (relative2DWidth < 0)
+                {
+                    hasRelative2D_Width = 0;
+                    Log.Warning("Value for relative2DWidth is smaller than 0. Setting it to 0.");
+                }
+                else if (relative2DWidth > 1)
+                {
+                    hasRelative2D_Width = 1;
+                    Log.Warning("Value for relative2DWidth is larger than 1. Setting it to 1.");
+                }
+            }
+
+        }
+
+        public double getRelative2DPosX()
+        {
+            return hasRelative2D_PosX;
+        }
+
+        public void setRelative2DPosX(double relative2DPosX)
+        {
+            if (relative2DPosX >= 0 && relative2DPosX <= 1)
+            {
+                hasRelative2D_PosX = relative2DPosX;
+            }
+            else
+            {
+                if (relative2DPosX < 0)
+                {
+                    hasRelative2D_PosX = 0;
+                    Log.Warning("Value for relative2DPosX is smaller than 0. Setting it to 0.");
+                }
+                else if (relative2DPosX > 1)
+                {
+                    hasRelative2D_PosX = 1;
+                    Log.Warning("Value for relative2DPosX is larger than 1. Setting it to 1.");
+                }
+            }
+        }
+
+        public double getRelative2DPosY()
+        {
+            return hasRelative2D_PosY;
+        }
+
+        public void setRelative2DPosY(double relative2DPosY)
+        {
+            if (relative2DPosY >= 0 && relative2DPosY <= 1)
+            {
+                hasRelative2D_PosY = relative2DPosY;
+            }
+            else
+            {
+                if (relative2DPosY < 0)
+                {
+                    hasRelative2D_PosY = 0;
+                    Log.Warning("Value for relative2DPosY is smaller than 0. Setting it to 0.");
+                }
+                else if (relative2DPosY > 1)
+                {
+                    hasRelative2D_PosY = 1;
+                    Log.Warning("Value for relative2DPosY is larger than 1. Setting it to 1.");
+                }
+            }
+        }
+
 
         /// <summary>
         /// Name of the class, needed for parsing
@@ -305,7 +448,13 @@ namespace alps.net.api.StandardPASS
 
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
-        { 
+        {
+            // necessary to parse decimal points correctly
+            CultureInfo customCulture = new CultureInfo("en-US");
+            customCulture.NumberFormat.NumberDecimalSeparator = ".";
+
+           
+
             if (implCapsule != null && implCapsule.parseAttribute(predicate, objectContent, lang, dataType, element))
             {
                 return true;
@@ -345,6 +494,38 @@ namespace alps.net.api.StandardPASS
                     generateAction(action);
                     return true;
                 }
+
+                else if (predicate.Contains(OWLTags.referencesMacroBehavior) && element is IMacroBehavior behavior)
+                {
+                    setReferencedMacroBehavior(behavior);
+                    return true;
+                }
+
+            }
+            else if (predicate.Contains(OWLTags.abstrHas2DPageRatio))
+            {
+                set2DPageRatio(double.Parse(objectContent, customCulture));
+                return true;
+            }
+            else if (predicate.Contains(OWLTags.abstrHasRelative2D_PosX))
+            {
+                setRelative2DPosX(double.Parse(objectContent, customCulture));
+                return true;
+            }
+            else if (predicate.Contains(OWLTags.abstrHasRelative2D_PosY))
+            {
+                setRelative2DPosY(double.Parse(objectContent, customCulture     ));
+                return true;
+            }
+            else if (predicate.Contains(OWLTags.abstrHasRelative2D_Height))
+            {
+                setRelative2DHeight(double.Parse(objectContent, customCulture));
+                return true;
+            }
+            else if (predicate.Contains(OWLTags.abstrHasRelative2D_Width))
+            {
+                setRelative2DWidth(double.Parse(objectContent, customCulture));
+                return true;
             }
 
             if (predicate.Contains(OWLTags.type))
@@ -365,6 +546,15 @@ namespace alps.net.api.StandardPASS
                     return true;
                 }
             }
+
+            /*
+            if (predicate.Contains("referencesMacroBehavior"))
+            {
+                Debug.WriteLine("element: " + element + " object " + objectContent);
+                //return true;
+            }
+            */
+
 
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
@@ -561,6 +751,35 @@ namespace alps.net.api.StandardPASS
         {
             return implCapsule.getImplementedInterfaces();
         }
+
+
+        public void setReferencedMacroBehavior(IMacroBehavior macroBehavior, int removeCascadeDepth = 0)
+        {
+            IMacroBehavior oldBehavior = this.referenceMacroBehavior;
+            // Might set it to null
+            this.referenceMacroBehavior = macroBehavior;
+
+            if (oldBehavior != null)
+            {
+                if (oldBehavior.Equals(macroBehavior)) return;
+                oldBehavior.unregister(this, removeCascadeDepth);
+                removeTriple(new IncompleteTriple(OWLTags.stdReferencesMacroBehavior, oldBehavior.getUriModelComponentID()));
+            }
+
+            if (!(macroBehavior is null))
+            {
+                publishElementAdded(macroBehavior);
+                macroBehavior.register(this);
+                addTriple(new IncompleteTriple(OWLTags.stdReferencesMacroBehavior, macroBehavior.getUriModelComponentID()));
+            }
+        }
+
+
+        public IMacroBehavior getReferencedMacroBehavior()
+        {
+            return referenceMacroBehavior;
+        }
+
     }
 }
 

@@ -2,7 +2,11 @@
 using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.util;
+using Serilog;
+using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
+using System.Xml;
 
 namespace alps.net.api.StandardPASS
 {
@@ -90,6 +94,13 @@ namespace alps.net.api.StandardPASS
                     return true;
                 }
             }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimInterfaceSubjectResponseDefinition))
+            {
+                this.setSimpleSimInterfaceSubjectResponseDefinition(objectContent);
+                return true;
+            }
+
+            //setSimpleSimInterfaceSubjectResponseDefinition
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
 
@@ -110,5 +121,26 @@ namespace alps.net.api.StandardPASS
             }
         }
 
+        protected XmlNode simpleSimInterfaceSubjectResponseDefinition;
+        public void setSimpleSimInterfaceSubjectResponseDefinition(string simpleSimInterfaceSubjectResponseDefinitionStringa)
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.LoadXml(simpleSimInterfaceSubjectResponseDefinitionStringa);
+
+            // Assuming the input string represents a single XML node,
+            // we retrieve the first child node of the root element.
+            XmlNode node = xmlDoc.DocumentElement?.FirstChild;
+            this.simpleSimInterfaceSubjectResponseDefinition = node;
+        }
+
+        public void setSimpleSimInterfaceSubjectResponseDefinition(XmlNode simpleSimInterfaceSubjectResponseDefinition)
+        {
+            this.simpleSimInterfaceSubjectResponseDefinition = simpleSimInterfaceSubjectResponseDefinition;
+        }
+
+        public XmlNode getSimpleSimInterfaceSubjectResponseDefinition()
+        {
+            return simpleSimInterfaceSubjectResponseDefinition;
+        }
     }
 }

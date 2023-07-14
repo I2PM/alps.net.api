@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using alps.net.api.util;
+using System;
+using System.Collections.Generic;
 
 namespace alps.net.api.StandardPASS
 {
@@ -6,7 +8,7 @@ namespace alps.net.api.StandardPASS
     /// Interface to the DoState class
     /// </summary>
 
-    public interface IDoState : IStandardPASSState
+    public interface IDoState : IStandardPASSState, IHasDuration, IHasSiSiCostPerExecution, ICanBeEndState, IHasSiSiEndStayChance, IHasSiSiTimeCategory
     {
         /// <summary>
         /// Overrides the functions that define how incoming data will be mapped to local data
@@ -48,11 +50,25 @@ namespace alps.net.api.StandardPASS
         /// <param name="dataMappingIncomingToLocal">the new function</param>
         void addDataMappingFunctionLocalToOutgoing(IDataMappingLocalToOutgoing dataMappingIncomingToLocal);
 
+        //// <summary>
+        /// Adds a new function that defines how local data will be mapped in general
+        /// </summary>
+        /// <param name="dataMappingFunction">the new function</param>
+        void addDataMappingFunction(PassProcessModelElements.DataDescribingComponents.IDataMappingFunction dataMappingFunction);
+
+         IDictionary<string, PassProcessModelElements.DataDescribingComponents.IDataMappingFunction> getDataMappingFunctions();
+
+        //// <summary>
+        /// Removes a data mapping function
+        /// </summary>
+        /// <param name="id">the id of the function</param>
+        /// <param name="removeCascadeDepth">Parses the depth of a cascading delete for elements that are connected to the currently deleted one</param>
+        void removeDataMappingFunction(string id, int removeCascadeDepth = 0);
+
         /// <summary>
         /// Gets the set of functions that define how local data will be mapped to outgoing data
         /// </summary>
         /// <returns>the set of functions that define how incoming data will be mapped to local data</returns>
-
         IDictionary<string, IDataMappingLocalToOutgoing> getDataMappingFunctionsLocalToOutgoing();
 
         /// <summary>
@@ -73,6 +89,8 @@ namespace alps.net.api.StandardPASS
         /// </summary>
         /// <returns>>the function specification</returns>
         new IDoFunction getFunctionSpecification();
+
+        
 
     }
 

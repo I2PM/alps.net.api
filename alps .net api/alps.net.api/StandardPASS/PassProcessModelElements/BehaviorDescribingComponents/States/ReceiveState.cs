@@ -1,7 +1,9 @@
 ﻿using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.util;
+using Serilog;
 using System.Collections.Generic;
+using System.Globalization;
 using static alps.net.api.StandardPASS.IState;
 
 namespace alps.net.api.StandardPASS
@@ -18,6 +20,31 @@ namespace alps.net.api.StandardPASS
         private const string className = "ReceiveState";
         protected string exportTag = OWLTags.std;
         protected string exportClassname = className;
+
+
+        private double _billedWaitingTime;
+        public double getSisiBilledWaitingTime() { return this._billedWaitingTime; }
+        public void   setSiSiBilledWaitingTime(double value)
+        {
+            if (value >= 0.0 && value <= 1.0)
+            {
+                _billedWaitingTime = value;
+            }
+            else
+            {
+                if (value < 0)
+                {
+                    _billedWaitingTime = 0;
+                    Log.Warning("Value for billedWaitingTime is smaller than 0. Setting it to 0.");
+                }
+                else if (value > 1)
+                {
+                    _billedWaitingTime = 1;
+                    Log.Warning("Value for billedWaitingTime is larger than 1. Setting it to 1.");
+                }
+            }
+        }
+        
 
         public override string getClassName()
         {
@@ -68,6 +95,10 @@ namespace alps.net.api.StandardPASS
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
         {
+            // necessary to parse decimal points correctly
+            CultureInfo customCulture = new CultureInfo("en-US");
+            customCulture.NumberFormat.NumberDecimalSeparator = ".";
+
             if (element != null)
             {
                 if (predicate.Contains(OWLTags.hasFunctionSpecification) && element is IReceiveFunction receiveFunction)
@@ -89,6 +120,12 @@ namespace alps.net.api.StandardPASS
                     return true;
                 }
             }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimBilledWaitingTime))
+            {
+                setSiSiBilledWaitingTime(double.Parse(objectContent, customCulture));
+                return true;
+            }
+
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
 
@@ -149,6 +186,27 @@ namespace alps.net.api.StandardPASS
             }
         }
 
+        public void setEndState(bool isEndState)
+        {
+            if (isEndState)
+            {
+                if (!this.isStateType(StateType.EndState))
+                {
+                    this.setIsStateType(StateType.EndState);
+                }
+            }
+            else
+            {
+                if (this.isStateType(StateType.EndState))
+                {
+                    this.removeStateType(StateType.EndState);
+                }
+            }
+        }
 
+        public bool isEndState()
+        {
+            return this.isStateType(StateType.EndState);
+        }
     }
 }

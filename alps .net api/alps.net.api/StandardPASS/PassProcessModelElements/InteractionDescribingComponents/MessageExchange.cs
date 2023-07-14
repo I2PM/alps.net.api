@@ -2,7 +2,9 @@
 using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.util;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace alps.net.api.StandardPASS
 {
@@ -20,6 +22,9 @@ namespace alps.net.api.StandardPASS
         /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "MessageExchange";
+
+       
+
 
         public override string getClassName()
         {
@@ -139,6 +144,8 @@ namespace alps.net.api.StandardPASS
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
         {
+            
+
             if (element != null)
             {
                 if (predicate.Contains(OWLTags.hasMessageType) && element is IMessageSpecification specification)
@@ -165,6 +172,8 @@ namespace alps.net.api.StandardPASS
 
                 }
             }
+            
+
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
 

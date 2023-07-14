@@ -1,7 +1,9 @@
-﻿using alps.net.api.FunctionalityCapsules;
+﻿using alps.net.api.ALPS;
+using alps.net.api.FunctionalityCapsules;
 using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.util;
+using System;
 using System.Collections.Generic;
 
 namespace alps.net.api.StandardPASS
@@ -25,6 +27,91 @@ namespace alps.net.api.StandardPASS
         /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "Transition";
+
+        private double has2DPageRatio;
+        private double hasRelative2D_BeginX;
+        private double hasRelative2D_BeginY;
+        private double hasRelative2D_EndX;
+        private double hasRelative2D_EndY;
+        private List<ISimple2DVisualizationPathPoint> pathPoints = new List<ISimple2DVisualizationPathPoint>();
+
+        public double get2DPageRatio() { return has2DPageRatio; }
+        public void set2DPageRatio(double has2DPageRatio)
+        {
+            if (has2DPageRatio >= 0)
+            {
+                this.has2DPageRatio = has2DPageRatio;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("has2DPageRatio", "Value must be a positive double or 0.");
+            }
+        }
+
+        public double getRelative2DBeginX()
+        {
+            return hasRelative2D_BeginX;
+        }
+
+        public void setRelative2DBeginX(double relative2DBeginX)
+        {
+            if (relative2DBeginX >= 0 && relative2DBeginX <= 1)
+            {
+                hasRelative2D_BeginX = relative2DBeginX;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("relative2DBeginX", "Value must be between 0 and 1 (inclusive).");
+            }
+        }
+
+        public double getRelative2DBeginY()
+        {
+            return hasRelative2D_BeginY;
+        }
+
+        public void setRelative2DBeginY(double relative2DBeginY)
+        {
+            if (relative2DBeginY >= 0 && relative2DBeginY <= 1)
+            {
+                hasRelative2D_BeginY = relative2DBeginY;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("relative2DBeginY", "Value must be between 0 and 1 (inclusive).");
+            }
+        }
+
+        public double getRelative2DEndX()
+        {
+            return hasRelative2D_EndX;
+        }
+
+        public void setRelative2DEndX(double relative2DEndX)
+        {
+            if (relative2DEndX >= 0 && relative2DEndX <= 1)
+            {
+                hasRelative2D_EndX = relative2DEndX;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("relative2DEndX", "Value must be between 0 and 1 (inclusive).");
+            }
+        }
+
+        public double getRelative2DEndY() { return hasRelative2D_EndY; }
+
+        public void setRelative2DEndY(double relative2DEndY)
+        {
+            if (relative2DEndY >= 0 && relative2DEndY <= 1)
+            {
+                hasRelative2D_EndY = relative2DEndY;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("relative2DEndY", "Value must be between 0 and 1 (inclusive).");
+            }
+        }
 
 
         public override string getClassName()
@@ -247,8 +334,16 @@ namespace alps.net.api.StandardPASS
 
                 }
 
+                else if(element is ISimple2DVisualizationPathPoint point)
+                {
+                    //Console.WriteLine(this.getModelComponentID() + ": PathPoint:" + point.getModelComponentID());
+                    if (this.pathPoints == null) this.pathPoints = new List<ISimple2DVisualizationPathPoint>();
+                    
+                    this.pathPoints.Add(point);
+                }
+
             }
-            else
+            else //element == null --> data value
             {
                 if (predicate.Contains(OWLTags.type))
                 {
@@ -258,6 +353,32 @@ namespace alps.net.api.StandardPASS
                         return true;
                     }
                 }
+                else if (predicate.Contains(OWLTags.abstrHas2DPageRatio))
+                {
+                    set2DPageRatio(double.Parse(objectContent));
+                    return true;
+                }
+                else if (predicate.Contains(OWLTags.abstrHasRelative2D_BeginX))
+                {
+                    setRelative2DBeginX(double.Parse(objectContent));
+                    return true;
+                }
+                else if (predicate.Contains(OWLTags.abstrHasRelative2D_BeginY))
+                {
+                    setRelative2DBeginY(double.Parse(objectContent));
+                    return true;
+                }
+                else if (predicate.Contains(OWLTags.abstrHasRelative2D_EndY))
+                {
+                    setRelative2DEndY(double.Parse(objectContent));
+                    return true;
+                }
+                else if (predicate.Contains(OWLTags.abstrHasRelative2D_EndX))
+                {
+                    setRelative2DEndX(double.Parse(objectContent));
+                    return true;
+                }
+
             }
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
@@ -372,5 +493,14 @@ namespace alps.net.api.StandardPASS
             return implCapsule.getImplementedInterfaces();
         }
 
+        public List<ISimple2DVisualizationPathPoint> getSimple2DPathPoints()
+        {
+            return this.pathPoints;
+        }
+
+        public void addSimple2DPathPoint(ISimple2DVisualizationPathPoint point)
+        { 
+            this.pathPoints.Add(point); 
+        }
     }
 }

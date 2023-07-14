@@ -5,12 +5,16 @@
 		<LangVersion>latest</LangVersion>
 		<RootNamespace>alps.net.api</RootNamespace>
 		<PackageId>alps.net.api</PackageId>
-		<Version>0.9.0.0</Version>
-		<Authors>Lukas Gnad</Authors>
+		<Version>0.9.0.1</Version>
+		<Authors>Lukas Gnad, Matthes Elstermann</Authors>
 		<Company>I2PM</Company>
 		<PackageTags>pass, ontology, modeling, subject-oriented, s-bpm</PackageTags>
 		<Product>alps.net.api</Product>
 		<Copyright>MIT License</Copyright>
+		<Description>A library to handle subject-oriented PASS or Abstract Layered PASS models. It allow to handle such models in memory as well es im- and export them from and to the OWL exchange format for these languages.</Description>
+		<PackageProjectUrl>https://github.com/I2PM/alps.net.api</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/I2PM/alps.net.api</RepositoryUrl>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="dotNetRDF"><Version>2.7.5</Version></PackageReference>
