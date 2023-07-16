@@ -71,7 +71,18 @@ namespace LibraryExample.DynamicImporterExample
 
             IModelLayer firstLayer = layers.ElementAt(0).Value;
 
-            getStandaloneMacroSubjectFrom(firstLayer);
+            IStandaloneMacroSubject sams = getStandaloneMacroSubjectFrom(firstLayer);
+
+            if (sams != null)
+            {
+                ISubjectBehavior samsB = sams.getBehavior();   
+                if (samsB != null)
+                {
+                    Console.WriteLine("");
+                    Console.WriteLine("##### macro behavior! components: ######");
+                    lookForChoiceSegementStuffIn(samsB);
+                }
+            }
 
 
             IFullySpecifiedSubject mySubject = firstLayer.getFullySpecifiedSubject(1);
@@ -142,9 +153,33 @@ namespace LibraryExample.DynamicImporterExample
             }
             return result;
         }
-       
 
-        private static void iterateStates(ISubjectBehavior someBehavior)
+        private static void lookForChoiceSegementStuffIn(ISubjectBehavior someBehavior)
+        {
+            Console.WriteLine("States of Behavior: " + someBehavior.getModelComponentID());
+
+            foreach (KeyValuePair<string, IBehaviorDescribingComponent> kvp in someBehavior.getBehaviorDescribingComponents())
+            {
+                IPASSProcessModelElement myComponent = kvp.Value;
+                if (myComponent is IState myState)
+                {
+                    Console.WriteLine(" state: " + myState.getModelComponentID());
+                    if(myState is IChoiceSegment mcs)
+                    {
+                        Console.WriteLine(" Number of CS-Paths: " + mcs.getChoiceSegmentPaths().Count);
+                        if (mcs.getChoiceSegmentPaths().Count >= 1)
+                        {
+                            IChoiceSegmentPath mcsp = mcs.getChoiceSegmentPaths().ElementAt(0).Value;
+                            Console.WriteLine(" - first path ID: " + mcsp.getModelComponentID());
+                            Console.WriteLine(" - fist element of first path: " + mcsp.getInitialState().getModelComponentID());
+                            Console.WriteLine(" - mandatory - start: " + mcsp.getIsOptionalToStartChoiceSegmentPath() + " - end: " + mcsp.getIsOptionalToEndChoiceSegmentPath());
+
+                        }
+                    }
+                }
+            }
+        }
+                    private static void iterateStates(ISubjectBehavior someBehavior)
         {
             Console.WriteLine("States of Behavior: " + someBehavior.getModelComponentID());
 
