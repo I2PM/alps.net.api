@@ -139,14 +139,44 @@ namespace alps.net.api.parsing
             {
                 try
                 {
+                    
                     // Create a new OntologyGraph
                     OntologyGraph owlGraph = new();
                     // Load files into it
                     owlGraph.LoadFromFile(filepath);
                     owlStructureGraphs.Add(owlGraph);
 
+
                     if (!isStandardPass(owlGraph.BaseUri.ToString())) { loadedModelGraphs.Add(owlGraph); }
                     Log.Information("Done reading the new File: " + filepath);
+                }
+                catch (System.UriFormatException uriException)
+                {
+                    Log.Information("Tried to pre-clean the file due to a bad XMLNS: " + filepath);
+                    //try this again if there is a problem with the input file but try some known fixes before
+                    try
+                    {
+                        preCleanFile(filepath);
+                        // Create a new OntologyGraph
+                        OntologyGraph owlGraph = new();
+                        // Load files into it
+                        owlGraph.LoadFromFile(filepath);
+                        owlStructureGraphs.Add(owlGraph);
+                        if (!isStandardPass(owlGraph.BaseUri.ToString())) { loadedModelGraphs.Add(owlGraph); }
+                        Log.Information("Done reading the new File : " + filepath);
+                    }
+                    catch (RdfParseException parseException)
+                    {
+                        Log.Error("Parser Error when reading the new File " + parseException);
+                        Console.WriteLine("Error reading file.");
+                        return null;
+                    }
+                    catch (IOException parseException)
+                    {
+                        Log.Error("Parser Error when reading the new File " + parseException);
+                        Console.WriteLine("Error reading file.");
+                        return null;
+                    }
                 }
                 catch (RdfParseException parseException)
                 {
@@ -188,6 +218,32 @@ namespace alps.net.api.parsing
             Console.WriteLine("Finished in-memory model creation");
 
             return passProcessModels;
+        }
+
+        /// <summary>
+        /// The .NetRDF library has a few problems with input files that are basically stupid
+        /// E.g. an <rdf:RDF xmlns="" at the beginning of an RDF dokument  may cause an 
+        /// Invalid URI exception. Sadly some tools like Protegée generate exactly stuff like that
+        /// This method simple tries to clean known problems 
+        /// </summary>
+        /// <param name="filepath">Path to the file to be cleanes</param>
+        private void preCleanFile(string filePath)
+        {
+            // Read all lines from the file
+            string[] lines = File.ReadAllLines(filePath);
+
+            string xmlnsConstruct = "xmlns=\"\"";
+
+            for (int i = 0; i < Math.Min(lines.Length, 10); i=i+1) // Change the number 5 to the desired number of lines to check
+            {
+                if (lines[i].Contains(xmlnsConstruct))
+                {
+                    lines[i] = lines[i].Replace(xmlnsConstruct, "");
+                }
+            }
+
+            // Save the modified lines back to the file
+            File.WriteAllLines(filePath, lines);
         }
 
         /// <summary>
