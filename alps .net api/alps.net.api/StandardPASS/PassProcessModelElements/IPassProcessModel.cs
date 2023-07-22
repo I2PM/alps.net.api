@@ -29,7 +29,7 @@ namespace alps.net.api.StandardPASS
         /// <summary>
         /// Sets whether the model is layered or not
         /// </summary>
-        void setIsLayered(bool layered);
+        void setIsMultiLayered(bool layered);
 
         /// <summary>
         /// Sets whether the model is layered or not

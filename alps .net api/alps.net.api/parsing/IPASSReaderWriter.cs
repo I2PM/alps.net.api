@@ -1,4 +1,5 @@
 ﻿using alps.net.api.StandardPASS;
+using System;
 using System.Collections.Generic;
 using VDS.RDF;
 
@@ -20,6 +21,23 @@ namespace alps.net.api.parsing
         /// <returns>A list of <see cref="IPASSProcessModel"/> the were created from the given owl</returns>
         IList<IPASSProcessModel> loadModels(IList<string> filepaths, bool overrideOWLParsingStructure = false);
 
+        /*
+        /// <summary>
+        /// during parsing the reader needs to analyze if a model is just a simple PASS model and not an ALPS mode
+        /// this only matters if it is a standard model where a base subject contains multiple behaviors
+        /// In that case the library needs to add according layers and extensions make the model compatible
+        /// </summary>
+        ///
+        Boolean currentModelHasMultipleBehaviors { get; set; }
+        /// <summary>
+        /// during parsing the reader needs to analyze if a model is just a simple PASS model and not an ALPS mode
+        /// this only matters if it is a standard model where a base subject contains multiple behaviors
+        /// In that case the library needs to add according layers and extensions make the model compatible
+        /// </summary>
+        ///
+        Boolean currentModelHasLayers { get; set; }
+
+        */
 
         /// <summary>
         /// The abstract pass ont and/or the standard pass ont must be given

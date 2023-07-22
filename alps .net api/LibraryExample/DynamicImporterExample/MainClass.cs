@@ -69,6 +69,11 @@ namespace LibraryExample.DynamicImporterExample
             IDictionary<string, IModelLayer> layers = models[0].getModelLayers();
             Console.WriteLine("Layers in first model: " + layers.Count);
 
+            foreach (KeyValuePair<string, IModelLayer> kvp in layers)
+            {
+                Console.WriteLine(" - Layer ID: " + kvp.Value.getModelComponentID() + " type: " + kvp.Value.getLayerType());
+            }
+
             IModelLayer firstLayer = layers.ElementAt(0).Value;
 
             IStandaloneMacroSubject sams = getStandaloneMacroSubjectFrom(firstLayer);
@@ -85,7 +90,7 @@ namespace LibraryExample.DynamicImporterExample
             }
 
 
-            IFullySpecifiedSubject mySubject = firstLayer.getFullySpecifiedSubject(1);
+            IFullySpecifiedSubject mySubject = firstLayer.getFullySpecifiedSubject(0);
             if (mySubject != null)
             {
 

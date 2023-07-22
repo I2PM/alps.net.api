@@ -3,10 +3,12 @@ using alps.net.api.FunctionalityCapsules;
 using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.util;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using VDS.RDF;
+using static alps.net.api.ALPS.IModelLayer;
 
 namespace alps.net.api.StandardPASS
 {
@@ -108,7 +110,7 @@ namespace alps.net.api.StandardPASS
 
                 if (pASSProcessModelElement is IModelLayer)
                 {
-                    if (getModelLayers().Count > 1) setIsLayered(true);
+                    if (getModelLayers().Count > 1) setIsMultiLayered(true);
 
                 }
                 else
@@ -166,7 +168,7 @@ namespace alps.net.api.StandardPASS
                 {
                     if (element is IModelLayer)
                     {
-                        if (getModelLayers().Count < 2) setIsLayered(false);
+                        if (getModelLayers().Count < 2) setIsMultiLayered(false);
                     }
 
                     // Might be a start subj
@@ -357,7 +359,7 @@ namespace alps.net.api.StandardPASS
             }
         }
 
-        public void setIsLayered(bool layered)
+        public void setIsMultiLayered(bool layered)
         {
             this.layered = layered;
         }
@@ -414,14 +416,24 @@ namespace alps.net.api.StandardPASS
                     }
                 }
             }
-            if (getModelLayers().Count == 0)
+
+            if (getModelLayers().Count == 1)
             {
+                if(baseLayer == null)
+                {
+                    //Console.WriteLine("There is one layer but it is not the base layer");
+                    IModelLayer mylayer = getModelLayers().Values.First();
+                    if(mylayer.getLayerType() == LayerType.STANDARD)
+                    {
+                        setBaseLayer(mylayer);
+                    }
+                }
                 getBaseLayer();
                 checkLayers = true;
             }
-            else
+            else //this model contains multiple layers
             {
-                setIsLayered(true);
+                setIsMultiLayered(true);
                 foreach (IModelLayer layer in getModelLayers().Values)
                 {
 
@@ -469,28 +481,32 @@ namespace alps.net.api.StandardPASS
                     element.completeObject(ref allElements);
             }
 
-            if (checkLayers)
+            if (checkLayers) //to be done when only one (base) layer was found
             {
-                IDictionary<string, IList<string>> doubleBehaviors = new Dictionary<string, IList<string>>();
+                IDictionary<string, IList<string>> multiBehaviors = new Dictionary<string, IList<string>>();
                 if (getAllElements().Values.OfType<ISubjectBehavior>().Count() > 1)
+                { 
                     foreach (ISubjectBehavior behavior in getAllElements().Values.OfType<ISubjectBehavior>())
                     {
                         if (behavior.getSubject() != null && behavior.getSubject() is IFullySpecifiedSubject subject)
                         {
-                            if (doubleBehaviors.ContainsKey(subject.getModelComponentID()))
-                                doubleBehaviors[subject.getModelComponentID()].Add(behavior.getModelComponentID());
-                            else doubleBehaviors.Add(subject.getModelComponentID(), new List<string> { behavior.getModelComponentID() });
+                            if (multiBehaviors.ContainsKey(subject.getModelComponentID()))
+                                multiBehaviors[subject.getModelComponentID()].Add(behavior.getModelComponentID());
+                            else multiBehaviors.Add(subject.getModelComponentID(), new List<string> { behavior.getModelComponentID() });
                         }
                     }
-                foreach (KeyValuePair<string, IList<string>> pair in doubleBehaviors)
+                }
+
+                foreach (KeyValuePair<string, IList<string>> pair in multiBehaviors)
                 {
                     if (pair.Value.Count > 1)
                         fixLayers(pair.Key, pair.Value);
 
                 }
+
                 if (getModelLayers().Count > 1)
                 {
-                    setIsLayered(true);
+                    setIsMultiLayered(true);
                 }
             }
 
@@ -501,7 +517,7 @@ namespace alps.net.api.StandardPASS
         }
 
         /// <summary>
-        /// Fix the layers if the imported model is not multi-layered.
+        /// Fix layers if the imported model is not multi-layered.
         /// All elements get loaded into one layer, afterwards this method is called to split the elements onto multiple layers.
         /// </summary>
         /// <param name="idOfSubject"></param>
@@ -544,6 +560,7 @@ namespace alps.net.api.StandardPASS
             {
                 if (!id.Equals(baseBehavior.getModelComponentID()))
                 {
+                    //Console.WriteLine("Creating new Layer for: " + id);
                     ISubjectBehavior behaviorOfSubjectExtension = (ISubjectBehavior)getAllElements()[id];
                     IModelLayer layer = new ModelLayer(this);
                     ISubjectExtension subjectExtension;
@@ -578,7 +595,7 @@ namespace alps.net.api.StandardPASS
                     //addLayer(layer);
                 }
             }
-            // TODO
+            
         }
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)

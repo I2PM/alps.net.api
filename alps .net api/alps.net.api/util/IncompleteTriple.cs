@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.src;
 using System;
 using VDS.RDF;
 
@@ -67,7 +68,14 @@ namespace alps.net.api.util
             }
             catch (RdfException)
             {
-                predicateNode = graph.createUriNode(new Uri(predicateContent));
+                try
+                {
+                    predicateNode = graph.createUriNode(new Uri(predicateContent));
+                }
+                catch (UriFormatException)
+                {
+                    predicateNode = graph.createUriNode(new Uri(OWLTags.abstr + predicateContent));
+                }
             }
             INode objectNode = extraString.getNodeFromString(graph);
 
