@@ -1,4 +1,5 @@
-﻿using alps.net.api.StandardPASS;
+﻿using alps.net.api.ALPS.ALPSModelElements.ALPSSIDComponents;
+using alps.net.api.StandardPASS;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,7 +12,7 @@ namespace alps.net.api.ALPS
         /// Returns all contained InterfaceSubjects.
         /// </summary>
         /// <returns>all contained InterfaceSubjects</returns>
-        IDictionary<string, IInterfaceSubject> getInterfaceSubjects();
+        IDictionary<string, IInterfaceSubject> getContainedInterfaceSubjects();
 
         /// <summary>
         /// Adds an InterfaceSubject to the list of contained InterfaceSubjects.

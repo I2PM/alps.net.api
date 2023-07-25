@@ -15,6 +15,8 @@ using alps.net.api.util;
 using System.Globalization;
 using System.Xml;
 using VDS.RDF;
+using System.Runtime.Intrinsics.X86;
+using alps.net.api.ALPS.ALPSModelElements.ALPSSIDComponents;
 
 namespace LibraryExample.DynamicImporterExample
 {
@@ -78,7 +80,7 @@ namespace LibraryExample.DynamicImporterExample
 
             IModelLayer firstLayer = layers.ElementAt(0).Value;
 
-            IStandaloneMacroSubject sams = getStandaloneMacroSubjectFrom(firstLayer);
+            IStandaloneMacroSubject sams = iterateTrhoughSIDandGetStandaloneMacroSubjectFromA(firstLayer);
 
             if (sams != null)
             {
@@ -121,31 +123,47 @@ namespace LibraryExample.DynamicImporterExample
         }
      
 
-        private static IStandaloneMacroSubject getStandaloneMacroSubjectFrom(IModelLayer layer)
+        private static IStandaloneMacroSubject iterateTrhoughSIDandGetStandaloneMacroSubjectFromA(IModelLayer layer)
         {
             IStandaloneMacroSubject result = null;
-            Console.WriteLine("Subjects:");
+            Console.WriteLine("SID Elements - nr. of elements: " + layer.getElements().Count);
             foreach (KeyValuePair<string, IPASSProcessModelElement> kvp in layer.getElements())
             {
                 IPASSProcessModelElement myComponent = kvp.Value;
 
                 if (myComponent is ISubject)
                 {
-                    Console.WriteLine("Subject: " + myComponent.getModelComponentID());
+                    Console.WriteLine(" Subject: " + myComponent.getModelComponentID());
+
+
                     if (myComponent is IStandaloneMacroSubject isms)
                     {
                         result = isms;
                     }
-                    else if(myComponent is IInterfaceSubject iis)
+                    else if (myComponent is ISystemInterfaceSubject)
                     {
-                        Console.WriteLine(" Interface Subject: ");
-                        Console.WriteLine(" - interface subject sisimapping exists: " + (iis.getSimpleSimInterfaceSubjectResponseDefinition() != null ));
+                        Console.WriteLine(" SystemInterfacesubject: " + myComponent.getModelComponentID());
+                        ISystemInterfaceSubject mySIS = (ISystemInterfaceSubject)myComponent;
+                        Console.WriteLine(" - contained interfaces: " + mySIS.getContainedInterfaceSubjects().Count());
+                    }
+                    else if (myComponent is ISubjectGroup)
+                    {
+                        Console.WriteLine(" Subject Group: " + myComponent.getModelComponentID());
+                        ISubjectGroup mySIS = (ISubjectGroup)myComponent;
+                        Console.WriteLine(" - contained Subjects: " + mySIS.getContainedSubjects().Count());
+                    }
+                    else if (myComponent is IInterfaceSubject iis)
+                    {
+                        Console.WriteLine("  Interface Subject: ");
+                        Console.WriteLine("  - interface subject sisimapping exists: " + (iis.getSimpleSimInterfaceSubjectResponseDefinition() != null));
                         if (iis.getSimpleSimInterfaceSubjectResponseDefinition() != null)
                         {
                             Console.WriteLine(iis.getSimpleSimInterfaceSubjectResponseDefinition().OuterXml);
                         }
                     }
-                }else if(myComponent is IMessageExchange ime)
+                    
+                }
+                else if(myComponent is IMessageExchange ime)
                 {
                     Console.WriteLine(" MessageExchange: " + ime.getModelComponentID());
                     
@@ -155,6 +173,11 @@ namespace LibraryExample.DynamicImporterExample
                     Console.WriteLine(" MessageExchangeList: " + imel.getModelComponentID());
                     Console.WriteLine(" - Number of Pathpoints: " + imel.getSimple2DPathPoints().Count());
                     Console.WriteLine(" - Number of Messages on here: " + imel.getMessageExchanges().Count);
+                }
+                
+                else
+                {
+                    Console.WriteLine(" #other component: " + myComponent.getModelComponentID());
                 }
 
             }

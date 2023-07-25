@@ -1341,6 +1341,12 @@ It is usded as a representation/Mapping of a subject on a lower &quot;base layer
     <owl:Class rdf:about="http://www.imi.kit.edu/abstract-pass-ont#SubjectGroup">
         <rdfs:subClassOf rdf:resource="http://www.i2pm.net/standard-pass-ont#Subject"/>
         <rdfs:subClassOf rdf:resource="http://www.imi.kit.edu/abstract-pass-ont#ALPSSIDComponent"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.i2pm.net/standard-pass-ont#contains"/>
+                <owl:allValuesFrom rdf:resource="http://www.i2pm.net/standard-pass-ont#Subject"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
         <rdfs:comment xml:lang="en">A subject group is model element that allows to group multiple subjects within an SID. The main purpose of this model component is for explanatory models. 
 
 The execution semantics of this element is somewhat limited. In principle if this group element is target of origin of a message exchange it means that all subjects within the group posses the capabilities to send or receive the defined message.
@@ -1348,6 +1354,21 @@ The execution semantics of this element is somewhat limited. In principle if thi
 Since subjects sending to a Subject Group can only specifiy the overall group as the target of a message send operation the execution envoironment needs to have a kind of shared message pool concept where the message is eligable to be taken out of a shared pool by any behavior belonging to a subject within the subject group.
 
 This feature is not knowingly supported yet.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.imi.kit.edu/abstract-pass-ont#SystemInterfaceSubject -->
+
+    <owl:Class rdf:about="http://www.imi.kit.edu/abstract-pass-ont#SystemInterfaceSubject">
+        <rdfs:subClassOf rdf:resource="http://www.i2pm.net/standard-pass-ont#InterfaceSubject"/>
+        <rdfs:subClassOf rdf:resource="http://www.imi.kit.edu/abstract-pass-ont#SubjectGroup"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.i2pm.net/standard-pass-ont#contains"/>
+                <owl:allValuesFrom rdf:resource="http://www.i2pm.net/standard-pass-ont#InterfaceSubject"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
     </owl:Class>
     
 

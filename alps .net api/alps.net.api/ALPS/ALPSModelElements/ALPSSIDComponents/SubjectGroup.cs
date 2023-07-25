@@ -1,10 +1,10 @@
-﻿using alps.net.api.parsing;
+﻿using alps.net.api.ALPS.ALPSModelElements.ALPSSIDComponents;
+using alps.net.api.parsing;
 using alps.net.api.src;
 using alps.net.api.StandardPASS;
 using alps.net.api.util;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace alps.net.api.ALPS
 {
@@ -13,15 +13,15 @@ namespace alps.net.api.ALPS
     /// This class represents the SystemInterfaceSubject owl class defined in the abstract pass ont.
     /// A SystemInterfaceSubject is an InterfaceSubject which can contain other InterfaceSubjects.
     /// </summary>
-    public class SystemInterfaceSubject : InterfaceSubject, ISystemInterfaceSubject
+    public class SubjectGroup : Subject, ISubjectGroup
     {
-        private readonly ICompatibilityDictionary<string, IInterfaceSubject> containedInterfaceSubjects
-            = new CompatibilityDictionary<string, IInterfaceSubject>();
+        private readonly ICompatibilityDictionary<string, ISubject> containedSubjects
+            = new CompatibilityDictionary<string, ISubject>();
 
         /// <summary>
         /// Name of the class, needed for parsing
         /// </summary>
-        private const string CLASS_NAME = "SystemInterfaceSubject";
+        private const string CLASS_NAME = "SubjectGroup";
 
         public override string getClassName()
         {
@@ -29,10 +29,10 @@ namespace alps.net.api.ALPS
         }
         public override IParseablePASSProcessModelElement getParsedInstance()
         {
-            return new SystemInterfaceSubject();
+            return new SubjectGroup();
         }
 
-        protected SystemInterfaceSubject() { }
+        protected SubjectGroup() { }
 
         /// <summary>
         /// 
@@ -42,27 +42,27 @@ namespace alps.net.api.ALPS
         /// <param name="referencedSubject">If the InterfaceSubject is referencing another FullySpecifiedSubject, this can be passed here</param>
         /// <param name="comment"></param>
         /// <param name="incomingMessageExchange"></param>
-        /// <param name="containedInterfaceSubjects"></param>
+        /// <param name="containedSubjects"></param>
         /// <param name="outgoingMessageExchange"></param>
         /// <param name="maxSubjectInstanceRestriction"></param>
         /// <param name="additionalLabel"></param>
         /// <param name="additionalAttribute"></param>
-        public SystemInterfaceSubject(IModelLayer layer, string labelForId = null, ISet<IMessageExchange> incomingMessageExchange = null,
-            ISet<IInterfaceSubject> containedInterfaceSubjects = null, ISet<IMessageExchange> outgoingMessageExchange = null, int maxSubjectInstanceRestriction = 1,
+        public SubjectGroup(IModelLayer layer, string labelForId = null, ISet<IMessageExchange> incomingMessageExchange = null,
+            ISet<ISubject> containedSubjects = null, ISet<IMessageExchange> outgoingMessageExchange = null, int maxSubjectInstanceRestriction = 1,
             IFullySpecifiedSubject referencedSubject = null, string comment = null, string additionalLabel = null,
             IList<IIncompleteTriple> additionalAttribute = null)
-            : base(layer, labelForId, incomingMessageExchange, outgoingMessageExchange, maxSubjectInstanceRestriction, referencedSubject,
+            : base(layer, labelForId, incomingMessageExchange, outgoingMessageExchange, maxSubjectInstanceRestriction,
                 comment, additionalLabel, additionalAttribute)
         {
-            setInterfaceSubjects(containedInterfaceSubjects);
+            setSubjects(containedSubjects);
         }
         
 
-        public bool addInterfaceSubject(IInterfaceSubject subject)
+        public bool addSubject(ISubject subject)
         {
             if (subject is null) { return false; }
 
-            if (!containedInterfaceSubjects.TryAdd(subject.getModelComponentID(), subject)) return false;
+            if (!containedSubjects.TryAdd(subject.getModelComponentID(), subject)) return false;
 
             publishElementAdded(subject);
             subject.register(this);
@@ -72,43 +72,44 @@ namespace alps.net.api.ALPS
 
 
 
-        public void setInterfaceSubjects(ISet<IInterfaceSubject> subjects, int removeCascadeDepth = 0)
+        public void setSubjects(ISet<ISubject> subjects, int removeCascadeDepth = 0)
         {
-            foreach (IInterfaceSubject interfaceSubject in this.getContainedInterfaceSubjects().Values)
+            foreach (ISubject mySubject in this.getContainedSubjects().Values)
             {
-                removeInterfaceSubject(interfaceSubject.getModelComponentID(), removeCascadeDepth);
+                removeSubject(mySubject.getModelComponentID(), removeCascadeDepth);
             }
             if (subjects is null) return;
-            foreach (IInterfaceSubject subject in subjects)
+            foreach (ISubject subject in subjects)
             {
-                addInterfaceSubject(subject);
+                addSubject(subject);
             }
         }
 
-        public bool removeInterfaceSubject(string id, int removeCascadeDepth = 0)
+        public bool removeSubject(string id, int removeCascadeDepth = 0)
         {
             if (id is null) return false;
-            if (!containedInterfaceSubjects.TryGetValue(id, out IInterfaceSubject subject)) return false;
+            if (!containedSubjects.TryGetValue(id, out ISubject subject)) return false;
 
-            containedInterfaceSubjects.Remove(id);
+            containedSubjects.Remove(id);
             subject.unregister(this, removeCascadeDepth);
             removeTriple(new IncompleteTriple(OWLTags.stdContains, subject.getUriModelComponentID()));
             return true;
         }
 
 
-        public IDictionary<string, IInterfaceSubject> getContainedInterfaceSubjects()
+        public IDictionary<string, ISubject> getContainedSubjects()
         {
-            return new Dictionary<string, IInterfaceSubject>(containedInterfaceSubjects);
+            return new Dictionary<string, ISubject>(containedSubjects);
         }
 
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
         {
-            //Console.WriteLine("parsging in an System Interface Subject" + this.getModelComponentID());
-            if (element is IInterfaceSubject interfaceSubj && predicate.Contains(OWLTags.contains))
+
+            //Console.WriteLine("parsging in an Subject Group: " + this.getModelComponentID() );
+            if (element is ISubject subj && predicate.Contains(OWLTags.contains))
             {
-                addInterfaceSubject(interfaceSubj);
+                addSubject(subj);
                 return true;
             }
 
