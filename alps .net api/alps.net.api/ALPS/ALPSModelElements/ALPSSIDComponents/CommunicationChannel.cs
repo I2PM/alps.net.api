@@ -114,7 +114,7 @@ namespace alps.net.api.ALPS
             if (!(correspondentA is null))
             {
                 // Only if the correspondet is new, it must be registered
-                if (!oldCorrespondentA.Equals(correspondentA))
+                if ((oldCorrespondentA is null) ||(!oldCorrespondentA.Equals(correspondentA)))
                 {
                     publishElementAdded(correspondentA);
                     correspondentA.register(this);
@@ -148,7 +148,7 @@ namespace alps.net.api.ALPS
             if (!(correspondentB is null))
             {
                 // Only if the correspondet is new, it must be registered
-                if (!oldCorrespondentB.Equals(correspondentB))
+                if ((oldCorrespondentB is null) || !(oldCorrespondentB.Equals(correspondentB)))
                 {
                     publishElementAdded(correspondentB);
                     correspondentB.register(this);

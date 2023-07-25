@@ -2,6 +2,7 @@
 using alps.net.api.src;
 using alps.net.api.util;
 using Serilog;
+using System;
 using System.Collections.Generic;
 
 namespace alps.net.api.StandardPASS
@@ -27,10 +28,13 @@ namespace alps.net.api.StandardPASS
 
         public override IParseablePASSProcessModelElement getParsedInstance()
         {
+
             return new DoTransition();
         }
 
-       protected DoTransition() { }
+       protected DoTransition() {
+            
+        }
         public DoTransition(IState sourceState, IState targetState, string labelForID = null, ITransitionCondition transitionCondition = null,
             ITransition.TransitionType transitionType = ITransition.TransitionType.Standard, int priorityNumber = 0, string comment = null, string additionalLabel = null,
             IList<IIncompleteTriple> additionalAttribute = null) : base(sourceState, targetState, labelForID, transitionCondition, transitionType, comment, additionalLabel, additionalAttribute) {
@@ -71,6 +75,8 @@ namespace alps.net.api.StandardPASS
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
         {
+            
+
             if (predicate.Contains(OWLTags.hasPriorityNumber))
             {
                 string prio = objectContent;

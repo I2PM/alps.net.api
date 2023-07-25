@@ -5,6 +5,7 @@ using alps.net.api.src;
 using alps.net.api.util;
 using System;
 using System.Collections.Generic;
+using static alps.net.api.StandardPASS.ITransition;
 
 namespace alps.net.api.StandardPASS
 {
@@ -35,84 +36,6 @@ namespace alps.net.api.StandardPASS
         private double hasRelative2D_EndY;
         private List<ISimple2DVisualizationPathPoint> pathPoints = new List<ISimple2DVisualizationPathPoint>();
 
-        public double get2DPageRatio() { return has2DPageRatio; }
-        public void set2DPageRatio(double has2DPageRatio)
-        {
-            if (has2DPageRatio >= 0)
-            {
-                this.has2DPageRatio = has2DPageRatio;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("has2DPageRatio", "Value must be a positive double or 0.");
-            }
-        }
-
-        public double getRelative2DBeginX()
-        {
-            return hasRelative2D_BeginX;
-        }
-
-        public void setRelative2DBeginX(double relative2DBeginX)
-        {
-            if (relative2DBeginX >= 0 && relative2DBeginX <= 1)
-            {
-                hasRelative2D_BeginX = relative2DBeginX;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("relative2DBeginX", "Value must be between 0 and 1 (inclusive).");
-            }
-        }
-
-        public double getRelative2DBeginY()
-        {
-            return hasRelative2D_BeginY;
-        }
-
-        public void setRelative2DBeginY(double relative2DBeginY)
-        {
-            if (relative2DBeginY >= 0 && relative2DBeginY <= 1)
-            {
-                hasRelative2D_BeginY = relative2DBeginY;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("relative2DBeginY", "Value must be between 0 and 1 (inclusive).");
-            }
-        }
-
-        public double getRelative2DEndX()
-        {
-            return hasRelative2D_EndX;
-        }
-
-        public void setRelative2DEndX(double relative2DEndX)
-        {
-            if (relative2DEndX >= 0 && relative2DEndX <= 1)
-            {
-                hasRelative2D_EndX = relative2DEndX;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("relative2DEndX", "Value must be between 0 and 1 (inclusive).");
-            }
-        }
-
-        public double getRelative2DEndY() { return hasRelative2D_EndY; }
-
-        public void setRelative2DEndY(double relative2DEndY)
-        {
-            if (relative2DEndY >= 0 && relative2DEndY <= 1)
-            {
-                hasRelative2D_EndY = relative2DEndY;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("relative2DEndY", "Value must be between 0 and 1 (inclusive).");
-            }
-        }
-
 
         public override string getClassName()
         {
@@ -123,7 +46,10 @@ namespace alps.net.api.StandardPASS
             return new Transition();
         }
 
-        protected Transition() { implCapsule = new ImplementsFunctionalityCapsule<ITransition>(this); }
+        protected Transition() {
+            //Console.WriteLine("Standard Transition constructor");
+            implCapsule = new ImplementsFunctionalityCapsule<ITransition>(this);
+        }
 
         /// <summary>
         /// 
@@ -141,6 +67,7 @@ namespace alps.net.api.StandardPASS
             IList<IIncompleteTriple> additionalAttribute = null)
             : base(null, labelForID, comment, additionalLabel, additionalAttribute)
         {
+            //Console.WriteLine("Second Transition constructor type: " + transitionType);
             implCapsule = new ImplementsFunctionalityCapsule<ITransition>(this);
             ISubjectBehavior behavior = null;
             if (sourceState != null)
@@ -161,6 +88,7 @@ namespace alps.net.api.StandardPASS
             IList<IIncompleteTriple> additionalAttribute = null)
             : base(behavior, labelForID, comment, additionalLabel, additionalAttribute)
         {
+            //Console.WriteLine("Third Transition constructor");
             implCapsule = new ImplementsFunctionalityCapsule<ITransition>(this);
             setSourceState(sourceState);
             setTargetState(targetState);
@@ -301,6 +229,8 @@ namespace alps.net.api.StandardPASS
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
         {
+            
+
             if (implCapsule != null && implCapsule.parseAttribute(predicate, objectContent, lang, dataType, element))
                 return true;
             else if (element != null)
@@ -345,13 +275,42 @@ namespace alps.net.api.StandardPASS
             }
             else //element == null --> data value
             {
+               
+
                 if (predicate.Contains(OWLTags.type))
                 {
-                    if (objectContent.Contains(ABSTRACT_NAME))
+                   // Console.WriteLine(" - parsing object content transition type: " + objectContent);
+
+                    if (objectContent.ToLower().Contains(ITransition.TransitionType.Finalized.ToString().ToLower()))
+                    {
+                        setTransitionType(ITransition.TransitionType.Finalized);
+                        setIsAbstract(true);
+                        return true;
+                    }
+                    else if (objectContent.ToLower().Contains(ITransition.TransitionType.Precedence.ToString().ToLower()))
+                    {
+                        setTransitionType(ITransition.TransitionType.Precedence);
+                        setIsAbstract(true);
+                        return true;
+                    }
+                    else if (objectContent.ToLower().Contains(ITransition.TransitionType.Trigger.ToString().ToLower()))
+                    {
+                        setTransitionType(ITransition.TransitionType.Trigger);
+                        setIsAbstract(true);
+                        return true;
+                    }
+                    else if (objectContent.ToLower().Contains(ITransition.TransitionType.Advice.ToString().ToLower()))
+                    {
+                        setTransitionType(ITransition.TransitionType.Advice);
+                        setIsAbstract(true);
+                        return true;
+                    }else if (objectContent.Contains(ABSTRACT_NAME))
                     {
                         setIsAbstract(true);
                         return true;
                     }
+
+                    
                 }
                 else if (predicate.Contains(OWLTags.abstrHas2DPageRatio))
                 {
@@ -501,6 +460,84 @@ namespace alps.net.api.StandardPASS
         public void addSimple2DPathPoint(ISimple2DVisualizationPathPoint point)
         { 
             this.pathPoints.Add(point); 
+        }
+
+        public double get2DPageRatio() { return has2DPageRatio; }
+        public void set2DPageRatio(double has2DPageRatio)
+        {
+            if (has2DPageRatio >= 0)
+            {
+                this.has2DPageRatio = has2DPageRatio;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("has2DPageRatio", "Value must be a positive double or 0.");
+            }
+        }
+
+        public double getRelative2DBeginX()
+        {
+            return hasRelative2D_BeginX;
+        }
+
+        public void setRelative2DBeginX(double relative2DBeginX)
+        {
+            if (relative2DBeginX >= 0 && relative2DBeginX <= 1)
+            {
+                hasRelative2D_BeginX = relative2DBeginX;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("relative2DBeginX", "Value must be between 0 and 1 (inclusive).");
+            }
+        }
+
+        public double getRelative2DBeginY()
+        {
+            return hasRelative2D_BeginY;
+        }
+
+        public void setRelative2DBeginY(double relative2DBeginY)
+        {
+            if (relative2DBeginY >= 0 && relative2DBeginY <= 1)
+            {
+                hasRelative2D_BeginY = relative2DBeginY;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("relative2DBeginY", "Value must be between 0 and 1 (inclusive).");
+            }
+        }
+
+        public double getRelative2DEndX()
+        {
+            return hasRelative2D_EndX;
+        }
+
+        public void setRelative2DEndX(double relative2DEndX)
+        {
+            if (relative2DEndX >= 0 && relative2DEndX <= 1)
+            {
+                hasRelative2D_EndX = relative2DEndX;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("relative2DEndX", "Value must be between 0 and 1 (inclusive).");
+            }
+        }
+
+        public double getRelative2DEndY() { return hasRelative2D_EndY; }
+
+        public void setRelative2DEndY(double relative2DEndY)
+        {
+            if (relative2DEndY >= 0 && relative2DEndY <= 1)
+            {
+                hasRelative2D_EndY = relative2DEndY;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("relative2DEndY", "Value must be between 0 and 1 (inclusive).");
+            }
         }
     }
 }

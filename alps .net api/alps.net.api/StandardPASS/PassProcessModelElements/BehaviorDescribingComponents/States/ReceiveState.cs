@@ -96,8 +96,8 @@ namespace alps.net.api.StandardPASS
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
         {
             // necessary to parse decimal points correctly
-            CultureInfo customCulture = new CultureInfo("en-US");
-            customCulture.NumberFormat.NumberDecimalSeparator = ".";
+            //CultureInfo customCulture = new CultureInfo("en-US");
+            //customCulture.NumberFormat.NumberDecimalSeparator = ".";
 
             if (element != null)
             {

@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using alps.net.api.StandardPASS;
+using Serilog;
 using Serilog.Configuration;
 using System;
 using System.Collections.Generic;
@@ -258,8 +259,8 @@ namespace alps.net.api.util
         public static double ConvertXSDDurationStringToFractionsOfDay(string xsdDurationString)
         {
 
-            CultureInfo customCulture = new CultureInfo("en-US");
-            customCulture.NumberFormat.NumberDecimalSeparator = ".";
+            //CultureInfo customCulture = new CultureInfo("en-US");
+            //customCulture.NumberFormat.NumberDecimalSeparator = ".";
 
             // Check if the string starts with 'P' and ends with 'S'
             if (!xsdDurationString.StartsWith("P"))
@@ -306,7 +307,7 @@ namespace alps.net.api.util
             int secondsIndex = duration.IndexOf("S");
             if (secondsIndex > 0)
             {
-                double seconds = double.Parse(duration.Substring(0, secondsIndex),customCulture);
+                double seconds = double.Parse(duration.Substring(0, secondsIndex),PASSProcessModelElement.customCulture);
                 fractionsOfDay = fractionsOfDay + (seconds / 86400.0);
             }
 

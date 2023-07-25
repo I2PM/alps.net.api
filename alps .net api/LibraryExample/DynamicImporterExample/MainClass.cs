@@ -14,6 +14,7 @@ using alps.net.api.StandardPASS.PassProcessModelElements.DataDescribingComponent
 using alps.net.api.util;
 using System.Globalization;
 using System.Xml;
+using VDS.RDF;
 
 namespace LibraryExample.DynamicImporterExample
 {
@@ -47,9 +48,10 @@ namespace LibraryExample.DynamicImporterExample
 
             // This loads models from the specified owl.
             // Every owl instance of a FullySpecifiedSubject is parsed to an AdditionalFunctionalityFullySpecifiedSubject
-             //IList<IPASSProcessModel> models = io.loadModels(new List<string> { "C:\\Data\\ExportImportTest1.owl" });
-            IList<IPASSProcessModel> models = io.loadModels(new List<string> { "C:\\Data\\ExportImportTest1WOLayers.owl" });
-
+            //IList<IPASSProcessModel> models = io.loadModels(new List<string> { "C:\\Data\\ExportImportTest1.owl" });
+            //IList<IPASSProcessModel> models = io.loadModels(new List<string> { "C:\\Data\\ExportImportTest1WOLayers.owl" });
+            IList<IPASSProcessModel> models = io.loadModels(new List<string> { "C:\\Data\\ExportImportTest1Advanced.owl" });
+            
 
             // IDictionary of all elements
             IDictionary<string, IPASSProcessModelElement> allElements = models[0].getAllElements();
@@ -225,24 +227,50 @@ namespace LibraryExample.DynamicImporterExample
                     Console.WriteLine("transition: " + mytrans.getModelComponentID());
                     Console.Write(" - start: " + mytrans.getSourceState().getModelComponentID());
                     Console.WriteLine(" - end: " + mytrans.getTargetState().getModelComponentID());
+                    Console.WriteLine(" - type: " + mytrans.getTransitionType());
+                    
 
                     Console.WriteLine(" - Number of Pathpoints: " + mytrans.getSimple2DPathPoints().Count);
                         
                     if(mytrans is ISendTransition myST)
                     {
+                        Console.WriteLine(" - Send Transition: ");
                         ISendTransitionCondition mySTC = myST.getTransitionCondition();
                         Console.Write("  - tranition condition - message " + mySTC.getRequiresSendingOfMessage().getModelComponentID());
                         Console.WriteLine("  - receiver: " + mySTC.getRequiresMessageSentTo().getModelComponentID());
                     }else if(mytrans is IReceiveTransition myRT)
                     {
+                        Console.WriteLine(" - Receive Transition: ");
                         Console.WriteLine(" - priority number of ReceiveTransition " + myRT.getPriorityNumber());
 
                     }
                     else if (mytrans is IDoTransition myDT)
                     {
+                        Console.WriteLine(" - Do Transition: ");
                         Console.WriteLine(" - priority number of Do Transition " + myDT.getPriorityNumber());
 
+                    }else if( mytrans is IUserCancelTransition)
+                    {
+                        Console.WriteLine(" - IUserCancelTransition Transition: ");
                     }
+                    else
+                    {
+                        Console.WriteLine(" - some other type");
+                    }
+
+                   
+
+                    /*
+                    Transition mytt = (Transition)mytrans;
+                    foreach (Triple myTrip in mytt.getTriples())
+                    {
+                        Console.WriteLine("     - Triple: " + myTrip);
+                        //Console.WriteLine("     - tool specific def: " + myFunc.Value.getToolSpecificDefinition());
+
+                    }*/
+
+
+
                     /*
                     mytrans.get2DPageRatio();
                     Console.Write(" - Visualization - page ratio: " + mytrans.get2DPageRatio());
@@ -284,7 +312,7 @@ namespace LibraryExample.DynamicImporterExample
                 IDictionary<string, IDataMappingFunction> myMapDic = myDo.getDataMappingFunctions();
                 Console.WriteLine("   - number of comments: " + myDo.getComments().Count());
                 Console.WriteLine("   - number of incomplete Triples: " + myDo.getIncompleteTriples().Count());
-                Console.WriteLine("   - number of unmatched Triples: " + myDo.getIncompleteTriples().Count()); //getTriples().Count());
+                Console.WriteLine("   - number of Triples: " + myDo.getTriples().Count());
                 Console.WriteLine("   - SiSiAttributes: ");
                 if (!(myDo.getSisiExecutionDuration() == null))
                 {
@@ -304,7 +332,7 @@ namespace LibraryExample.DynamicImporterExample
                 Console.WriteLine("   - number of unspecific Relations : " + myDo.getElementsWithUnspecifiedRelation().Count);
                 foreach (KeyValuePair<string, IPASSProcessModelElement> myFunc in myDo.getElementsWithUnspecifiedRelation())
                 {
-                    Console.WriteLine("     - element: "  + myFunc.Value.getModelComponentID());    
+                    Console.WriteLine("     - unspecific element: "  + myFunc.Value.getModelComponentID());    
                     //Console.WriteLine("     - tool specific def: " + myFunc.Value.getToolSpecificDefinition());
 
                 }

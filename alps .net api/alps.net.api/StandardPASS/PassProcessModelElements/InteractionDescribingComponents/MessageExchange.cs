@@ -22,8 +22,10 @@ namespace alps.net.api.StandardPASS
         /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "MessageExchange";
+        private MessageExchangeType messageExchangeType;
 
-       
+
+
 
 
         public override string getClassName()
@@ -204,6 +206,16 @@ namespace alps.net.api.StandardPASS
                 if (update is IMessageSpecification specification && specification.Equals(getMessageType()))
                     setMessageType(null, removeCascadeDepth);
             }
+        }
+
+        public void setMessageExchangeType(MessageExchangeType type)
+        {
+            this.messageExchangeType = type;
+        }
+
+        public MessageExchangeType getMessageExchangeType()
+        {
+            return this.messageExchangeType;
         }
     }
 }

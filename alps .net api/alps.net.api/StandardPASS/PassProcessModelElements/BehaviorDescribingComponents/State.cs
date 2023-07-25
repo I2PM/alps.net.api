@@ -33,6 +33,8 @@ namespace alps.net.api.StandardPASS
         private double hasRelative2D_PosX;
         private double hasRelative2D_PosY;
 
+       
+
         public double get2DPageRatio()
         {
             return has2DPageRatio;
@@ -449,11 +451,7 @@ namespace alps.net.api.StandardPASS
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
         {
-            // necessary to parse decimal points correctly
-            CultureInfo customCulture = new CultureInfo("en-US");
-            customCulture.NumberFormat.NumberDecimalSeparator = ".";
-
-           
+                    
 
             if (implCapsule != null && implCapsule.parseAttribute(predicate, objectContent, lang, dataType, element))
             {
@@ -502,6 +500,7 @@ namespace alps.net.api.StandardPASS
                 }
 
             }
+            
             else if (predicate.Contains(OWLTags.abstrHas2DPageRatio))
             {
                 set2DPageRatio(double.Parse(objectContent, customCulture));
@@ -545,6 +544,10 @@ namespace alps.net.api.StandardPASS
                     setIsStateType(StateType.InitialStateOfChoiceSegmentPath);
                     return true;
                 }
+                
+                //Abstract and finalized are part of the individual states
+                
+               
             }
 
             /*

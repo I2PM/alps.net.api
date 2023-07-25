@@ -51,6 +51,28 @@ namespace alps.net.api.StandardPASS
         /// <returns>The sender attribute of the instance</returns>
         ISubject getSender();
 
+        /// <summary>
+        /// Sets a type for the current instance
+        /// </summary>
+        /// <param name="type">The type</param>
+        void setMessageExchangeType(MessageExchangeType type);
+
+        /// <summary>
+        /// Returns the current type of the exchange
+        /// </summary>
+        /// <returns>the current type</returns>
+        MessageExchangeType getMessageExchangeType();
+
+    }
+
+    /// <summary>
+    /// enum which describes what type an Message Exchange has
+    /// </summary>
+    public enum MessageExchangeType
+    {
+        Standard,
+        Abstract,
+        Final
     }
 
 }

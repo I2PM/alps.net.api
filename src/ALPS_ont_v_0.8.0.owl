@@ -895,6 +895,7 @@ Idea if the place is supposed to be left empty</rdfs:comment>
     <!-- http://www.imi.kit.edu/abstract-pass-ont#AdviceDoTransistion -->
 
     <owl:Class rdf:about="http://www.imi.kit.edu/abstract-pass-ont#AdviceDoTransistion">
+        <rdfs:subClassOf rdf:resource="http://www.i2pm.net/standard-pass-ont#DoTransition"/>
         <rdfs:subClassOf rdf:resource="http://www.imi.kit.edu/abstract-pass-ont#AdviceTransitionType"/>
     </owl:Class>
     
@@ -903,6 +904,7 @@ Idea if the place is supposed to be left empty</rdfs:comment>
     <!-- http://www.imi.kit.edu/abstract-pass-ont#AdviceReceiveTransition -->
 
     <owl:Class rdf:about="http://www.imi.kit.edu/abstract-pass-ont#AdviceReceiveTransition">
+        <rdfs:subClassOf rdf:resource="http://www.i2pm.net/standard-pass-ont#ReceiveTransition"/>
         <rdfs:subClassOf rdf:resource="http://www.imi.kit.edu/abstract-pass-ont#AdviceTransitionType"/>
     </owl:Class>
     
@@ -911,6 +913,7 @@ Idea if the place is supposed to be left empty</rdfs:comment>
     <!-- http://www.imi.kit.edu/abstract-pass-ont#AdviceSendTransition -->
 
     <owl:Class rdf:about="http://www.imi.kit.edu/abstract-pass-ont#AdviceSendTransition">
+        <rdfs:subClassOf rdf:resource="http://www.i2pm.net/standard-pass-ont#SendTransition"/>
         <rdfs:subClassOf rdf:resource="http://www.imi.kit.edu/abstract-pass-ont#AdviceTransitionType"/>
     </owl:Class>
     

@@ -19,7 +19,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
-    <PackageReference Include="dotNetRDF"><Version>2.7.5</Version></PackageReference>
+    <PackageReference Include="dotNetRDF"><Version>3.0.0</Version></PackageReference>
   </ItemGroup>
 
   <ItemGroup>

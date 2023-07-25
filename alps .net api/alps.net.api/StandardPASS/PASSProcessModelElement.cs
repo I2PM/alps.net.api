@@ -4,6 +4,7 @@ using alps.net.api.src;
 using alps.net.api.util;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using VDS.RDF;
 
 namespace alps.net.api.StandardPASS
@@ -43,8 +44,13 @@ namespace alps.net.api.StandardPASS
         /// </summary>
         private const string className = "PASSProcessModelElement";
 
+        public static CultureInfo customCulture = new CultureInfo("en-US");
+        static PASSProcessModelElement(){
+            customCulture.NumberFormat.NumberDecimalSeparator = ".";
+         }
 
-        public virtual string getClassName()
+
+    public virtual string getClassName()
         {
             return className;
         }

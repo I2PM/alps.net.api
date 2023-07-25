@@ -117,8 +117,8 @@ namespace alps.net.api.ALPS
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
         {
-            CultureInfo customCulture = new CultureInfo("en-US");
-            customCulture.NumberFormat.NumberDecimalSeparator = ".";
+            //CultureInfo customCulture = new CultureInfo("en-US");
+            //customCulture.NumberFormat.NumberDecimalSeparator = ".";
 
 
             if (predicate.Contains(OWLTags.abstrHas2DPageRatio))
