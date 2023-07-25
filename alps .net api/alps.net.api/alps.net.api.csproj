@@ -5,7 +5,7 @@
 		<LangVersion>latest</LangVersion>
 		<RootNamespace>alps.net.api</RootNamespace>
 		<PackageId>alps.net.api</PackageId>
-		<Version>0.9.1.3</Version>
+		<Version>0.9.1.4</Version>
 		<Authors>Lukas Gnad, Matthes Elstermann</Authors>
 		<Company>I2PM</Company>
 		<PackageTags>pass, ontology, modeling, subject-oriented, s-bpm</PackageTags>
