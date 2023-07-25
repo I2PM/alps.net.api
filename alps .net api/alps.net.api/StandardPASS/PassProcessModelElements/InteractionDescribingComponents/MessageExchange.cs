@@ -170,8 +170,6 @@ namespace alps.net.api.StandardPASS
                         setSender(subject);
                         return true;
                     }
-
-
                 }
             }
             

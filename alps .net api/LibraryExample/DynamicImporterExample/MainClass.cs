@@ -173,6 +173,10 @@ namespace LibraryExample.DynamicImporterExample
                     Console.WriteLine(" MessageExchangeList: " + imel.getModelComponentID());
                     Console.WriteLine(" - Number of Pathpoints: " + imel.getSimple2DPathPoints().Count());
                     Console.WriteLine(" - Number of Messages on here: " + imel.getMessageExchanges().Count);
+                }else if(myComponent is ICommunicationChannel ame)
+                {
+                    Console.WriteLine(" Channel: " + ame.getModelComponentID());
+                    Console.WriteLine(" - Number of Pathpoints: " + ame.getSimple2DPathPoints().Count());
                 }
                 
                 else

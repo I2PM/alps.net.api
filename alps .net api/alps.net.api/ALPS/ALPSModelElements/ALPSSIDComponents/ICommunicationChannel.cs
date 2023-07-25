@@ -1,4 +1,5 @@
 ﻿using alps.net.api.StandardPASS;
+using alps.net.api.util;
 using System;
 
 namespace alps.net.api.ALPS
@@ -8,7 +9,7 @@ namespace alps.net.api.ALPS
     /// This also represents Uni- and BiDirectionalCommunicationChannels
     /// The direction can be set using the <see cref="setIsUniDirectional(bool)"/> Method.
     /// </summary>
-    public interface ICommunicationChannel : IALPSSIDComponent
+    public interface ICommunicationChannel : IALPSSIDComponent, IHasSimple2DVisualizationLine
     {
 
         void setCorrespondents(ISubject correspondentA, ISubject correspondentB, int removeCascadeDepth = 0);
