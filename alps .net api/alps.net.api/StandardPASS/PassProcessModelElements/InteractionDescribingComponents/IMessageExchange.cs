@@ -10,8 +10,17 @@ namespace alps.net.api.StandardPASS
     /// 2d routing of the accordings
     /// </summary>
 
-    public interface IMessageExchange : IInteractionDescribingComponent
+    public interface IMessageExchange : IInteractionDescribingComponent, IAbstractElement
     {
+        /// <summary>
+        /// enum which describes what type an Message Exchange has
+        /// </summary>
+        public enum MessageExchangeType
+        {
+            StandardMessageExchange,
+            AbstractMessageExchange,
+            FinalizedMessageExchange
+        }
         /// <summary>
         /// Method that sets the message specification attribute of the instance
         /// </summary>
@@ -65,14 +74,6 @@ namespace alps.net.api.StandardPASS
 
     }
 
-    /// <summary>
-    /// enum which describes what type an Message Exchange has
-    /// </summary>
-    public enum MessageExchangeType
-    {
-        Standard,
-        Abstract,
-        Final
-    }
+   
 
 }

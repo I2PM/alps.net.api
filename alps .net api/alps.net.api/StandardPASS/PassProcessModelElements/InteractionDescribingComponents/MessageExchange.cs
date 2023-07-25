@@ -22,9 +22,28 @@ namespace alps.net.api.StandardPASS
         /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "MessageExchange";
-        private MessageExchangeType messageExchangeType;
+        private IMessageExchange.MessageExchangeType messageExchangeType =IMessageExchange.MessageExchangeType.StandardMessageExchange;
 
+        protected bool isAbstractType = false;
+        private const string ABSTRACT_NAME = "AbstractPASSMessageExchange";
 
+        public void setIsAbstract(bool isAbstract)
+        {
+            this.isAbstractType = isAbstract;
+            if (isAbstract)
+            {
+                addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + ABSTRACT_NAME));
+            }
+            else
+            {
+                removeTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + ABSTRACT_NAME));
+            }
+        }
+
+        public bool isAbstract()
+        {
+            return isAbstractType;
+        }
 
 
 
@@ -172,7 +191,31 @@ namespace alps.net.api.StandardPASS
                     }
                 }
             }
-            
+            if (predicate.Contains(OWLTags.type))
+            {
+                // Console.WriteLine(" - parsing object content transition type: " + objectContent);
+
+                if (objectContent.ToLower().Contains(IMessageExchange.MessageExchangeType.FinalizedMessageExchange.ToString().ToLower()))
+                {
+                    setMessageExchangeType(IMessageExchange.MessageExchangeType.FinalizedMessageExchange);
+                    setIsAbstract(true);
+                    return true;
+                }
+                else if (objectContent.ToLower().Contains(IMessageExchange.MessageExchangeType.AbstractMessageExchange.ToString().ToLower()))
+                {
+                    setMessageExchangeType(IMessageExchange.MessageExchangeType.AbstractMessageExchange);
+                    setIsAbstract(true);
+                    return true;
+                }
+                else if (objectContent.Contains(ABSTRACT_NAME))
+                {
+                    setIsAbstract(true);
+                    return true;
+                }
+
+
+            }
+
 
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
@@ -206,12 +249,12 @@ namespace alps.net.api.StandardPASS
             }
         }
 
-        public void setMessageExchangeType(MessageExchangeType type)
+        public void setMessageExchangeType(IMessageExchange.MessageExchangeType type)
         {
             this.messageExchangeType = type;
         }
 
-        public MessageExchangeType getMessageExchangeType()
+        public IMessageExchange.MessageExchangeType getMessageExchangeType()
         {
             return this.messageExchangeType;
         }

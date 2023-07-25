@@ -166,6 +166,7 @@ namespace LibraryExample.DynamicImporterExample
                 else if(myComponent is IMessageExchange ime)
                 {
                     Console.WriteLine(" MessageExchange: " + ime.getModelComponentID());
+                    Console.WriteLine("  - Exchange Type: " + ime.getMessageExchangeType());
                     
                 }
                 else if (myComponent is IMessageExchangeList imel )
