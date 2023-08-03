@@ -290,6 +290,31 @@ namespace alps.net.api.StandardPASS
                     }
                 }
             }
+            else if (predicate.Contains(OWLTags.abstrHas2DPageRatio))
+            {
+                set2DPageRatio(double.Parse(objectContent, customCulture));
+                return true;
+            }
+            else if (predicate.Contains(OWLTags.abstrHasRelative2D_PosX))
+            {
+                setRelative2DPosX(double.Parse(objectContent, customCulture));
+                return true;
+            }
+            else if (predicate.Contains(OWLTags.abstrHasRelative2D_PosY))
+            {
+                setRelative2DPosY(double.Parse(objectContent, customCulture));
+                return true;
+            }
+            else if (predicate.Contains(OWLTags.abstrHasRelative2D_Height))
+            {
+                setRelative2DHeight(double.Parse(objectContent, customCulture));
+                return true;
+            }
+            else if (predicate.Contains(OWLTags.abstrHasRelative2D_Width))
+            {
+                setRelative2DWidth(double.Parse(objectContent, customCulture));
+                return true;
+            }
             else
             {
                 if (predicate.Contains(OWLTags.type))

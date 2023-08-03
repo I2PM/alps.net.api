@@ -131,10 +131,9 @@ namespace LibraryExample.DynamicImporterExample
             {
                 IPASSProcessModelElement myComponent = kvp.Value;
 
-                if (myComponent is ISubject)
+                if (myComponent is ISubject mySub)
                 {
                     Console.WriteLine(" Subject: " + myComponent.getModelComponentID());
-
 
                     if (myComponent is IStandaloneMacroSubject isms)
                     {
@@ -161,7 +160,13 @@ namespace LibraryExample.DynamicImporterExample
                             Console.WriteLine(iis.getSimpleSimInterfaceSubjectResponseDefinition().OuterXml);
                         }
                     }
-                    
+
+                    Console.WriteLine(" - 2d page ratio: " + mySub.get2DPageRatio());
+                    Console.WriteLine(" - 2d width: " + mySub.getRelative2DWidth());
+                    Console.WriteLine(" - 2d height: " + mySub.getRelative2DHeight());
+                    Console.WriteLine(" - 2d posX: " + mySub.getRelative2DPosX());
+                    Console.WriteLine(" - 2d posY: " + mySub.getRelative2DPosY());
+
                 }
                 else if(myComponent is IMessageExchange ime)
                 {
