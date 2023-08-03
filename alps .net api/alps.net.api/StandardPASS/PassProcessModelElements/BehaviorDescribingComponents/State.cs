@@ -27,11 +27,11 @@ namespace alps.net.api.StandardPASS
         protected IMacroBehavior referenceMacroBehavior;
         protected readonly ICompatibilityDictionary<string, IStateReference> stateReferences = new CompatibilityDictionary<string, IStateReference>();
 
-        private double has2DPageRatio;
-        private double hasRelative2D_Height;
-        private double hasRelative2D_Width;
-        private double hasRelative2D_PosX;
-        private double hasRelative2D_PosY;
+        private double has2DPageRatio = -1;
+        private double hasRelative2D_Height = -1;
+        private double hasRelative2D_Width = -1;
+        private double hasRelative2D_PosX = -1;
+        private double hasRelative2D_PosY = -1;
 
        
 

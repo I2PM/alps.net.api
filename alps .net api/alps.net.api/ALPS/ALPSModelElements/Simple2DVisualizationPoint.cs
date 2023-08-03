@@ -11,9 +11,9 @@ namespace alps.net.api.ALPS
 {
     public class Simple2DVisualizationPoint : ALPSModelElement, ISimple2DVisualizationPoint
     {
-        private double has2DPageRatio;
-        private double hasRelative2D_PosX;
-        private double hasRelative2D_PosY;
+        private double has2DPageRatio = -1;
+        private double hasRelative2D_PosX = -1;
+        private double hasRelative2D_PosY = -1;
 
         /// <summary>
         /// Name of the class, needed for parsing

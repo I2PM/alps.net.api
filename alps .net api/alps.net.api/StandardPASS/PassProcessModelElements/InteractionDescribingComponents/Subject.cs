@@ -32,11 +32,11 @@ namespace alps.net.api.StandardPASS
         /// </summary>
         private const string className = "Subject";
 
-        private double has2DPageRatio;
-        private double hasRelative2D_Height;
-        private double hasRelative2D_Width;
-        private double hasRelative2D_PosX;
-        private double hasRelative2D_PosY;
+        private double has2DPageRatio = -1;
+        private double hasRelative2D_Height = -1;
+        private double hasRelative2D_Width = -1;
+        private double hasRelative2D_PosX = -1;
+        private double hasRelative2D_PosY = -1;
 
         public double get2DPageRatio()
         {
