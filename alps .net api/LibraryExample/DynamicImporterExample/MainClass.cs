@@ -255,34 +255,34 @@ namespace LibraryExample.DynamicImporterExample
             foreach (KeyValuePair<string, IBehaviorDescribingComponent> kvp in someBehavior.getBehaviorDescribingComponents())
             {
                 IPASSProcessModelElement myComponent = kvp.Value;
-                if (myComponent is ITransition mytrans)
+                if (myComponent is ITransition myTrans)
                 {
-                    Console.WriteLine("transition: " + mytrans.getModelComponentID());
-                    Console.Write(" - start: " + mytrans.getSourceState().getModelComponentID());
-                    Console.WriteLine(" - end: " + mytrans.getTargetState().getModelComponentID());
-                    Console.WriteLine(" - type: " + mytrans.getTransitionType());
+                    Console.WriteLine("transition: " + myTrans.getModelComponentID());
+                    Console.Write(" - start: " + myTrans.getSourceState().getModelComponentID());
+                    Console.WriteLine(" - end: " + myTrans.getTargetState().getModelComponentID());
+                    Console.WriteLine(" - type: " + myTrans.getTransitionType());
                     
 
-                    Console.WriteLine(" - Number of Pathpoints: " + mytrans.getSimple2DPathPoints().Count);
+                    Console.WriteLine(" - Number of Pathpoints: " + myTrans.getSimple2DPathPoints().Count);
                         
-                    if(mytrans is ISendTransition myST)
+                    if(myTrans is ISendTransition myST)
                     {
                         Console.WriteLine(" - Send Transition: ");
                         ISendTransitionCondition mySTC = myST.getTransitionCondition();
                         Console.Write("  - tranition condition - message " + mySTC.getRequiresSendingOfMessage().getModelComponentID());
                         Console.WriteLine("  - receiver: " + mySTC.getRequiresMessageSentTo().getModelComponentID());
-                    }else if(mytrans is IReceiveTransition myRT)
+                    }else if(myTrans is IReceiveTransition myRT)
                     {
                         Console.WriteLine(" - Receive Transition: ");
                         Console.WriteLine(" - priority number of ReceiveTransition " + myRT.getPriorityNumber());
 
                     }
-                    else if (mytrans is IDoTransition myDT)
+                    else if (myTrans is IDoTransition myDT)
                     {
                         Console.WriteLine(" - Do Transition: ");
                         Console.WriteLine(" - priority number of Do Transition " + myDT.getPriorityNumber());
 
-                    }else if( mytrans is IUserCancelTransition)
+                    }else if( myTrans is IUserCancelTransition)
                     {
                         Console.WriteLine(" - IUserCancelTransition Transition: ");
                     }

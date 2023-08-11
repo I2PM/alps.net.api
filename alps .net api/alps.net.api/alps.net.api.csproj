@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>Library</OutputType>
-		<TargetFrameworks>netcoreapp3.1;net48</TargetFrameworks>
+		<TargetFrameworks>netcoreapp7.0;net48</TargetFrameworks>
 		<LangVersion>latest</LangVersion>
 		<RootNamespace>alps.net.api</RootNamespace>
 		<PackageId>alps.net.api</PackageId>
