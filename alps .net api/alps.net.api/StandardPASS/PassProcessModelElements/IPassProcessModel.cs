@@ -146,14 +146,6 @@ namespace alps.net.api.StandardPASS
         /// <returns>The absolute path the file was written to.</returns>
         string export(string filepath);
 
-        static void setStandardGraph(IGraphFactory newFactory)
-        {
-            if (newFactory != null)
-                factory = newFactory;
-        }
-
-        static IGraphFactory factory = new VdsRdfGraphFactory();
-
         void setModelGraph(IGraphFactory graphFactory);
     }
 }

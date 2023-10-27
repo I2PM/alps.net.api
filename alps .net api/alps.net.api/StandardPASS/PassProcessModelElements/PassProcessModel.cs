@@ -357,7 +357,7 @@ namespace alps.net.api.StandardPASS
             {
                 if (modelGraphFactory is null)
                 {
-                    this.baseGraph = IPASSProcessModel.factory.createGraph(baseURI);
+                    this.baseGraph = factory.createGraph(baseURI);
                 }
                 else
                 {
@@ -781,6 +781,14 @@ namespace alps.net.api.StandardPASS
         {
             modelGraphFactory = graphFactory;
         }
+
+        static void setStandardGraph(IGraphFactory newFactory)
+        {
+            if (newFactory != null)
+                factory = newFactory;
+        }
+
+        static IGraphFactory factory = new VdsRdfGraphFactory();
 
 
     }
