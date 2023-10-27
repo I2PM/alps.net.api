@@ -24,10 +24,10 @@ namespace alps.net.api.StandardPASS
             return new SubjectDataDefinition();
         }
 
-       protected SubjectDataDefinition() { }
+        protected SubjectDataDefinition() { }
         public SubjectDataDefinition(IPASSProcessModel model, string labelForID = null,
             IDataTypeDefinition dataTypeDefintion = null, string comment = null,
-            string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(model, labelForID, dataTypeDefintion, comment, additionalLabel, additionalAttribute)
         { }
 

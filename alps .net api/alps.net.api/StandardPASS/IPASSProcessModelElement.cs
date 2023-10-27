@@ -56,7 +56,7 @@ namespace alps.net.api.StandardPASS
         /// <returns>the created id for the current element</returns>
         string createUniqueModelComponentID(string labelForID = null, bool addLabel = true);
 
-        
+
 
         /// <summary>
         /// Method that sets the model component label list, overriding the previous content
@@ -69,6 +69,12 @@ namespace alps.net.api.StandardPASS
         /// </summary>
         /// <param name="modelComponentLabel">the model component label</param>
         void addModelComponentLabel(string modelComponentLabel);
+
+        /// <summary>
+        /// Method that sets the model component label attribute
+        /// </summary>
+        /// <param name="modelComponentLabel">the model component label</param>
+        void addModelComponentLabel(LanguageSpecificString modelComponentLabel);
 
         /// <summary>
         /// Method that returns the model component labels as strings.
@@ -93,13 +99,17 @@ namespace alps.net.api.StandardPASS
         /// Removes a label that has the specified string as content
         /// </summary>
         /// <param name="label"></param>
-        void removeModelComponentLabel(string label);
+        void removeModelComponentLabel(LanguageSpecificString label);
+
+        public void removeModelComponentLabel(int num);
 
         /// <summary>
         /// Method that adds a comment attribute
         /// </summary>
         /// <param name="comment">the comment</param>
         void addComment(string comment);
+
+        void addComment(LanguageSpecificString comment);
 
         /// <summary>
         /// Method that returns the comment attribute
@@ -111,6 +121,10 @@ namespace alps.net.api.StandardPASS
         /// Clears the list of comments
         /// </summary>
         void clearComments();
+
+        void removeComment(LanguageSpecificString comment);
+
+        void removeComment(int num);
 
         /// <summary>
         /// Adds an element that is in some undefined relation to the current element.

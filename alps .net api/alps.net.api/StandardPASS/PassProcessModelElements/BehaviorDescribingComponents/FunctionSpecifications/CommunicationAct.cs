@@ -23,10 +23,10 @@ namespace alps.net.api.StandardPASS
             return new CommunicationAct();
         }
 
-       protected CommunicationAct() { }
+        protected CommunicationAct() { }
         public CommunicationAct(ISubjectBehavior behavior, string labelForID = null, string toolSpecificDefinition = null,
-            string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
-            : base(behavior, labelForID,  toolSpecificDefinition, comment, additionalLabel, additionalAttribute) { }
+            string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
+            : base(behavior, labelForID, toolSpecificDefinition, comment, additionalLabel, additionalAttribute) { }
 
     }
 }

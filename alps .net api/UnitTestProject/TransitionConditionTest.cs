@@ -50,7 +50,7 @@ namespace UnitTestProject
             ITimeTransition trans = new TimeTransition(subject.getSubjectBaseBehavior());
             trans.setTimeTransitionType(ITimeTransition.TimeTransitionType.DayTimeTimer);
             ITimeTransitionCondition cond = new TimeTransitionCondition(trans);
-            cond.setTimeTransitionConditionType(ITimeTransitionCondition.TimeTransitionConditionType.DayTimeTimer);
+            cond.setTimeTransitionConditionType(ITimeTransitionCondition.TimeTransitionConditionType.DayTimeTimerTC);
             cond.setTimeValue("TimeValue");
             bool contains = false;
             if (cond is IParseablePASSProcessModelElement elem)

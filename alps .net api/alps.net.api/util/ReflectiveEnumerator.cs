@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace alps.net.api
 {
-    public static class ReflectiveEnumerator
+    static class ReflectiveEnumerator
     {
         static ReflectiveEnumerator() { }
 
@@ -44,42 +44,6 @@ namespace alps.net.api
             additionalAssemblies.Add(assembly);
         }
 
-        /*public static ITreeNode<T> getTreeForType<T>(Type baseType)
-        {
-            Type typeOfBase = element.GetType();
-            if (!(element is T)) return null;
-            List<T> objects = new List<T>();
-
-            // Case baseType is a class type or abstract class type -> the type might be a BaseType to other (abstract) classes 
-            if (!baseType.IsInterface)
-                foreach (Type subType in
-                    Assembly.GetAssembly(typeof(T)).GetTypes()
-                    .Where(myType => myType.IsClass && !myType.IsAbstract && myType.BaseType == typeOfBase))
-                {
-                    T createdObject = createInstance<T>(subType, constructorArgs);
-                    // created Object is null
-                    if (createdObject != null) objects.Add(createdObject);
-
-                }
-            foreach (Type type in
-                Assembly.GetAssembly(typeof(T)).GetTypes()
-                .Where(myType => myType.IsInterface && checkInterfacesSame(myType, typeOfBase)))
-            {
-                foreach (Type innerType in
-                Assembly.GetAssembly(typeof(T)).GetTypes()
-                .Where(myType => myType.IsClass && !myType.IsAbstract && checkDirectlyImplementsInterface(type, myType)))
-                {
-                    T createdObject = createInstance<T>(type, constructorArgs);
-                    // created Object is null
-                    if (createdObject != null) objects.Add(createdObject);
-
-                }
-
-            }
-            return objects;
-        }*/
-        // Baum hier erstellen, Baum aus Interfaces und Klassen erzeugen
-        // Weiterhin kinder der klassen checken, aber auch direkte kinder von interfaces
 
         public static T createInstance<T>(Type type)
         {
@@ -92,7 +56,7 @@ namespace alps.net.api
                 foreach (ParameterInfo info in type.GetConstructors()[0].GetParameters())
                 {
                     args[count] = (info.HasDefaultValue) ? info.DefaultValue : null;
-                     count++;
+                    count++;
                 }
                 finalInstance = (T)Activator.CreateInstance(type, args);
             }

@@ -25,8 +25,8 @@ namespace alps.net.api.StandardPASS
             return new InputPoolConstraintHandlingStrategy();
         }
 
-       protected InputPoolConstraintHandlingStrategy() { }
-        
+        protected InputPoolConstraintHandlingStrategy() { }
+
         /// <summary>
         /// 
         /// </summary>
@@ -36,7 +36,7 @@ namespace alps.net.api.StandardPASS
         /// <param name="additionalLabel"></param>
         /// <param name="additionalAttribute"></param>
         public InputPoolConstraintHandlingStrategy(IModelLayer layer, string labelForID = null, string comment = null,
-            string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(layer, labelForID, comment, additionalLabel, additionalAttribute)
         { }
 

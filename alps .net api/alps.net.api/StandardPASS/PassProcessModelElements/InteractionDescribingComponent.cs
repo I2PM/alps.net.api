@@ -49,13 +49,13 @@ namespace alps.net.api.StandardPASS
         /// <param name="label"></param>
         /// <param name="comment"></param>
         /// <param name="additionalAttribute"></param>
-        public InteractionDescribingComponent(IModelLayer layer, string labelForID = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+        public InteractionDescribingComponent(IModelLayer layer, string labelForID = null, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(labelForID, comment, additionalLabel, additionalAttribute) { setContainedBy(layer); }
 
 
         protected override IDictionary<string, IParseablePASSProcessModelElement> getDictionaryOfAllAvailableElements()
         {
-            if (!getContainedBy(out IModelLayer layer) ) return null;
+            if (!getContainedBy(out IModelLayer layer)) return null;
             if (!layer.getContainedBy(out IPASSProcessModel model)) return null;
             IDictionary<string, IPASSProcessModelElement> allElements = model.getAllElements();
             IDictionary<string, IParseablePASSProcessModelElement> allParseableElements = new Dictionary<string, IParseablePASSProcessModelElement>();

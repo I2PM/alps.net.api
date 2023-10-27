@@ -21,11 +21,11 @@ namespace alps.net.api.StandardPASS
             return new PayloadDataObjectDefinition();
         }
 
-       protected PayloadDataObjectDefinition() { }
+        protected PayloadDataObjectDefinition() { }
 
         public PayloadDataObjectDefinition(IPASSProcessModel model, string labelForID = null,
             IDataTypeDefinition dataTypeDefintion = null, string comment = null, string additionalLabel = null,
-            IList<IIncompleteTriple> additionalAttribute = null)
+            IList<IPASSTriple> additionalAttribute = null)
             : base(model, labelForID, dataTypeDefintion, comment, additionalLabel, additionalAttribute)
         { }
 

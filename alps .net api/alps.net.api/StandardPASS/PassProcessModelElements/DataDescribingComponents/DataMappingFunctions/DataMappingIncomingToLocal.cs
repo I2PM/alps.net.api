@@ -25,9 +25,9 @@ namespace alps.net.api.StandardPASS
             return new DataMappingIncomingToLocal();
         }
 
-       protected DataMappingIncomingToLocal() { }
+        protected DataMappingIncomingToLocal() { }
         public DataMappingIncomingToLocal(IPASSProcessModel model, string labelForID = null, string dataMappingString = null, string feelExpression = null,
-            string toolSpecificDefinition = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            string toolSpecificDefinition = null, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(model, labelForID, dataMappingString, feelExpression, toolSpecificDefinition, comment, additionalLabel, additionalAttribute)
         { }
 

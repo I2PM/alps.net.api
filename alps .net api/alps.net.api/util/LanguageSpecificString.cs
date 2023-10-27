@@ -41,12 +41,7 @@ namespace alps.net.api
         {
             return new LanguageSpecificString(getContent(), getExtra());
         }
-
-        public override INode getNodeFromString(IPASSGraph graph)
-        {
-            return graph.createLiteralNode(getContent(), getExtra());
-        }
-
+        
 
         public override void setContent(string content)
         {

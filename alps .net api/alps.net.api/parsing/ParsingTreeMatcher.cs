@@ -195,7 +195,7 @@ namespace alps.net.api.parsing
             // Start with mapping the roots, they are both PASSProcessModelElement
             if (parsingDict.Count == 0) parsingDict.Add(removeUri(ontClass.Resource.ToString()), new List<(ITreeNode<IParseablePASSProcessModelElement>, int)> { (rootNode, 0) });
             // Create a new dictionary for those urls that could not be mapped properly (need that later)
-            ICompatibilityDictionary<OntologyClass, string> unmappableDict = new CompatibilityDictionary<OntologyClass, string>();
+            ICompDict<OntologyClass, string> unmappableDict = new CompDict<OntologyClass, string>();
 
             // Start to parse childs, passing the parent ontology class and the parent C#-class, as well as the dict off classes already parsed (only the root)
             parseChilds(parsingDict, ontClass, rootNode, unmappableDict);
@@ -225,7 +225,7 @@ namespace alps.net.api.parsing
         /// <param name="unmappableDict">A dict of elements that could not be mapped</param>
         private void parseChilds(IDictionary<string, IList<(ITreeNode<IParseablePASSProcessModelElement>, int)>> parsingDict,
             OntologyClass parentOntClass, ITreeNode<IParseablePASSProcessModelElement> parentNode,
-            ICompatibilityDictionary<OntologyClass, string> unmappableDict)
+            ICompDict<OntologyClass, string> unmappableDict)
         {
             List<ITreeNode<IParseablePASSProcessModelElement>> childsBeenParsed = new List<ITreeNode<IParseablePASSProcessModelElement>>();
 

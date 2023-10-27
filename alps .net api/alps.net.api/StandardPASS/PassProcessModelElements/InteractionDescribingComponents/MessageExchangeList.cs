@@ -1,5 +1,6 @@
 ﻿using alps.net.api.ALPS;
 using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using Serilog;
@@ -15,7 +16,7 @@ namespace alps.net.api.StandardPASS
 
     public class MessageExchangeList : InteractionDescribingComponent, IMessageExchangeList
     {
-        protected ICompatibilityDictionary<string, IMessageExchange> messageExchanges = new CompatibilityDictionary<string, IMessageExchange>();
+        protected ICompDict<string, IMessageExchange> messageExchanges = new CompDict<string, IMessageExchange>();
 
         /// <summary>
         /// Name of the class, needed for parsing
@@ -174,7 +175,7 @@ namespace alps.net.api.StandardPASS
             return new MessageExchangeList();
         }
 
-       protected MessageExchangeList() { }
+        protected MessageExchangeList() { }
         /// <summary>
         /// 
         /// </summary>
@@ -182,8 +183,8 @@ namespace alps.net.api.StandardPASS
         /// <param name="comment"></param>
         /// <param name="messageExchanges"></param>
         /// <param name="additionalAttribute"></param>
-        public MessageExchangeList(IModelLayer layer, string labelForID = null,  ISet<IMessageExchange> messageExchanges = null, string comment = null, string additionalLabel = null,
-            IList<IIncompleteTriple> additionalAttribute = null) : base(layer, labelForID, comment, additionalLabel, additionalAttribute)
+        public MessageExchangeList(IModelLayer layer, string labelForID = null, ISet<IMessageExchange> messageExchanges = null, string comment = null, string additionalLabel = null,
+            IList<IPASSTriple> additionalAttribute = null) : base(layer, labelForID, comment, additionalLabel, additionalAttribute)
         {
             setContainsMessageExchanges(messageExchanges);
 
@@ -197,7 +198,7 @@ namespace alps.net.api.StandardPASS
             {
                 publishElementAdded(messageExchange);
                 messageExchange.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdContains, messageExchange.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains, messageExchange.getUriModelComponentID()));
             }
         }
 
@@ -222,7 +223,7 @@ namespace alps.net.api.StandardPASS
             {
                 messageExchanges.Remove(id);
                 exchange.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdContains, exchange.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains, exchange.getUriModelComponentID()));
             }
         }
 
@@ -293,7 +294,7 @@ namespace alps.net.api.StandardPASS
         public override ISet<IPASSProcessModelElement> getAllConnectedElements(ConnectedElementsSetSpecification specification)
         {
             ISet<IPASSProcessModelElement> baseElements = base.getAllConnectedElements(specification);
-            foreach(IMessageExchange exchange in getMessageExchanges().Values) baseElements.Add(exchange);
+            foreach (IMessageExchange exchange in getMessageExchanges().Values) baseElements.Add(exchange);
             return baseElements;
         }
 

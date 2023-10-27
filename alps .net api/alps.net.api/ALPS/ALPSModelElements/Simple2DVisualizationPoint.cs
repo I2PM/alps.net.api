@@ -20,7 +20,7 @@ namespace alps.net.api.ALPS
         /// </summary>
         private const string className = "Simple2DVisualizationPoint";
 
-        public Simple2DVisualizationPoint(string labelForID = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+        public Simple2DVisualizationPoint(string labelForID = null, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(labelForID, comment, additionalLabel, additionalAttribute) { }
 
         public override string getClassName()

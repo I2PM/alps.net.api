@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using System;
@@ -14,7 +15,7 @@ namespace alps.net.api.StandardPASS
     public class MacroState : State, IMacroState
     {
         protected IMacroBehavior referenceMacroBehavior;
-        protected readonly ICompatibilityDictionary<string, IStateReference> stateReferences = new CompatibilityDictionary<string, IStateReference>();
+        protected readonly ICompDict<string, IStateReference> stateReferences = new CompDict<string, IStateReference>();
         /// <summary>
         /// Name of the class, needed for parsing
         /// </summary>
@@ -29,11 +30,11 @@ namespace alps.net.api.StandardPASS
             return new MacroState();
         }
 
-       protected MacroState() { }
+        protected MacroState() { }
 
         public MacroState(ISubjectBehavior behavior, string labelForID = null, IGuardBehavior guardBehavior = null,
             IFunctionSpecification functionSpecification = null, ISet<ITransition> incomingTransition = null, ISet<ITransition> outgoingTransition = null,
-            ISet<IStateReference> stateReferences = null, IMacroBehavior macroBehavior = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            ISet<IStateReference> stateReferences = null, IMacroBehavior macroBehavior = null, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(behavior, labelForID, guardBehavior, functionSpecification, incomingTransition, outgoingTransition, comment, additionalLabel, additionalAttribute)
         {
             setReferencedMacroBehavior(macroBehavior);
@@ -51,14 +52,14 @@ namespace alps.net.api.StandardPASS
             {
                 if (oldBehavior.Equals(macroBehavior)) return;
                 oldBehavior.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdReferencesMacroBehavior, oldBehavior.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdReferencesMacroBehavior, oldBehavior.getUriModelComponentID()));
             }
 
             if (!(macroBehavior is null))
             {
                 publishElementAdded(macroBehavior);
                 macroBehavior.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdReferencesMacroBehavior, macroBehavior.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdReferencesMacroBehavior, macroBehavior.getUriModelComponentID()));
             }
         }
 
@@ -76,7 +77,7 @@ namespace alps.net.api.StandardPASS
             {
                 publishElementAdded(stateReference);
                 stateReference.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdContains, stateReference.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains, stateReference.getUriModelComponentID()));
             }
         }
 
@@ -87,7 +88,7 @@ namespace alps.net.api.StandardPASS
             {
                 stateReferences.Remove(stateRefID);
                 reference.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdContains, reference.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains, reference.getUriModelComponentID()));
             }
         }
 

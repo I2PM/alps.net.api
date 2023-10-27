@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.StandardPASS;
 using alps.net.api.util;
@@ -16,7 +17,7 @@ namespace alps.net.api.ALPS
         /// Name of the class, needed for parsing
         /// </summary>
         private const string CLASS_NAME = "GroupState";
-        protected ICompatibilityDictionary<string, IBehaviorDescribingComponent> groupedComponents = new CompatibilityDictionary<string, IBehaviorDescribingComponent>();
+        protected ICompDict<string, IBehaviorDescribingComponent> groupedComponents = new CompDict<string, IBehaviorDescribingComponent>();
 
         public override string getClassName()
         {
@@ -27,7 +28,7 @@ namespace alps.net.api.ALPS
             return new GroupState();
         }
 
-       protected GroupState() { }
+        protected GroupState() { }
 
         /// <summary>
         /// Constructor that creates a new fully specified instance of the group state class
@@ -43,7 +44,7 @@ namespace alps.net.api.ALPS
         /// <param name="additionalAttribute"></param>
         public GroupState(ISubjectBehavior behavior, string labelForId = null, IGuardBehavior guardBehavior = null,
             IFunctionSpecification functionSpecification = null, ISet<ITransition> incomingTransition = null, ISet<ITransition> outgoingTransition = null,
-            string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(behavior, labelForId, guardBehavior, functionSpecification, incomingTransition, outgoingTransition, comment, additionalLabel, additionalAttribute)
         { }
 
@@ -61,7 +62,7 @@ namespace alps.net.api.ALPS
 
             publishElementAdded(component);
             component.register(this);
-            addTriple(new IncompleteTriple(OWLTags.stdContains, component.getUriModelComponentID()));
+            addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains, component.getUriModelComponentID()));
             return true;
         }
 
@@ -87,7 +88,7 @@ namespace alps.net.api.ALPS
 
             groupedComponents.Remove(id);
             component.unregister(this, removeCascadeDepth);
-            removeTriple(new IncompleteTriple(OWLTags.stdContains, component.getUriModelComponentID()));
+            removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains, component.getUriModelComponentID()));
             return true;
         }
         public IDictionary<string, IBehaviorDescribingComponent> getGroupedComponents()

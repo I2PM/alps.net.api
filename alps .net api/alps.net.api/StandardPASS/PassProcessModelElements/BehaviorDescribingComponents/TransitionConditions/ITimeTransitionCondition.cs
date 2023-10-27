@@ -8,11 +8,14 @@
 
         public enum TimeTransitionConditionType
         {
-            TimeBasedReminder,
-            BusinessDayTimer,
-            CalendarBasedReminder,
-            DayTimeTimer,
-            YearMonthTimer
+            TimeTC,
+            ReminderEventTC,
+            TimerTC,
+            TimeBasedReminderTC,
+            BusinessDayTimerTC,
+            CalendarBasedReminderTC,
+            DayTimeTimerTC,
+            YearMonthTimerTC
         }
 
 

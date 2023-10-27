@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.StandardPASS;
 using alps.net.api.util;
@@ -15,8 +16,8 @@ namespace alps.net.api.ALPS
     /// </summary>
     public class SystemInterfaceSubject : InterfaceSubject, ISystemInterfaceSubject
     {
-        private readonly ICompatibilityDictionary<string, IInterfaceSubject> containedInterfaceSubjects
-            = new CompatibilityDictionary<string, IInterfaceSubject>();
+        private readonly ICompDict<string, IInterfaceSubject> containedInterfaceSubjects
+            = new CompDict<string, IInterfaceSubject>();
 
         /// <summary>
         /// Name of the class, needed for parsing
@@ -50,13 +51,13 @@ namespace alps.net.api.ALPS
         public SystemInterfaceSubject(IModelLayer layer, string labelForId = null, ISet<IMessageExchange> incomingMessageExchange = null,
             ISet<IInterfaceSubject> containedInterfaceSubjects = null, ISet<IMessageExchange> outgoingMessageExchange = null, int maxSubjectInstanceRestriction = 1,
             IFullySpecifiedSubject referencedSubject = null, string comment = null, string additionalLabel = null,
-            IList<IIncompleteTriple> additionalAttribute = null)
+            IList<IPASSTriple> additionalAttribute = null)
             : base(layer, labelForId, incomingMessageExchange, outgoingMessageExchange, maxSubjectInstanceRestriction, referencedSubject,
                 comment, additionalLabel, additionalAttribute)
         {
             setInterfaceSubjects(containedInterfaceSubjects);
         }
-        
+
 
         public bool addInterfaceSubject(IInterfaceSubject subject)
         {
@@ -66,7 +67,7 @@ namespace alps.net.api.ALPS
 
             publishElementAdded(subject);
             subject.register(this);
-            addTriple(new IncompleteTriple(OWLTags.stdContains, subject.getUriModelComponentID()));
+            addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains, subject.getUriModelComponentID()));
             return true;
         }
 
@@ -92,7 +93,7 @@ namespace alps.net.api.ALPS
 
             containedInterfaceSubjects.Remove(id);
             subject.unregister(this, removeCascadeDepth);
-            removeTriple(new IncompleteTriple(OWLTags.stdContains, subject.getUriModelComponentID()));
+            removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains, subject.getUriModelComponentID()));
             return true;
         }
 
@@ -115,7 +116,7 @@ namespace alps.net.api.ALPS
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
 
-        
+
 
     }
 }

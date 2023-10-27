@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using Serilog;
@@ -70,13 +71,13 @@ namespace alps.net.api.StandardPASS
             if (oldType.Equals(timeTransitionType)) return;
 
             // Removes the export tag (if it exists) which defines the element as pure TimeTransition instance
-            removeTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+            removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
 
             // Removes the export tag (if it exists) which defines the element as instance of the previously specified transition type
-            removeTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + timeTransitionTypesExportNames[(int)oldType]));
+            removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + timeTransitionTypesExportNames[(int)oldType]));
 
             // Adds the export tag which defines the element as instance of the newly specified transition type
-            addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + timeTransitionTypesExportNames[(int)timeTransitionType]));
+            addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + timeTransitionTypesExportNames[(int)timeTransitionType]));
         }
 
         public TimeTransitionType getTimeTransitionType()
@@ -98,7 +99,7 @@ namespace alps.net.api.StandardPASS
         /// <param name="additionalAttribute"></param>
         public TimeTransition(IState sourceState, IState targetState, string labelForID = null, ITimeTransitionCondition transitionCondition = null,
             ITransition.TransitionType transitionType = ITransition.TransitionType.Standard, TimeTransitionType timeTransitionType = TimeTransitionType.DayTimeTimer,
-            string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(sourceState, targetState, labelForID, transitionCondition, transitionType, comment, additionalLabel, additionalAttribute)
         {
             setTimeTransitionType(timeTransitionType);
@@ -107,7 +108,7 @@ namespace alps.net.api.StandardPASS
         public TimeTransition(ISubjectBehavior behavior, string labelForID = null,
             IState sourceState = null, IState targetState = null, ITimeTransitionCondition transitionCondition = null,
             ITransition.TransitionType transitionType = ITransition.TransitionType.Standard, TimeTransitionType timeTransitionType = TimeTransitionType.DayTimeTimer,
-            string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(behavior, labelForID, sourceState, targetState, transitionCondition, transitionType, comment, additionalLabel, additionalAttribute)
         {
             setTimeTransitionType(timeTransitionType);
@@ -127,7 +128,8 @@ namespace alps.net.api.StandardPASS
                         return true;
                     }
                 }
-            }else if (predicate.Contains(OWLTags.abstrHasSimpleSimTransitionChoiceChance))
+            }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimTransitionChoiceChance))
             {
                 try
                 {

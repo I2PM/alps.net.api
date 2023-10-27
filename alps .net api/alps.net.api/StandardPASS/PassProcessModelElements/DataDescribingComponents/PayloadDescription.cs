@@ -24,7 +24,7 @@ namespace alps.net.api.StandardPASS
             return new PayloadDescription();
         }
 
-       protected PayloadDescription() { }
+        protected PayloadDescription() { }
 
         /// <summary>
         /// Constructor that creates a new fully specified instance of the payload description class
@@ -33,8 +33,8 @@ namespace alps.net.api.StandardPASS
         /// <param name="modelComponentID"></param>
         /// <param name="modelComponentLabel"></param>
         /// <param name="comment"></param>
-        public PayloadDescription(IPASSProcessModel model, string labelForID = null, string comment= null,
-            string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+        public PayloadDescription(IPASSProcessModel model, string labelForID = null, string comment = null,
+            string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(model, labelForID, comment, additionalLabel, additionalAttribute)
         { }
 

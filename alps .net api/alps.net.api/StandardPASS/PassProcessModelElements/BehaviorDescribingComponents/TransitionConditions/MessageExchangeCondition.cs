@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
@@ -27,10 +28,10 @@ namespace alps.net.api.StandardPASS
             return new MessageExchangeCondition();
         }
 
-       protected MessageExchangeCondition() { }
+        protected MessageExchangeCondition() { }
 
-        public MessageExchangeCondition(ITransition transition, string labelForID = null,  string toolSpecificDefinition = null, IMessageExchange messageExchange = null,
-            string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+        public MessageExchangeCondition(ITransition transition, string labelForID = null, string toolSpecificDefinition = null, IMessageExchange messageExchange = null,
+            string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(transition, labelForID, comment, toolSpecificDefinition, additionalLabel, additionalAttribute)
         {
             setRequiresPerformedMessageExchange(messageExchange);
@@ -47,14 +48,14 @@ namespace alps.net.api.StandardPASS
             {
                 if (oldExchange.Equals(messageExchange)) return;
                 oldExchange.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdRequiresPerformedMessageExchange, oldExchange.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdRequiresPerformedMessageExchange, oldExchange.getUriModelComponentID()));
             }
 
             if (!(messageExchange is null))
             {
                 publishElementAdded(messageExchange);
                 messageExchange.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdRequiresPerformedMessageExchange, messageExchange.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdRequiresPerformedMessageExchange, messageExchange.getUriModelComponentID()));
                 /*if (messageExchange.getContainedBy(out IModelLayer layer)
                     setContainedBy(layer);*/
             }

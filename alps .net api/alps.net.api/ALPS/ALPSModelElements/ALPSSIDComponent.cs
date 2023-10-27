@@ -43,9 +43,9 @@ namespace alps.net.api.ALPS
         /// <param name="modelComponentID"></param>
         /// <param name="modelComponentLabel"></param>
         /// <param name="comment"></param>
-        public ALPSSIDComponent(IModelLayer layer, string label = null , string comment = null,
-            string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
-            :base(layer, label, comment, additionalLabel, additionalAttribute)
+        public ALPSSIDComponent(IModelLayer layer, string label = null, string comment = null,
+            string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
+            : base(layer, label, comment, additionalLabel, additionalAttribute)
         { }
 
     }

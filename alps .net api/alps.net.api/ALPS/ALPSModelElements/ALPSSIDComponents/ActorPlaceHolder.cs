@@ -28,7 +28,7 @@ namespace alps.net.api.ALPS
 
         protected ActorPlaceHolder() { }
         public ActorPlaceHolder(IModelLayer layer, string labelForID = null, string comment = null, string additionalLabel = null,
-            IList<IIncompleteTriple> additionalAttribute = null)
+            IList<IPASSTriple> additionalAttribute = null)
             : base(layer, labelForID, comment, additionalLabel, additionalAttribute)
         { }
 

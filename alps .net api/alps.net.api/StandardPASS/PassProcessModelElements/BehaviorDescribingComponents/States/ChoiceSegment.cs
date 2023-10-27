@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace alps.net.api.StandardPASS
     /// </summary>
     public class ChoiceSegment : State, IChoiceSegment
     {
-        protected ICompatibilityDictionary<string, IChoiceSegmentPath> choiceSegmentPathDict = new CompatibilityDictionary<string, IChoiceSegmentPath>();
+        protected ICompDict<string, IChoiceSegmentPath> choiceSegmentPathDict = new CompDict<string, IChoiceSegmentPath>();
 
         /// <summary>
         /// Name of the class, needed for parsing
@@ -27,11 +28,11 @@ namespace alps.net.api.StandardPASS
             return new ChoiceSegment();
         }
 
-       protected ChoiceSegment() { }
-        public ChoiceSegment(ISubjectBehavior behavior, string labelForID = null,   IGuardBehavior guardBehavior = null,
+        protected ChoiceSegment() { }
+        public ChoiceSegment(ISubjectBehavior behavior, string labelForID = null, IGuardBehavior guardBehavior = null,
             IFunctionSpecification functionSpecification = null, ISet<ITransition> incomingTransition = null, ISet<ITransition> outgoingTransition = null,
-            ISet<IChoiceSegmentPath> choiceSegmentPathList = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
-            : base(behavior, labelForID,  guardBehavior, functionSpecification, incomingTransition, outgoingTransition, comment, additionalLabel, additionalAttribute)
+            ISet<IChoiceSegmentPath> choiceSegmentPathList = null, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
+            : base(behavior, labelForID, guardBehavior, functionSpecification, incomingTransition, outgoingTransition, comment, additionalLabel, additionalAttribute)
         {
             setContainsChoiceSegmentPaths(choiceSegmentPathList);
         }
@@ -57,9 +58,9 @@ namespace alps.net.api.StandardPASS
             {
                 publishElementAdded(choiceSegmentPath);
                 choiceSegmentPath.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdContains, choiceSegmentPath.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains, choiceSegmentPath.getUriModelComponentID()));
             }
-            
+
         }
 
 
@@ -75,7 +76,7 @@ namespace alps.net.api.StandardPASS
             {
                 choiceSegmentPathDict.Remove(id);
                 path.unregister(this, removeCascadeDepth);
-                addTriple(new IncompleteTriple(OWLTags.stdContains, path.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains, path.getUriModelComponentID()));
             }
         }
 

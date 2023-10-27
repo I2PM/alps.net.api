@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace alps.net.api.StandardPASS
     /// </summary>
     public class DataTypeDefinition : DataDescribingComponent, IDataTypeDefinition
     {
-        protected ICompatibilityDictionary<string, IDataObjectDefinition> dataObjectDefinitons = new CompatibilityDictionary<string, IDataObjectDefinition>();
+        protected ICompDict<string, IDataObjectDefinition> dataObjectDefinitons = new CompDict<string, IDataObjectDefinition>();
 
         /// <summary>
         /// Name of the class, needed for parsing
@@ -27,10 +28,10 @@ namespace alps.net.api.StandardPASS
             return new DataTypeDefinition();
         }
 
-       protected DataTypeDefinition() { }
+        protected DataTypeDefinition() { }
         public DataTypeDefinition(IPASSProcessModel model, string labelForID = null,
             ISet<IDataObjectDefinition> dataObjectDefiniton = null, string comment = null,
-            string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(model, labelForID, comment, additionalLabel, additionalAttribute)
         {
             setContainsDataObjectDefintions(dataObjectDefiniton);
@@ -58,7 +59,7 @@ namespace alps.net.api.StandardPASS
             {
                 publishElementAdded(dataObjectDefiniton);
                 dataObjectDefiniton.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdContains, dataObjectDefiniton.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains, dataObjectDefiniton.getUriModelComponentID()));
             }
         }
 
@@ -75,7 +76,7 @@ namespace alps.net.api.StandardPASS
             {
                 dataObjectDefinitons.Remove(modelComponentID);
                 definition.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdContains, definition.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains, definition.getUriModelComponentID()));
             }
         }
 

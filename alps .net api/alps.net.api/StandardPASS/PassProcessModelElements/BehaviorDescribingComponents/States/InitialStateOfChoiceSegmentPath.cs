@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
@@ -27,11 +28,11 @@ namespace alps.net.api.StandardPASS
             return new InitialStateOfChoiceSegmentPath();
         }
 
-       protected InitialStateOfChoiceSegmentPath() { }
+        protected InitialStateOfChoiceSegmentPath() { }
         public InitialStateOfChoiceSegmentPath(ISubjectBehavior behavior, string labelForID = null, IGuardBehavior guardBehavior = null,
             IFunctionSpecification functionSpecification = null,
             ISet<ITransition> incomingTransition = null, ISet<ITransition> outgoingTransition = null,
-            IChoiceSegmentPath choiceSegmentPath = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            IChoiceSegmentPath choiceSegmentPath = null, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(behavior, labelForID, guardBehavior, functionSpecification, incomingTransition, outgoingTransition, comment, additionalLabel, additionalAttribute)
         {
             setBelongsToChoiceSegmentPath(choiceSegmentPath);
@@ -47,14 +48,14 @@ namespace alps.net.api.StandardPASS
             {
                 if (oldPath.Equals(choiceSegmentPath)) return;
                 oldPath.unregister(this);
-                removeTriple(new IncompleteTriple(OWLTags.stdBelongsTo, oldPath.getModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdBelongsTo, oldPath.getModelComponentID()));
             }
-            
+
             if (!(choiceSegmentPath is null))
             {
                 publishElementAdded(choiceSegmentPath);
                 choiceSegmentPath.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdBelongsTo, choiceSegmentPath.getModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdBelongsTo, choiceSegmentPath.getModelComponentID()));
             }
         }
 

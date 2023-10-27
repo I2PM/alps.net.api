@@ -1,11 +1,11 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
 
 namespace alps.net.api.StandardPASS.PassProcessModelElements.DataDescribingComponents
 {
-
     /// <summary>
     /// Class that represents a data mapping function
     /// </summary>
@@ -14,17 +14,18 @@ namespace alps.net.api.StandardPASS.PassProcessModelElements.DataDescribingCompo
         protected string dataMappingString;
         protected string feelExpression;
         protected string toolSpecificDefinition;
+
         /// <summary>
         /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "DataMappingFunction";
 
 
-
         public override string getClassName()
         {
             return className;
         }
+
         public override IParseablePASSProcessModelElement getParsedInstance()
         {
             return new DataMappingFunction();
@@ -32,8 +33,10 @@ namespace alps.net.api.StandardPASS.PassProcessModelElements.DataDescribingCompo
 
         protected DataMappingFunction() { }
 
-        public DataMappingFunction(IPASSProcessModel model, string labelForID = null, string dataMappingString = null, string feelExpression = null,
-            string toolSpecificDefinition = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+        public DataMappingFunction(IPASSProcessModel model, string labelForID = null, string dataMappingString = null,
+            string feelExpression = null,
+            string toolSpecificDefinition = null, string comment = null, string additionalLabel = null,
+            IList<IPASSTriple> additionalAttribute = null)
             : base(model, labelForID, comment, additionalLabel, additionalAttribute)
         {
             setDataMappingString(dataMappingString);
@@ -45,22 +48,26 @@ namespace alps.net.api.StandardPASS.PassProcessModelElements.DataDescribingCompo
         public void setDataMappingString(string dataMappingString)
         {
             if (dataMappingString != null && dataMappingString.Equals(this.dataMappingString)) return;
-            removeTriple(new IncompleteTriple(OWLTags.stdHasDataMappingString, this.dataMappingString, IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeString));
-            this.dataMappingString = dataMappingString is null || dataMappingString.Equals("") ? null : dataMappingString;
+            removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasDataMappingString,
+                this.dataMappingString, new PASSTriple.LiteralDataType(OWLTags.xsdDataTypeString)));
+            this.dataMappingString =
+                dataMappingString is null || dataMappingString.Equals("") ? null : dataMappingString;
             if (dataMappingString != null)
-                addTriple(new IncompleteTriple(OWLTags.stdHasDataMappingString, dataMappingString, IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeString));
-
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasDataMappingString, dataMappingString,
+                    new PASSTriple.LiteralDataType(OWLTags.xsdDataTypeString)));
         }
 
 
         public void setFeelExpressionAsDataMapping(string feelExpression)
         {
             if (feelExpression != null && feelExpression.Equals(this.feelExpression)) return;
-            removeTriple(new IncompleteTriple(OWLTags.stdHasFeelExpressionAsDataMapping, this.feelExpression, IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeString));
+            removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasFeelExpressionAsDataMapping,
+                this.feelExpression, new PASSTriple.LiteralDataType(OWLTags.xsdDataTypeString)));
             this.feelExpression = feelExpression is null || feelExpression.Equals("") ? null : feelExpression;
             if (feelExpression != null)
             {
-                addTriple(new IncompleteTriple(OWLTags.stdHasFeelExpressionAsDataMapping, feelExpression, IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeString));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasFeelExpressionAsDataMapping,
+                    feelExpression, new PASSTriple.LiteralDataType(OWLTags.xsdDataTypeString)));
                 setToolSpecificDefinition(null);
             }
         }
@@ -69,11 +76,15 @@ namespace alps.net.api.StandardPASS.PassProcessModelElements.DataDescribingCompo
         public void setToolSpecificDefinition(string toolSpecificDefinition)
         {
             if (toolSpecificDefinition != null && toolSpecificDefinition.Equals(this.toolSpecificDefinition)) return;
-            removeTriple(new IncompleteTriple(OWLTags.stdHasToolSpecificDefinition, this.toolSpecificDefinition, IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeString));
-            this.toolSpecificDefinition = toolSpecificDefinition is null || toolSpecificDefinition.Equals("") ? null : toolSpecificDefinition;
+            removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasToolSpecificDefinition,
+                this.toolSpecificDefinition, new PASSTriple.LiteralDataType(OWLTags.xsdDataTypeString)));
+            this.toolSpecificDefinition = toolSpecificDefinition is null || toolSpecificDefinition.Equals("")
+                ? null
+                : toolSpecificDefinition;
             if (toolSpecificDefinition != null)
             {
-                addTriple(new IncompleteTriple(OWLTags.stdHasToolSpecificDefinition, toolSpecificDefinition, IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeString));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasToolSpecificDefinition,
+                    toolSpecificDefinition, new PASSTriple.LiteralDataType(OWLTags.xsdDataTypeString)));
                 setFeelExpressionAsDataMapping(null);
             }
         }
@@ -107,7 +118,8 @@ namespace alps.net.api.StandardPASS.PassProcessModelElements.DataDescribingCompo
         }
 
 
-        protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
+        protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType,
+            IParseablePASSProcessModelElement element)
         {
             if (predicate.Contains(OWLTags.hasDataMappingString))
             {
@@ -126,7 +138,5 @@ namespace alps.net.api.StandardPASS.PassProcessModelElements.DataDescribingCompo
             }
             else return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
-
-
     }
 }

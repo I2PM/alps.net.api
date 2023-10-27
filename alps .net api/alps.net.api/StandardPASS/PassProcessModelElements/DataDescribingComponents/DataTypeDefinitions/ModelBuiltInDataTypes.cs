@@ -24,9 +24,9 @@ namespace alps.net.api.StandardPASS
             return new ModelBuiltInDataTypes();
         }
 
-       protected ModelBuiltInDataTypes() { }
+        protected ModelBuiltInDataTypes() { }
         public ModelBuiltInDataTypes(IPASSProcessModel model, string labelForID = null, ISet<IDataObjectDefinition> dataObjectDefiniton = null,
-            string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(model, labelForID, dataObjectDefiniton, comment, additionalLabel, additionalAttribute)
         { }
 

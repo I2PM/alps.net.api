@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.StandardPASS;
 using alps.net.api.util;
@@ -75,14 +76,14 @@ namespace alps.net.api.FunctionalityCapsules
             {
                 if (oldExtends.Equals(element)) return;
                 oldExtends.unregister(callback);
-                callback.removeTriple(new IncompleteTriple(OWLTags.abstrExtends, oldExtends.getUriModelComponentID()));
+                callback.removeTriple(new PASSTriple(callback.getExportXmlName(), OWLTags.abstrExtends, oldExtends.getUriModelComponentID()));
             }
 
             if (extendedElement is not null)
             {
                 callback.publishElementAdded(extendedElement);
                 extendedElement.register(callback);
-                callback.addTriple(new IncompleteTriple(OWLTags.abstrExtends, extendedElement.getUriModelComponentID()));
+                callback.addTriple(new PASSTriple(callback.getExportXmlName(), OWLTags.abstrExtends, extendedElement.getUriModelComponentID()));
             }
         }
 

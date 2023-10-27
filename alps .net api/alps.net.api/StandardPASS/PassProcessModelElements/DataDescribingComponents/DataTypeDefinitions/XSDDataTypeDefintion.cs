@@ -24,9 +24,9 @@ namespace alps.net.api.StandardPASS
             return new XSDDataTypeDefintion();
         }
 
-       protected XSDDataTypeDefintion() { }
+        protected XSDDataTypeDefintion() { }
         public XSDDataTypeDefintion(IPASSProcessModel model, string labelForID = null, ISet<IDataObjectDefinition> dataObjectDefiniton = null,
-            string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(model, labelForID, dataObjectDefiniton, comment, additionalLabel, additionalAttribute)
         { }
 

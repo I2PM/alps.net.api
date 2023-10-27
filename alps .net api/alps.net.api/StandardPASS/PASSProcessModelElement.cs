@@ -1,16 +1,17 @@
 ﻿using alps.net.api.FunctionalityCapsules;
 using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using VDS.RDF;
+using System.Linq;
 
 namespace alps.net.api.StandardPASS
 {
     /// <summary>
-    /// Root class for the inheritans graphs. Represents a PASS process model element
+    /// Root class for the inheritance graphs. Represents a PASS process model element
     /// </summary>
     public class PASSProcessModelElement : ICapsuleCallback
     {
@@ -22,19 +23,15 @@ namespace alps.net.api.StandardPASS
 
         protected string exportSubjectNodeName = null;
 
-        protected string BASE_URI_PLACEHOLDER = "baseuri:";
-
-        protected const string EXAMPLE_BASE_URI = "http://www.imi.kit.edu/exampleBaseURI";
         public static readonly int CANNOT_PARSE = -1;
 
-        protected readonly List<IValueChangedObserver<IPASSProcessModelElement>> observerList = new List<IValueChangedObserver<IPASSProcessModelElement>>();
-        protected IList<Triple> additionalAttributeTriples = new List<Triple>();
-        protected IList<IIncompleteTriple> additionalIncompleteTriples = new List<IIncompleteTriple>();
+        protected readonly List<IValueChangedObserver<IPASSProcessModelElement>> observerList = new();
+        protected IList<IPASSTriple> additionalIncompleteTriples = new List<IPASSTriple>();
 
 
-        protected ISet<IStringWithExtra> modelComponentLabels = new HashSet<IStringWithExtra>();
-        protected ISet<IStringWithExtra> comments = new HashSet<IStringWithExtra>();
-        protected ICompatibilityDictionary<string, IPASSProcessModelElement> additionalElements = new CompatibilityDictionary<string, IPASSProcessModelElement>();
+        protected IUniqueList<IStringWithExtra> modelComponentLabels = new UniqueList<IStringWithExtra>();
+        protected IUniqueList<IStringWithExtra> comments = new UniqueList<IStringWithExtra>();
+        protected ICompDict<string, IPASSProcessModelElement> additionalElements = new CompDict<string, IPASSProcessModelElement>();
         protected Guid guid = Guid.NewGuid();
         protected string modelComponentID = "";
         protected IPASSGraph exportGraph;
@@ -44,13 +41,14 @@ namespace alps.net.api.StandardPASS
         /// </summary>
         private const string className = "PASSProcessModelElement";
 
-        public static CultureInfo customCulture = new CultureInfo("en-US");
-        static PASSProcessModelElement(){
+        public static CultureInfo customCulture = new("en-US");
+        static PASSProcessModelElement()
+        {
             customCulture.NumberFormat.NumberDecimalSeparator = ".";
-         }
+        }
 
 
-    public virtual string getClassName()
+        public virtual string getClassName()
         {
             return className;
         }
@@ -67,12 +65,12 @@ namespace alps.net.api.StandardPASS
         /// <param name="labelForID">a string describing the element used to generate the model id</param>
         /// <param name="comment">the comment</param>
         /// <param name="additionalAttributes">list of additional attributes</param>
-        public PASSProcessModelElement(string labelForID = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttributes = null)
+        public PASSProcessModelElement(string labelForID = null, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttributes = null)
         {
-            if (labelForID is null || labelForID.Equals(""))
+            if (labelForID is null or "")
                 createUniqueModelComponentID(getClassName(), false);
             else
-                createUniqueModelComponentID(labelForID, (additionalLabel is null || additionalLabel.Equals("")));
+                createUniqueModelComponentID(labelForID, additionalLabel is null or "");
 
             if (additionalLabel != null && !additionalLabel.Equals(""))
                 addModelComponentLabel(additionalLabel);
@@ -82,9 +80,9 @@ namespace alps.net.api.StandardPASS
             if (additionalAttributes != null)
                 addTriples(additionalAttributes);
 
-            addTriple(new IncompleteTriple(OWLTags.rdfType, OWLTags.stdNamedIndividual));
-            addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
-            
+            addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, OWLTags.stdNamedIndividual));
+            addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
+
         }
 
 
@@ -93,21 +91,16 @@ namespace alps.net.api.StandardPASS
         /// depending on whether there is a graph with a base uri available or not.
         /// </summary>
         /// <param name="triple">the triple that is being saved</param>
-        public void addTriple(IIncompleteTriple triple)
+        public void addTriple(IPASSTriple triple)
         {
+            // TODO might check if subject is set correctly
+
             if (containsTriple(triple)) return;
-            if (exportGraph is null)
-            {
-                additionalIncompleteTriples.Add(triple);
-                IStringWithExtra extraString = triple.getObjectWithExtra();
-                parseAttribute(triple.getPredicate(), extraString.getContent(),
-                    (extraString is LanguageSpecificString) ? extraString.getExtra() : null,
-                    (extraString is DataTypeString) ? extraString.getExtra() : null, null);
-            }
-            else
-            {
-                completeIncompleteTriple(triple);
-            }
+
+            additionalIncompleteTriples.Add(triple);
+
+            parseAttribute(triple, out _);
+            exportGraph?.addTriple(triple);
         }
 
         /// <summary>
@@ -115,49 +108,32 @@ namespace alps.net.api.StandardPASS
         /// (depending on whether there is a graph available or not)
         /// </summary>
         /// <param name="triple">the triple that is being saved</param>
-        public void addTriples(IList<IIncompleteTriple> triples)
+        public void addTriples(IList<IPASSTriple> triples)
         {
-            if (triples != null)
-            {
-                foreach (IIncompleteTriple triple in triples)
-                    addTriple(triple);
-            }
+            if (triples == null) return;
+
+            foreach (IPASSTriple triple in triples)
+                addTriple(triple);
         }
 
-        /// <summary>
-        /// Adds a list of complete triples to the element.
-        /// If the element contains an Incomplete Triple containing the same information as a complete triple, the incomplete will be deleted.
-        /// The content of the triple will be parsed if possible.
-        /// </summary>
-        /// <param name="triples"></param>
-        public void addTriples(IList<Triple> triples)
-        {
-            if (triples != null)
-            {
-                foreach (Triple triple in triples)
-                {
-                    addTriple(triple);
-                }
-            }
-        }
 
         /// <summary>
         /// Adds a complete triple to the element.
         /// If the element contains an Incomplete Triple containing the same information, it will be deleted.
         /// The content of the triple will be parsed if possible.
         /// </summary>
-        /// <param name="triples"></param>
-        public void addTriple(Triple triple)
+        /// <param name="triple"></param>
+        /*public void addTriple(Triple triple)
         {
-            // Do not add the triple if it is alreay contained
+            // Do not add the triple if it is already contained
             if (triple is null)
                 return;
             if (additionalAttributeTriples.Contains(triple)) return;
 
             // If a graph with a base URI is available, the base uri of the Triple might clash with the base uri defined by the graph.
             // Convert the triple to an incomplete triple that is parsed back to a Triple using the graphs uri
-            IIncompleteTriple incTriple = new IncompleteTriple(triple);
-            if (!(exportGraph is null))
+            IIncompleteTriple incTriple = new IncompleteTriple(getExportXmlName(), triple);
+            if (exportGraph is not null)
                 addTriple(incTriple);
 
             // If no graph is available
@@ -169,9 +145,9 @@ namespace alps.net.api.StandardPASS
 
                 // Parse the information encoded by the triple
                 additionalAttributeTriples.Add(triple);
-                parseAttribute(triple, out _);
+                parseAttribute(incTriple, out _);
             }
-        }
+        }*/
 
         /// <summary>
         /// Tries to parse an incomplete triple and add it as complete triple
@@ -179,7 +155,7 @@ namespace alps.net.api.StandardPASS
         /// otherwise an example base uri is used.
         /// </summary>
         /// <param name="triple">The incomplete triple</param>
-        protected void completeIncompleteTriple(IIncompleteTriple triple)
+        /*protected void completeIncompleteTriple(IIncompleteTriple triple)
         {
             if (exportGraph is null) return;
             INode subjectNode;
@@ -205,18 +181,24 @@ namespace alps.net.api.StandardPASS
             // other nodes are evaluated from the provided incomplete triple
             Triple completeTriple = triple.getRealTriple(exportGraph, subjectNode);
 
-            additionalAttributeTriples.Add(completeTriple);
-            exportGraph.addTriple(completeTriple);
-            additionalIncompleteTriples.Remove(triple);
+            //additionalAttributeTriples.Add(completeTriple);
+            exportGraph.addTriple(triple);
+            //additionalIncompleteTriples.Remove(triple);
+        }*/
+
+        public string getExportXmlName()
+        {
+            if (exportSubjectNodeName is not null && !exportSubjectNodeName.Equals(""))
+            {
+                return StaticFunctions.addGenericBaseURI(exportSubjectNodeName);
+            }
+
+            return StaticFunctions.addGenericBaseURI(getModelComponentID());
         }
 
-        public IList<Triple> getTriples()
+        public IList<IPASSTriple> getIncompleteTriples()
         {
-            return new List<Triple>(additionalAttributeTriples);
-        }
-        public IList<IIncompleteTriple> getIncompleteTriples()
-        {
-            return new List<IIncompleteTriple>(additionalIncompleteTriples);
+            return new List<IPASSTriple>(additionalIncompleteTriples);
         }
 
         /// <summary>
@@ -225,17 +207,17 @@ namespace alps.net.api.StandardPASS
         /// <param name="incTriple">An incomplete triple coding the value that should be deleted.
         /// The deleted object must not be incomplete, but can as well be a complete triple</param>
         /// <returns></returns>
-        public bool removeTriple(IIncompleteTriple incTriple)
+        public bool removeTriple(IPASSTriple incTriple)
         {
-            Triple foundTriple = getTriple(incTriple);
-            if (foundTriple != null)
-            {
-                if (exportGraph != null) exportGraph.removeTriple(foundTriple);
-                return additionalAttributeTriples.Remove(foundTriple);
-            }
-            IIncompleteTriple foundIncompleteTriple = getIncompleteTriple(incTriple);
+
+            IPASSTriple foundIncompleteTriple = getIncompleteTriple(incTriple);
             if (foundIncompleteTriple != null)
+            {
+
+                if (exportGraph != null) exportGraph.removeTriple(foundIncompleteTriple);
                 return additionalIncompleteTriples.Remove(foundIncompleteTriple);
+
+            }
             return false;
         }
 
@@ -245,40 +227,22 @@ namespace alps.net.api.StandardPASS
         /// <param name="incTriple">An incomplete triple coding the value that should be found.
         /// The found object must not be incomplete, but can as well be a complete triple</param>
         /// <returns></returns>
-        public bool containsTriple(IIncompleteTriple incTriple)
+        public bool containsTriple(IPASSTriple incTriple)
         {
-            return (getTriple(incTriple) != null) || (getIncompleteTriple(incTriple) != null);
+            return (getIncompleteTriple(incTriple) != null);
         }
 
-        /// <summary>
-        /// Returns a real triple which contains the same data as the given incomplete triple.
-        /// </summary>
-        /// <param name="searchedTriple">An incomplete triple providing the data to be searched for</param>
-        /// <returns></returns>
-        protected Triple getTriple(IIncompleteTriple searchedTriple)
-        {
-            string predicateToSearchFor = NodeHelper.cutURI(searchedTriple.getPredicate());
-            string objectContentToSearchFor = NodeHelper.cutURI(searchedTriple.getObject());
-            foreach (Triple triple in getTriples())
-            {
-                string predicateToMatch = NodeHelper.cutURI(NodeHelper.getNodeContent(triple.Predicate));
-                string objectContentToMatch = NodeHelper.cutURI(NodeHelper.getNodeContent(triple.Object));
-                if (predicateToSearchFor.Equals(predicateToMatch) && objectContentToSearchFor.Equals(objectContentToMatch))
-                    return triple;
-            }
-            return null;
-        }
 
         /// <summary>
         /// Returns an incomplete triple which contains the same data as the given incomplete triple.
         /// </summary>
         /// <param name="searchedTriple">An incomplete triple providing the data to be searched for</param>
         /// <returns></returns>
-        protected IIncompleteTriple getIncompleteTriple(IIncompleteTriple searchedTriple)
+        protected IPASSTriple getIncompleteTriple(IPASSTriple searchedTriple)
         {
             string predicateToSearchFor = NodeHelper.cutURI(searchedTriple.getPredicate());
             string objectContentToSearchFor = NodeHelper.cutURI(searchedTriple.getObject());
-            foreach (IIncompleteTriple triple in getIncompleteTriples())
+            foreach (IPASSTriple triple in getIncompleteTriples())
             {
                 string predicateToMatch = NodeHelper.cutURI(triple.getPredicate());
                 string objectContentToMatch = NodeHelper.cutURI(triple.getObject());
@@ -293,7 +257,7 @@ namespace alps.net.api.StandardPASS
         /// </summary>
         /// <param name="oldTriple">An incomplete triple holding the data to find the triple to be replaced</param>
         /// <param name="newTriple">An incomplete triple holding the data to replace the old triple</param>
-        public void replaceTriple(IIncompleteTriple oldTriple, IIncompleteTriple newTriple)
+        public void replaceTriple(IPASSTriple oldTriple, IPASSTriple newTriple)
         {
             if (oldTriple.Equals(newTriple)) return;
             if (oldTriple != null && containsTriple(oldTriple))
@@ -309,7 +273,7 @@ namespace alps.net.api.StandardPASS
 
         public string getBaseURI()
         {
-            return PASSGraph.EXAMPLE_BASE_URI_PLACEHOLDER;
+            return ParserConstants.EXAMPLE_BASE_URI_PLACEHOLDER;
         }
 
         // ############################ ModelComponentID ############################
@@ -332,11 +296,15 @@ namespace alps.net.api.StandardPASS
             {
                 string modifiedID = id.Trim().Replace(" ", "_");
 
-                IIncompleteTriple oldTriple = new IncompleteTriple(OWLTags.stdHasModelComponentID, getModelComponentID(), IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeString);
+                IPASSTriple oldTriple = new PASSTriple(getExportXmlName(),
+                    OWLTags.stdHasModelComponentID, getModelComponentID(),
+                    new PASSTriple.LiteralDataType(OWLTags.xsdDataTypeString));
 
                 modelComponentID = modifiedID;
 
-                IIncompleteTriple newTriple = new IncompleteTriple(OWLTags.stdHasModelComponentID, modifiedID, IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeString);
+                IPASSTriple newTriple = new PASSTriple(getExportXmlName(),
+                    OWLTags.stdHasModelComponentID, modifiedID,
+                    new PASSTriple.LiteralDataType(OWLTags.xsdDataTypeString));
 
                 replaceTriple(oldTriple, newTriple);
 
@@ -356,24 +324,25 @@ namespace alps.net.api.StandardPASS
         /// <param name="containedString"></param>
         protected void invalidateTriplesContainingString(string containedString)
         {
-            IList<IIncompleteTriple> triplesToBeChanged = new List<IIncompleteTriple>();
-            IIncompleteTriple owlNamedIndivTriple = null;
-            foreach (Triple triple in getTriples())
+            IList<IPASSTriple> triplesToBeChanged = new List<IPASSTriple>();
+            IPASSTriple owlNamedIndivTriple = null;
+            foreach (IPASSTriple triple in getIncompleteTriples())
             {
                 if (triple.ToString().Contains(containedString))
                 {
-                    IIncompleteTriple newTriple = new IncompleteTriple(triple);
-                    if (newTriple.getPredicate().Contains("http://www.w3.org/1999/02/22-rdf-syntax-ns#type") && newTriple.getObject().Contains("http://www.w3.org/2002/07/owl#NamedIndividual"))
+                    IPASSTriple newTriple = new PASSTriple(triple.getSubject(), triple.getPredicate(), triple.getObjectWithExtra());
+                    if (newTriple.getPredicate().Contains(OWLTags.rdfTypeFull) &&
+                        newTriple.getObject().Contains(OWLTags.owlNamedIndividualFull))
                         owlNamedIndivTriple = newTriple;
-                    else 
+                    else
                         triplesToBeChanged.Add(newTriple);
                 }
             }
 
-            
 
 
-            foreach (IIncompleteTriple triple in triplesToBeChanged)
+
+            foreach (IPASSTriple triple in triplesToBeChanged)
             {
                 removeTriple(triple);
             }
@@ -385,7 +354,7 @@ namespace alps.net.api.StandardPASS
             }
             //
 
-            foreach (IIncompleteTriple triple in triplesToBeChanged)
+            foreach (IPASSTriple triple in triplesToBeChanged)
             {
                 addTriple(triple);
             }
@@ -395,7 +364,6 @@ namespace alps.net.api.StandardPASS
             {
                 addTriple(owlNamedIndivTriple);
             }
-            //
         }
 
 
@@ -428,28 +396,23 @@ namespace alps.net.api.StandardPASS
         {
             IStringWithExtra extraString = new LanguageSpecificString(modelComponentLabel);
             modelComponentLabels.Add(extraString);
-            addTriple(new IncompleteTriple(OWLTags.stdHasModelComponentLabel, extraString));
+            addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasModelComponentLabel, extraString));
 
         }
 
-        public void addModelComponentLabel(IStringWithExtra modelComponentLabel)
+        public void addModelComponentLabel(LanguageSpecificString modelComponentLabel)
         {
             foreach (IStringWithExtra label in modelComponentLabels)
             {
                 if (label.Equals(modelComponentLabel)) return;
             }
             if (modelComponentLabels.Add(modelComponentLabel))
-                addTriple(new IncompleteTriple(OWLTags.stdHasModelComponentLabel, modelComponentLabel));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasModelComponentLabel, modelComponentLabel));
         }
 
         public IList<string> getModelComponentLabelsAsStrings(bool addLanguageAttribute = false)
         {
-            IList<string> labels = new List<string>();
-            foreach (IStringWithExtra label in modelComponentLabels)
-            {
-                labels.Add((addLanguageAttribute) ? label.ToString() : label.getContent());
-            }
-            return labels;
+            return modelComponentLabels.Select(label => addLanguageAttribute ? label.ToString() : label.getContent()).ToList();
         }
 
         public IList<IStringWithExtra> getModelComponentLabels()
@@ -459,58 +422,89 @@ namespace alps.net.api.StandardPASS
 
         public void clearModelComponentLabels()
         {
-            modelComponentLabels.Clear();
+            // Cannot use clear() on the collection, since the triples must be removed as well
+            for (int i = 0; i < modelComponentLabels.Count; i++)
+            {
+                removeModelComponentLabel(i);
+            }
         }
 
-        public void removeModelComponentLabel(string label)
+        public void removeModelComponentLabel(LanguageSpecificString label)
         {
             if (label is null) return;
-            IStringWithExtra labelString = new LanguageSpecificString(label);
-            if (modelComponentLabels.Contains(labelString))
-                modelComponentLabels.Remove(labelString);
+            if (modelComponentLabels.Contains(label))
+            {
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasModelComponentLabel, label));
+                modelComponentLabels.Remove(label);
+            }
+        }
+
+        public void removeModelComponentLabel(int num)
+        {
+            if (num < 0 || num > modelComponentLabels.Count) return;
+            removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasModelComponentLabel, modelComponentLabels[num]));
+            modelComponentLabels.RemoveAt(num);
         }
 
         // ############################ Comments ############################
 
-        public void addComment(IStringWithExtra comment)
+        public void addComment(LanguageSpecificString comment)
         {
-            if (comment is null || comment.ToString().Equals("")) return;
+            if (comment is null || comment.ToString()!.Equals("")) return;
             comments.Add(comment);
-            addTriple(new IncompleteTriple(OWLTags.rdfsComment, comment));
+            addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfsComment, comment));
         }
 
         public void addComment(string comment)
         {
-            if (comment is null || comment.Equals("")) return;
+            if (comment is null or "") return;
             IStringWithExtra extraComment = new LanguageSpecificString(comment);
             if (comments.Add(extraComment))
-                addTriple(new IncompleteTriple(OWLTags.rdfsComment, extraComment));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfsComment, extraComment));
         }
 
         public IList<string> getComments()
         {
-            IList<string> commentsAsString = new List<string>();
-            foreach (IStringWithExtra langString in comments)
-            {
-                commentsAsString.Add(langString.ToString());
-            }
-            return commentsAsString;
+            return comments.Select(langString => langString.ToString()).ToList();
         }
+
 
         public void clearComments()
         {
-            comments.Clear();
+            // Cannot use clear() on the collection, since the triples must be removed as well
+            for (int i = 0; i < comments.Count; i++)
+            {
+                removeComment(i);
+            }
+        }
+
+        public void removeComment(LanguageSpecificString comment)
+        {
+            if (comment is null) return;
+            if (comments.Contains(comment))
+            {
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasModelComponentLabel, comment.ToString()));
+                comments.Remove(comment);
+            }
+        }
+
+        public void removeComment(int num)
+        {
+            if (num < 0 || num > comments.Count) return;
+            removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfsComment, comments[num]));
+            comments.RemoveAt(num);
         }
 
 
-
+        // This is needed for the <completeObject> method not to loop infinitely
+        protected bool parsingStarted = false;
 
         public virtual void completeObject(ref IDictionary<string, IParseablePASSProcessModelElement> allElements)
         {
             if (parsingStarted) return;
             parsingStarted = true;
             IList<IParseablePASSProcessModelElement> successfullyParsedElements = new List<IParseablePASSProcessModelElement>();
-            foreach (Triple triple in getTriples())
+            foreach (IPASSTriple triple in getIncompleteTriples())
             {
                 parseAttribute(triple, allElements, out IParseablePASSProcessModelElement parsedElement);
                 if (parsedElement != null)
@@ -525,9 +519,18 @@ namespace alps.net.api.StandardPASS
             }
         }
 
-        protected bool parsingStarted = false;
 
-        protected bool parseAttribute(Triple triple, out IParseablePASSProcessModelElement parsedElement)
+
+        /*protected bool parseAttribute(Triple triple, out IParseablePASSProcessModelElement parsedElement)
+        {
+
+            // Calling parsing method
+            // If attribute contains a reference to a PassProcessModelElement, pass this to the method
+            IDictionary<string, IParseablePASSProcessModelElement> allElements = getDictionaryOfAllAvailableElements();
+            return parseAttribute(triple, allElements, out parsedElement);
+        }*/
+
+        protected bool parseAttribute(IPASSTriple triple, out IParseablePASSProcessModelElement parsedElement)
         {
 
             // Calling parsing method
@@ -536,41 +539,68 @@ namespace alps.net.api.StandardPASS
             return parseAttribute(triple, allElements, out parsedElement);
         }
 
-        protected bool parseAttribute(Triple triple, IDictionary<string, IParseablePASSProcessModelElement> allElements, out IParseablePASSProcessModelElement parsedElement)
-        {
+        /*        protected bool parseAttribute(Triple triple, IDictionary<string, IParseablePASSProcessModelElement> allElements, out IParseablePASSProcessModelElement parsedElement)
+                {
 
+                    // Calling parsing method
+                    // If attribute contains a reference to a PassProcessModelElement, pass this to the method
+                    parsedElement = null;
+                    setExportXMLName(NodeHelper.getNodeContent(triple.Subject));
+                    string predicateContent = NodeHelper.getNodeContent(triple.Predicate);
+                    string objectContent = NodeHelper.getNodeContent(triple.Object);
+                    string lang = NodeHelper.getLangIfContained(triple.Object);
+                    string dataType = NodeHelper.getDataTypeIfContained(triple.Object);
+
+                    // This object content might be the name of another element (in the same model) which is referenced by the triple
+                    string objectContentWithoutUri = StaticFunctions.removeBaseUri(objectContent);
+
+
+                    if (allElements != null && allElements.ContainsKey(objectContentWithoutUri))
+                    {
+                        if (!parseAttribute(predicateContent, objectContentWithoutUri, lang, dataType, allElements[objectContentWithoutUri]) ||
+                            allElements[objectContentWithoutUri].Equals(this))
+                        {
+                            return false;
+                        }
+
+                        parsedElement = allElements[objectContentWithoutUri];
+                        successfullyParsedElement(parsedElement);
+                        return true;
+                    }
+                    return parseAttribute(predicateContent, objectContent, lang, dataType, null);
+
+                }*/
+
+        protected bool parseAttribute(IPASSTriple triple, IDictionary<string, IParseablePASSProcessModelElement> allElements,
+            out IParseablePASSProcessModelElement parsedElement)
+        {
             // Calling parsing method
             // If attribute contains a reference to a PassProcessModelElement, pass this to the method
             parsedElement = null;
-            setExportXMLName(NodeHelper.getNodeContent(triple.Subject));
-            string predicateContent = NodeHelper.getNodeContent(triple.Predicate);
-            string objectContent = NodeHelper.getNodeContent(triple.Object);
-            string lang = NodeHelper.getLangIfContained(triple.Object);
-            string dataType = NodeHelper.getDataTypeIfContained(triple.Object);
-            string possibleID = objectContent;
-            if (possibleID.Split('#').Length > 1)
-                possibleID = possibleID.Split('#')[possibleID.Split('#').Length - 1];
+            setExportXMLName(triple.getSubject());
+            string predicateContent = triple.getPredicate();
+            var objWithExtra = triple.getObjectWithExtra();
+            string objectContent = objWithExtra.getContent();
+            string lang = objWithExtra is LanguageSpecificString ? objWithExtra.getExtra() : "";
+            string dataType = objWithExtra is DataTypeString ? objWithExtra.getExtra() : "";
 
-            if (triple.Subject != null && triple.Subject.ToString() != "")
-            {
-                exportSubjectNodeName = triple.Subject.ToString();
-            }
+            // This object content might be the name of another element (in the same model) which is referenced by the triple
+            string objectContentWithoutUri = StaticFunctions.removeAllUriPrefix(objectContent);
 
-            if (allElements != null && allElements.ContainsKey(possibleID))
+
+            if (allElements != null && allElements.ContainsKey(objectContentWithoutUri))
             {
-                if (parseAttribute(predicateContent, possibleID, lang, dataType, allElements[possibleID]) && allElements[possibleID] != this)
+                if (!parseAttribute(predicateContent, objectContentWithoutUri, lang, dataType, allElements[objectContentWithoutUri]) ||
+                    allElements[objectContentWithoutUri].Equals(this))
                 {
-                    parsedElement = allElements[possibleID];
-                    successfullyParsedElement(parsedElement);
-                    return true;
+                    return false;
                 }
-                return false;
-            }
-            else
-            {
-                return parseAttribute(predicateContent, objectContent, lang, dataType, null);
-            }
 
+                parsedElement = allElements[objectContentWithoutUri];
+                successfullyParsedElement(parsedElement);
+                return true;
+            }
+            return parseAttribute(predicateContent, objectContent, lang, dataType, null);
         }
 
         protected virtual void successfullyParsedElement(IParseablePASSProcessModelElement parsedElement) { return; }
@@ -616,14 +646,12 @@ namespace alps.net.api.StandardPASS
                 setModelComponentID(objectContent.Split('#')[objectContent.Split('#').Length - 1]);
                 return true;
             }
-            if (!(element is null))
+            if (element is not null)
             {
                 addElementWithUnspecifiedRelation(element);
                 return true;
             }
 
-
-            //Console.WriteLine("not parsed element: " + predicate);
             return false;
         }
 
@@ -799,11 +827,7 @@ namespace alps.net.api.StandardPASS
             string baseURI = getBaseURI();
             if (baseURI != null && !baseURI.Equals(""))
                 invalidateTriplesContainingString("");
-            foreach (IIncompleteTriple triple in getIncompleteTriples())
-            {
-                completeIncompleteTriple(triple);
-            }
-            foreach (Triple triple in getTriples())
+            foreach (IPASSTriple triple in getIncompleteTriples())
             {
                 graph.addTriple(triple);
             }
@@ -811,43 +835,43 @@ namespace alps.net.api.StandardPASS
 
         public virtual void notifyModelComponentIDChanged(string oldID, string newID)
         {
-            foreach (IIncompleteTriple t in getIncompleteTriples())
+            foreach (IPASSTriple t in getIncompleteTriples())
             {
                 if (t.ToString().Contains(oldID))
                 {
-                    IIncompleteTriple newIncompleteTriple;
+                    IPASSTriple newIncompleteTriple;
                     string predicate = t.getPredicate();
                     if (t.getObjectWithExtra() != null)
                     {
                         IStringWithExtra extra = t.getObjectWithExtra();
                         extra.setContent(extra.getContent().Replace(oldID, newID));
-                        newIncompleteTriple = new IncompleteTriple(predicate, extra);
+                        newIncompleteTriple = new PASSTriple(getExportXmlName(), predicate, extra);
                     }
                     else
                     {
                         string objectStr = t.getObject().Replace(oldID, newID);
-                        newIncompleteTriple = new IncompleteTriple(predicate, objectStr);
+                        newIncompleteTriple = new PASSTriple(getExportXmlName(), predicate, objectStr);
                     }
                     replaceTriple(t, newIncompleteTriple);
                 }
             }
-            foreach (Triple t in getTriples())
+            foreach (IPASSTriple t in getIncompleteTriples())
             {
                 if (t.ToString().Contains(oldID))
                 {
-                    IIncompleteTriple oldIncompleteTriple = new IncompleteTriple(t);
-                    IIncompleteTriple newIncompleteTriple;
+                    IPASSTriple oldIncompleteTriple = new PASSTriple(t.getSubject(), t.getPredicate(), t.getObjectWithExtra());
+                    IPASSTriple newIncompleteTriple;
                     string predicate = oldIncompleteTriple.getPredicate();
                     if (oldIncompleteTriple.getObjectWithExtra() != null)
                     {
                         IStringWithExtra extra = oldIncompleteTriple.getObjectWithExtra();
                         extra.setContent(extra.getContent().Replace(oldID, newID));
-                        newIncompleteTriple = new IncompleteTriple(predicate, extra);
+                        newIncompleteTriple = new PASSTriple(getExportXmlName(), predicate, extra);
                     }
                     else
                     {
                         string objectStr = oldIncompleteTriple.getObject().Replace(oldID, newID);
-                        newIncompleteTriple = new IncompleteTriple(predicate, objectStr);
+                        newIncompleteTriple = new PASSTriple(getExportXmlName(), predicate, objectStr);
                     }
                     replaceTriple(oldIncompleteTriple, newIncompleteTriple);
                 }
@@ -864,7 +888,7 @@ namespace alps.net.api.StandardPASS
             if (element is null) { return; }
             if (additionalElements.TryAdd(element.getModelComponentID(), element))
             {
-                addTriple(new IncompleteTriple(OWLTags.stdContains, element.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains, element.getUriModelComponentID()));
             }
         }
 
@@ -892,7 +916,7 @@ namespace alps.net.api.StandardPASS
             if (additionalElements.TryGetValue(id, out IPASSProcessModelElement element))
             {
                 additionalElements.Remove(id);
-                removeTriple(new IncompleteTriple(OWLTags.stdContains, element.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains, element.getUriModelComponentID()));
             }
         }
 
@@ -901,15 +925,17 @@ namespace alps.net.api.StandardPASS
             return getModelComponentID();
         }
 
-        public void notifyTriple(Triple triple)
+        public void notifyTriple(IPASSTriple triple)
         {
             addTriple(triple);
         }
 
         protected void setExportXMLName(string xmlTag)
         {
-            if (exportSubjectNodeName is null || exportSubjectNodeName.Equals(""))
-                exportSubjectNodeName = xmlTag;
+            if (exportSubjectNodeName is not (null or "")) return;
+
+            exportSubjectNodeName = StaticFunctions.addGenericBaseURI(StaticFunctions.removeAllUriPrefix(xmlTag));
+
         }
 
         protected PASSProcessModelElement() { }

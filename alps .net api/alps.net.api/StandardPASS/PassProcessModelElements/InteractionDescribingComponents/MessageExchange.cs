@@ -1,5 +1,6 @@
 ﻿using alps.net.api.ALPS;
 using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using System;
@@ -22,7 +23,7 @@ namespace alps.net.api.StandardPASS
         /// Name of the class, needed for parsing
         /// </summary>
         private const string className = "MessageExchange";
-        private IMessageExchange.MessageExchangeType messageExchangeType =IMessageExchange.MessageExchangeType.StandardMessageExchange;
+        private IMessageExchange.MessageExchangeType messageExchangeType = IMessageExchange.MessageExchangeType.StandardMessageExchange;
 
         protected bool isAbstractType = false;
         private const string ABSTRACT_NAME = "AbstractPASSMessageExchange";
@@ -32,11 +33,11 @@ namespace alps.net.api.StandardPASS
             this.isAbstractType = isAbstract;
             if (isAbstract)
             {
-                addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + ABSTRACT_NAME));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + ABSTRACT_NAME));
             }
             else
             {
-                removeTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + ABSTRACT_NAME));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + ABSTRACT_NAME));
             }
         }
 
@@ -56,7 +57,7 @@ namespace alps.net.api.StandardPASS
             return new MessageExchange();
         }
 
-       protected MessageExchange() { }
+        protected MessageExchange() { }
 
         /// <summary>
         /// 
@@ -67,8 +68,8 @@ namespace alps.net.api.StandardPASS
         /// <param name="senderSubject"></param>
         /// <param name="receiverSubject"></param>
         /// <param name="additionalAttribute"></param>
-        public MessageExchange(IModelLayer layer, string labelForID = null,  IMessageSpecification messageSpecification = null, ISubject senderSubject = null,
-            ISubject receiverSubject = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+        public MessageExchange(IModelLayer layer, string labelForID = null, IMessageSpecification messageSpecification = null, ISubject senderSubject = null,
+            ISubject receiverSubject = null, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(layer, labelForID, comment, additionalLabel, additionalAttribute)
         {
             setMessageType(messageSpecification);
@@ -87,14 +88,14 @@ namespace alps.net.api.StandardPASS
             {
                 if (oldSpecification.Equals(messageType)) return;
                 oldSpecification.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdHasMessageType, oldSpecification.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasMessageType, oldSpecification.getUriModelComponentID()));
             }
 
             if (!(messageType is null))
             {
                 publishElementAdded(messageType);
                 messageType.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdHasMessageType, messageType.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasMessageType, messageType.getUriModelComponentID()));
             }
         }
 
@@ -109,7 +110,7 @@ namespace alps.net.api.StandardPASS
             {
                 if (oldReceiver.Equals(receiver)) return;
                 oldReceiver.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdHasReceiver, oldReceiver.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasReceiver, oldReceiver.getUriModelComponentID()));
             }
 
             if (!(receiver is null))
@@ -117,7 +118,7 @@ namespace alps.net.api.StandardPASS
                 publishElementAdded(receiver);
                 receiver.register(this);
                 receiver.addIncomingMessageExchange(this);
-                addTriple(new IncompleteTriple(OWLTags.stdHasReceiver, receiver.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasReceiver, receiver.getUriModelComponentID()));
             }
         }
 
@@ -132,7 +133,7 @@ namespace alps.net.api.StandardPASS
             {
                 if (oldSender.Equals(sender)) return;
                 oldSender.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdHasSender, oldSender.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasSender, oldSender.getUriModelComponentID()));
             }
 
             if (!(sender is null))
@@ -140,7 +141,7 @@ namespace alps.net.api.StandardPASS
                 publishElementAdded(sender);
                 sender.register(this);
                 sender.addOutgoingMessageExchange(this);
-                addTriple(new IncompleteTriple(OWLTags.stdHasSender, sender.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasSender, sender.getUriModelComponentID()));
             }
         }
 
@@ -165,7 +166,7 @@ namespace alps.net.api.StandardPASS
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
         {
-            
+
 
             if (element != null)
             {

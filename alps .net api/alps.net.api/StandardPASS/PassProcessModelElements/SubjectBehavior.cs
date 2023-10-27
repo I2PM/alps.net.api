@@ -1,6 +1,7 @@
 ﻿using alps.net.api.ALPS;
 using alps.net.api.FunctionalityCapsules;
 using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
@@ -15,7 +16,8 @@ namespace alps.net.api.StandardPASS
         /// <summary>
         /// Contains all components held by the subject behavior
         /// </summary>
-        protected ICompatibilityDictionary<string, IBehaviorDescribingComponent> behaviorDescriptionComponents = new CompatibilityDictionary<string, IBehaviorDescribingComponent>();
+        protected ICompDict<string, IBehaviorDescribingComponent> behaviorDescriptionComponents =
+            new CompDict<string, IBehaviorDescribingComponent>();
 
         // The capsules are used to externalize functionality that is used across multiple classes redundandly
         protected readonly IImplementsFunctionalityCapsule<ISubjectBehavior> implCapsule;
@@ -41,7 +43,8 @@ namespace alps.net.api.StandardPASS
             return new SubjectBehavior();
         }
 
-        protected SubjectBehavior() {
+        protected SubjectBehavior()
+        {
             implCapsule = new ImplementsFunctionalityCapsule<ISubjectBehavior>(this);
             extendsCapsule = new ExtendsFunctionalityCapsule<ISubjectBehavior>(this);
         }
@@ -50,8 +53,10 @@ namespace alps.net.api.StandardPASS
         /// Creates a new SubjectBehavior from scratch
         /// </summary>
         public SubjectBehavior(IModelLayer layer, string labelForID = null, ISubject subject = null,
-            ISet<IBehaviorDescribingComponent> behaviorDescribingComponents = null, IState initialStateOfBehavior = null,
-            int priorityNumber = 0, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            ISet<IBehaviorDescribingComponent> behaviorDescribingComponents = null,
+            IState initialStateOfBehavior = null,
+            int priorityNumber = 0, string comment = null, string additionalLabel = null,
+            IList<IPASSTriple> additionalAttribute = null)
             : base(labelForID, comment, additionalLabel, additionalAttribute)
         {
             implCapsule = new ImplementsFunctionalityCapsule<ISubjectBehavior>(this);
@@ -62,7 +67,6 @@ namespace alps.net.api.StandardPASS
             setInitialState(initialStateOfBehavior);
             setPriorityNumber(priorityNumber);
         }
-
 
 
         public bool getContainedBy(out IModelLayer layer)
@@ -84,13 +88,13 @@ namespace alps.net.api.StandardPASS
             if (layer == null) return null;
             if (!layer.getContainedBy(out IPASSProcessModel model)) return null;
             IDictionary<string, IPASSProcessModelElement> allElements = model.getAllElements();
-            IDictionary<string, IParseablePASSProcessModelElement> allParseableElements = new Dictionary<string, IParseablePASSProcessModelElement>();
+            IDictionary<string, IParseablePASSProcessModelElement> allParseableElements =
+                new Dictionary<string, IParseablePASSProcessModelElement>();
             foreach (KeyValuePair<string, IPASSProcessModelElement> pair in allElements)
-                if (pair.Value is IParseablePASSProcessModelElement parseable) allParseableElements.Add(pair.Key, parseable);
+                if (pair.Value is IParseablePASSProcessModelElement parseable)
+                    allParseableElements.Add(pair.Key, parseable);
             return allParseableElements;
         }
-
-        
 
 
         // ######################## BehaviorDescribingComponent()s methods ########################
@@ -99,25 +103,30 @@ namespace alps.net.api.StandardPASS
         public virtual bool addBehaviorDescribingComponent(IBehaviorDescribingComponent component)
         {
             if (component is null) { return false; }
+
             if (behaviorDescriptionComponents.TryAdd(component.getModelComponentID(), component))
             {
                 publishElementAdded(component);
                 if (component is IContainableElement<ISubjectBehavior> containable)
                     containable.setContainedBy(this);
                 component.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdContains, component.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains,
+                    component.getUriModelComponentID()));
                 return true;
             }
+
             return false;
         }
 
 
-        public void setBehaviorDescribingComponents(ISet<IBehaviorDescribingComponent> components, int removeCascadeDepth = 0)
+        public void setBehaviorDescribingComponents(ISet<IBehaviorDescribingComponent> components,
+            int removeCascadeDepth = 0)
         {
             foreach (IBehaviorDescribingComponent component in this.getBehaviorDescribingComponents().Values)
             {
                 removeBehaviorDescribingComponent(component.getModelComponentID(), removeCascadeDepth);
             }
+
             if (components is null) return;
             foreach (IBehaviorDescribingComponent component in components)
             {
@@ -140,22 +149,27 @@ namespace alps.net.api.StandardPASS
                 {
                     otherComponent.updateRemoved(component, this, removeCascadeDepth);
                 }
+
                 if (component.Equals(initialStateOfBehavior))
                 {
                     setInitialState(null);
                 }
+
                 if (component is IState state && state.isStateType(IState.StateType.EndState))
-                    removeTriple(new IncompleteTriple(OWLTags.stdHasEndState, state.getUriModelComponentID()));
-                removeTriple(new IncompleteTriple(OWLTags.stdContains, component.getUriModelComponentID()));
+                    removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasEndState,
+                        state.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains,
+                    component.getUriModelComponentID()));
                 return true;
             }
+
             return false;
         }
+
         public IDictionary<string, IBehaviorDescribingComponent> getBehaviorDescribingComponents()
         {
             return new Dictionary<string, IBehaviorDescribingComponent>(behaviorDescriptionComponents);
         }
-
 
 
         public void setInitialState(IState initialStateOfBehavior, int removeCascadeDepth = 0)
@@ -169,7 +183,8 @@ namespace alps.net.api.StandardPASS
                 if (oldInitialState.Equals(initialStateOfBehavior)) return;
                 //removeBehaviorDescribingComponent(oldInitialState.getModelComponentID(), removeCascadeDepth);
                 oldInitialState.removeStateType(IState.StateType.InitialStateOfBehavior);
-                removeTriple(new IncompleteTriple(OWLTags.stdHasInitialState, oldInitialState.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasInitialState,
+                    oldInitialState.getUriModelComponentID()));
             }
 
             this.initialStateOfBehavior = initialStateOfBehavior;
@@ -178,18 +193,20 @@ namespace alps.net.api.StandardPASS
             {
                 addBehaviorDescribingComponent(initialStateOfBehavior);
                 initialStateOfBehavior.setIsStateType(IState.StateType.InitialStateOfBehavior);
-                addTriple(new IncompleteTriple(OWLTags.stdHasInitialState, initialStateOfBehavior.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasInitialState,
+                    initialStateOfBehavior.getUriModelComponentID()));
             }
         }
 
         public void setPriorityNumber(int positiveNumber)
         {
             if (positiveNumber == this.priorityNumber) return;
-            removeTriple(new IncompleteTriple(OWLTags.stdHasPriorityNumber, this.priorityNumber.ToString(),
-                IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypePositiveInteger));
+            removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasPriorityNumber,
+                this.priorityNumber.ToString(),
+                new PASSTriple.LiteralDataType(OWLTags.xsdDataTypePositiveInteger)));
             this.priorityNumber = (positiveNumber > 0) ? positiveNumber : 1;
-            addTriple(new IncompleteTriple(OWLTags.stdHasPriorityNumber, positiveNumber.ToString(),
-                IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypePositiveInteger));
+            addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasPriorityNumber, positiveNumber.ToString(),
+                new PASSTriple.LiteralDataType(OWLTags.xsdDataTypePositiveInteger)));
         }
 
 
@@ -204,22 +221,26 @@ namespace alps.net.api.StandardPASS
         }
 
 
-        public override ISet<IPASSProcessModelElement> getAllConnectedElements(ConnectedElementsSetSpecification specification)
+        public override ISet<IPASSProcessModelElement> getAllConnectedElements(
+            ConnectedElementsSetSpecification specification)
         {
             ISet<IPASSProcessModelElement> baseElements = base.getAllConnectedElements(specification);
             foreach (IBehaviorDescribingComponent component in getBehaviorDescribingComponents().Values)
                 baseElements.Add(component);
             if (getInitialStateOfBehavior() != null) baseElements.Add(getInitialStateOfBehavior());
             if (specification == ConnectedElementsSetSpecification.ALL)
-                if (getSubject() != null) baseElements.Add(getSubject());
+                if (getSubject() != null)
+                    baseElements.Add(getSubject());
             return baseElements;
         }
 
-        protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
+        protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType,
+            IParseablePASSProcessModelElement element)
         {
             if (implCapsule != null && implCapsule.parseAttribute(predicate, objectContent, lang, dataType, element))
                 return true;
-            else if (extendsCapsule != null && extendsCapsule.parseAttribute(predicate, objectContent, lang, dataType, element))
+            else if (extendsCapsule != null &&
+                     extendsCapsule.parseAttribute(predicate, objectContent, lang, dataType, element))
                 return true;
             else if (element != null)
             {
@@ -227,20 +248,19 @@ namespace alps.net.api.StandardPASS
                 {
                     addBehaviorDescribingComponent(component);
                     return true;
-
                 }
 
-                else if ((predicate.Contains(OWLTags.hasInitialStateOfBehavior) || predicate.Contains(OWLTags.hasInitialState)) && element is IState initialState)
+                else if ((predicate.Contains(OWLTags.hasInitialStateOfBehavior) ||
+                          predicate.Contains(OWLTags.hasInitialState)) && element is IState initialState)
                 {
-
                     setInitialState(initialStateOfBehavior);
                     return true;
                 }
+
                 if (predicate.Contains(OWLTags.belongsTo) && element is IFullySpecifiedSubject subj)
                 {
                     setSubject(subj);
                     return true;
-
                 }
             }
             else if (predicate.Contains(OWLTags.hasPriorityNumber))
@@ -249,6 +269,7 @@ namespace alps.net.api.StandardPASS
                 setPriorityNumber(int.Parse(prio));
                 return true;
             }
+
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
 
@@ -267,7 +288,8 @@ namespace alps.net.api.StandardPASS
                 addBehaviorDescribingComponent(behaviorComp);
         }
 
-        public override void updateRemoved(IPASSProcessModelElement update, IPASSProcessModelElement caller, int removeCascadeDepth = 0)
+        public override void updateRemoved(IPASSProcessModelElement update, IPASSProcessModelElement caller,
+            int removeCascadeDepth = 0)
         {
             base.updateRemoved(update, caller, removeCascadeDepth);
             if (update != null)
@@ -275,7 +297,6 @@ namespace alps.net.api.StandardPASS
                 if (update is IBehaviorDescribingComponent component)
                 {
                     removeBehaviorDescribingComponent(component.getModelComponentID(), removeCascadeDepth);
-
                 }
             }
         }
@@ -289,6 +310,7 @@ namespace alps.net.api.StandardPASS
                 behaviorDescriptionComponents.Remove(oldID);
                 behaviorDescriptionComponents.Add(element.getModelComponentID(), element);
             }
+
             base.notifyModelComponentIDChanged(oldID, newID);
         }
 
@@ -305,7 +327,8 @@ namespace alps.net.api.StandardPASS
                 {
                     if (oldSubj.Equals(subj)) return;
                     if (oldSubj is IParseablePASSProcessModelElement parseable)
-                        removeTriple(new IncompleteTriple(OWLTags.stdBelongsTo, parseable.getUriModelComponentID()));
+                        removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdBelongsTo,
+                            parseable.getUriModelComponentID()));
                     if (oldSubj is IFullySpecifiedSubject oldFullySpecified)
                     {
                         oldFullySpecified.removeBehavior(getModelComponentID());
@@ -315,7 +338,8 @@ namespace alps.net.api.StandardPASS
                 if (fullySpecified is not null)
                 {
                     if (fullySpecified is IParseablePASSProcessModelElement parseable)
-                        addTriple(new IncompleteTriple(OWLTags.stdBelongsTo, parseable.getUriModelComponentID()));
+                        addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdBelongsTo,
+                            parseable.getUriModelComponentID()));
                     fullySpecified.addBehavior(this);
                 }
             }
@@ -326,8 +350,6 @@ namespace alps.net.api.StandardPASS
         {
             return subj;
         }
-
-
 
 
         // ##################### Capsule Methods (Calls only get forwarded) #####################

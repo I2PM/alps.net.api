@@ -2,7 +2,7 @@
 
 namespace alps.net.api.util
 {
-    public class CompatibilityDictionary<K, V> : Dictionary<K, V>, ICompatibilityDictionary<K, V>
+    public class CompDict<K, V> : Dictionary<K, V>, ICompDict<K, V>
     {
         new public bool TryAdd(K key, V value)
         {

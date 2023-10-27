@@ -1,5 +1,6 @@
 ﻿using alps.net.api.ALPS;
 using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace alps.net.api.StandardPASS
             return new MessageTypeConstraint();
         }
 
-       protected MessageTypeConstraint() { }
+        protected MessageTypeConstraint() { }
 
         /// <summary>
         /// Constructor that creates a new fully specified instance of the message type constraint class
@@ -39,9 +40,9 @@ namespace alps.net.api.StandardPASS
         /// <param name="limit"></param>
         /// <param name="messageSpecification"></param>
         /// <param name="additionalAttribute"></param>
-        public MessageTypeConstraint(IModelLayer layer, string labelForID = null,  IInputPoolConstraintHandlingStrategy inputPoolConstraintHandlingStrategy = null,
-            int limit = 0, IMessageSpecification messageSpecification = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
-            : base(layer, labelForID,  inputPoolConstraintHandlingStrategy, limit, comment, additionalLabel, additionalAttribute)
+        public MessageTypeConstraint(IModelLayer layer, string labelForID = null, IInputPoolConstraintHandlingStrategy inputPoolConstraintHandlingStrategy = null,
+            int limit = 0, IMessageSpecification messageSpecification = null, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
+            : base(layer, labelForID, inputPoolConstraintHandlingStrategy, limit, comment, additionalLabel, additionalAttribute)
         {
             setReferencedMessageSpecification(messageSpecification);
 
@@ -58,14 +59,14 @@ namespace alps.net.api.StandardPASS
             {
                 if (oldMessage.Equals(messageSpecification)) return;
                 oldMessage.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdReferences, oldMessage.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdReferences, oldMessage.getUriModelComponentID()));
             }
 
             if (!(messageSpecification is null))
             {
                 publishElementAdded(messageSpecification);
                 messageSpecification.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdReferences, messageSpecification.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdReferences, messageSpecification.getUriModelComponentID()));
             }
         }
 

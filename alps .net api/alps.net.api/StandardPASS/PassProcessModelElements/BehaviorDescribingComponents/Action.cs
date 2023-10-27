@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.util;
 using System.Collections.Generic;
 using alps.net.api.src;
@@ -15,7 +16,7 @@ namespace alps.net.api.StandardPASS
     public class Action : BehaviorDescribingComponent, IAction
     {
         protected IState state;
-        protected ICompatibilityDictionary<string, ITransition> transitions = new CompatibilityDictionary<string, ITransition>();
+        protected ICompDict<string, ITransition> transitions = new CompDict<string, ITransition>();
 
         /// <summary>
         /// Name of the class, needed for parsing
@@ -35,7 +36,7 @@ namespace alps.net.api.StandardPASS
         /// <summary>
         /// Constructor that creates a new fully specified instance of the action class
         /// </summary>
-        public Action(IState state, string labelForID = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+        public Action(IState state, string labelForID = null, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base((state != null) ? (state.getContainedBy(out ISubjectBehavior behavior) ? behavior : null) : null,
                 labelForID, comment, additionalLabel, additionalAttribute)
         {
@@ -60,7 +61,7 @@ namespace alps.net.api.StandardPASS
                 if (oldState.Equals(state)) return;
                 oldState.unregister(this);
                 //oldState.replaceGeneratedActionWithParsed(null);
-                removeTriple(new IncompleteTriple(OWLTags.stdContains, oldState.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains, oldState.getUriModelComponentID()));
             }
 
             if (!(state is null))
@@ -75,8 +76,8 @@ namespace alps.net.api.StandardPASS
                 // overwrite the (previously automatically created) action of the state
                 //if (state.getAction() is null)
                 //if (parsed)
-                    //state.replaceGeneratedActionWithParsed(this);
-                addTriple(new IncompleteTriple(OWLTags.stdContains, state.getUriModelComponentID()));
+                //state.replaceGeneratedActionWithParsed(this);
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains, state.getUriModelComponentID()));
             }
         }
 
@@ -117,7 +118,7 @@ namespace alps.net.api.StandardPASS
                 {
                     if (containedTransition.getSourceState().Equals(state)) state.addOutgoingTransition(containedTransition);
                 }
-                addTriple(new IncompleteTriple(OWLTags.stdContains, containedTransition.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains, containedTransition.getUriModelComponentID()));
             }
         }
 
@@ -138,7 +139,7 @@ namespace alps.net.api.StandardPASS
             {
                 transitions.Remove(id);
                 transition.unregister(this);
-                removeTriple(new IncompleteTriple(OWLTags.stdContains, transition.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains, transition.getUriModelComponentID()));
             }
         }
 

@@ -22,22 +22,7 @@ namespace alps.net.api.util
             return new StringWithoutExtra(getContent());
         }
 
-        public override INode getNodeFromString(IPASSGraph graph)
 
-        {
-            INode objectNode;
-            if (!content.Contains("http://") && !content.Contains("https://"))
-                try
-                {
-                    objectNode = graph.createUriNode(content);
-                }
-                catch (RdfException)
-                {
-                    objectNode = graph.createUriNode(new Uri(content));
-                }
-            else objectNode = graph.createUriNode(new Uri(content));
-            return objectNode;
-        }
 
 
         public override void setExtra(string lang)

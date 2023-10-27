@@ -16,7 +16,7 @@ namespace alps.net.api.ALPS
         /// </summary>
         private const string className = "Simple2DVisualizationPathPoint";
 
-        public Simple2DVisualizationPathPoint(string labelForID = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+        public Simple2DVisualizationPathPoint(string labelForID = null, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(labelForID, comment, additionalLabel, additionalAttribute) { }
 
         public override string getClassName()
@@ -67,6 +67,6 @@ namespace alps.net.api.ALPS
             return new Simple2DVisualizationPathPoint();
         }
 
-       protected Simple2DVisualizationPathPoint() { }
+        protected Simple2DVisualizationPathPoint() { }
     }
 }

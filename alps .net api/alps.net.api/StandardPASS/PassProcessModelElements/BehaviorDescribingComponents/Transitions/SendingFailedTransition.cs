@@ -27,15 +27,15 @@ namespace alps.net.api.StandardPASS
             return new SendingFailedTransition();
         }
 
-       protected SendingFailedTransition() { }
+        protected SendingFailedTransition() { }
         public SendingFailedTransition(IState sourceState, IState targetState, string labelForID = null, ITransitionCondition transitionCondition = null,
             ITransition.TransitionType transitionType = ITransition.TransitionType.Standard, string comment = null, string additionalLabel = null,
-            IList<IIncompleteTriple> additionalAttribute = null) : base(sourceState, targetState, labelForID, transitionCondition, transitionType, comment, additionalLabel, additionalAttribute) { }
+            IList<IPASSTriple> additionalAttribute = null) : base(sourceState, targetState, labelForID, transitionCondition, transitionType, comment, additionalLabel, additionalAttribute) { }
 
         public SendingFailedTransition(ISubjectBehavior behavior, string label = null,
             IState sourceState = null, IState targetState = null, ITransitionCondition transitionCondition = null,
             ITransition.TransitionType transitionType = ITransition.TransitionType.Standard,
-            string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(behavior, label, sourceState, targetState, transitionCondition, transitionType, comment, additionalLabel, additionalAttribute) { }
 
 

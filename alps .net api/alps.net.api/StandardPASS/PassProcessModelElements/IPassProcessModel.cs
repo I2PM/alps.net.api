@@ -1,6 +1,7 @@
 ﻿using alps.net.api.ALPS;
 using alps.net.api.parsing;
 using System.Collections.Generic;
+using VDS.Common.References;
 
 namespace alps.net.api.StandardPASS
 {
@@ -144,5 +145,15 @@ namespace alps.net.api.StandardPASS
         /// <param name="filepath">The specified location for saving the file</param>
         /// <returns>The absolute path the file was written to.</returns>
         string export(string filepath);
+
+        static void setStandardGraph(IGraphFactory newFactory)
+        {
+            if (newFactory != null)
+                factory = newFactory;
+        }
+
+        static IGraphFactory factory = new VdsRdfGraphFactory();
+
+        void setModelGraph(IGraphFactory graphFactory);
     }
 }

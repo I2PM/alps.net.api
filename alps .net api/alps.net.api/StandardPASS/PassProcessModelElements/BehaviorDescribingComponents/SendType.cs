@@ -23,14 +23,14 @@ namespace alps.net.api.StandardPASS
             return new SendType();
         }
 
-       protected SendType() { }
+        protected SendType() { }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="label"></param>
         /// <param name="comment"></param>
         /// <param name="additionalAttribute"></param>
-        public SendType(ISubjectBehavior behavior, string labelForID = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+        public SendType(ISubjectBehavior behavior, string labelForID = null, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(behavior, labelForID, comment, additionalLabel, additionalAttribute)
         { }
 

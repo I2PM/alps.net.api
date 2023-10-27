@@ -1,6 +1,7 @@
 ﻿using alps.net.api.ALPS;
 using alps.net.api.FunctionalityCapsules;
 using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using System;
@@ -21,7 +22,7 @@ namespace alps.net.api.StandardPASS
         /// <summary>
         /// All elements held by the model (sum of all elements held by the layers)
         /// </summary>
-        protected ICompatibilityDictionary<string, IPASSProcessModelElement> allModelElements = new CompatibilityDictionary<string, IPASSProcessModelElement>();
+        protected ICompDict<string, IPASSProcessModelElement> allModelElements = new CompDict<string, IPASSProcessModelElement>();
 
         /// <summary>
         /// A default layer, created when an element is added but no layer is specified.
@@ -29,7 +30,9 @@ namespace alps.net.api.StandardPASS
         /// </summary>
         protected IModelLayer baseLayer;
 
-        protected ICompatibilityDictionary<string, ISubject> startSubjects = new CompatibilityDictionary<string, ISubject>();
+        private IGraphFactory modelGraphFactory;
+
+        protected ICompDict<string, ISubject> startSubjects = new CompDict<string, ISubject>();
         protected string baseURI;
         protected IPASSGraph baseGraph;
         protected bool layered;
@@ -55,15 +58,12 @@ namespace alps.net.api.StandardPASS
         /// <summary>
         /// Constructor that creates a new fully specified instance of the pass process modell class
         /// </summary>
-        public PASSProcessModel(string baseURI, string labelForID = null, ISet<IMessageExchange> messageExchanges = null, ISet<ISubject> relationsToModelComponent = null,
-            ISet<ISubject> startSubject = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
-            : base(labelForID, comment, additionalLabel, additionalAttribute)
+        public PASSProcessModel(string baseURI, string labelForID = null, ISet<IMessageExchange> messageExchanges = null, ISet<ISubject> relationsToModelComponent = null, ISet<ISubject> startSubject = null, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null, IGraphFactory graphFactory = null) : base(labelForID, comment, additionalLabel, additionalAttribute)
         {
             implCapsule = new ImplementsFunctionalityCapsule<IPASSProcessModel>(this);
-            if (!(baseURI is null || baseURI.Equals("")))
-            {
-                setBaseURI(baseURI);
-            }
+
+            if (graphFactory is not null) setModelGraph(graphFactory);
+            if (!(baseURI is null || baseURI.Equals(""))) setBaseURI(baseURI);
 
             if (relationsToModelComponent != null)
                 foreach (ISubject subj in relationsToModelComponent)
@@ -133,7 +133,7 @@ namespace alps.net.api.StandardPASS
                 publishElementAdded(pASSProcessModelElement);
                 if (exportGraph != null && pASSProcessModelElement is IParseablePASSProcessModelElement parseable) parseable.setExportGraph(ref exportGraph);
                 if (pASSProcessModelElement is IInteractionDescribingComponent || pASSProcessModelElement is IModelLayer || pASSProcessModelElement is ISubjectBehavior)
-                    addTriple(new IncompleteTriple(OWLTags.stdContains, pASSProcessModelElement.getUriModelComponentID()));
+                    addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains, pASSProcessModelElement.getUriModelComponentID()));
             }
         }
 
@@ -175,7 +175,7 @@ namespace alps.net.api.StandardPASS
                     if (element is ISubject subj)
                         removeStartSubject(subj.getModelComponentID());
 
-                    removeTriple(new IncompleteTriple(OWLTags.stdContains, element.getUriModelComponentID()));
+                    removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains, element.getUriModelComponentID()));
                     element.unregister(this, removeCascadeDepth);
                     foreach (IPASSProcessModelElement otherComponent in getAllElements().Values)
                     {
@@ -187,7 +187,7 @@ namespace alps.net.api.StandardPASS
                         {
                             baseLayer.removeFromEverything();
                         }
-                    
+
                 }
             }
         }
@@ -223,7 +223,7 @@ namespace alps.net.api.StandardPASS
             {
                 startSubject.assignRole(ISubject.Role.StartSubject);
                 addElement(startSubject);
-                addTriple(new IncompleteTriple(OWLTags.stdHasStartSubject, startSubject.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasStartSubject, startSubject.getUriModelComponentID()));
             }
         }
 
@@ -249,7 +249,7 @@ namespace alps.net.api.StandardPASS
                 //removeElement(id, removeCascadeDepth);
                 subj.removeRole(ISubject.Role.StartSubject);
                 startSubjects.Remove(id);
-                removeTriple(new IncompleteTriple(OWLTags.stdHasStartSubject, subj.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasStartSubject, subj.getUriModelComponentID()));
             }
         }
 
@@ -347,15 +347,27 @@ namespace alps.net.api.StandardPASS
             {
                 string formattedBaseURI = baseURI.Trim().Replace(" ", "_");
                 this.baseURI = formattedBaseURI;
-                if (getBaseGraph() is null)
+                createModelGraph();
+            }
+        }
+
+        private void createModelGraph()
+        {
+            if (getBaseGraph() is null)
+            {
+                if (modelGraphFactory is null)
                 {
-                    this.baseGraph = new PASSGraph(baseURI);
-                    setExportGraph(ref baseGraph);
+                    this.baseGraph = IPASSProcessModel.factory.createGraph(baseURI);
                 }
                 else
                 {
-                    this.baseGraph.changeBaseURI(baseURI);
+                    this.baseGraph = modelGraphFactory.createGraph(baseURI);
                 }
+                setExportGraph(ref baseGraph);
+            }
+            else
+            {
+                this.baseGraph.changeBaseURI(baseURI);
             }
         }
 
@@ -392,12 +404,12 @@ namespace alps.net.api.StandardPASS
                     allElements.Add(state.getModelComponentID(), parseabelState);
 
             // Go through triples, filter all Layers
-            foreach (Triple triple in getTriples())
+            foreach (IPASSTriple triple in getIncompleteTriples())
             {
-                string predicateContent = NodeHelper.getNodeContent(triple.Predicate);
+                string predicateContent = triple.getPredicate();
                 if (predicateContent.Contains(OWLTags.contains))
                 {
-                    string objectContent = NodeHelper.getNodeContent(triple.Object);
+                    string objectContent = triple.getObjectWithExtra().ToString();
 
                     string possibleID = objectContent;
                     string[] splitted = possibleID.Split('#');
@@ -409,8 +421,8 @@ namespace alps.net.api.StandardPASS
                         if (allElements[possibleID] is IModelLayer layer && layer is IParseablePASSProcessModelElement parseable)
                         {
                             // Parse the layer
-                            string lang = NodeHelper.getLangIfContained(triple.Object);
-                            string dataType = NodeHelper.getDataTypeIfContained(triple.Object);
+                            string lang = triple.getObjLang();
+                            string dataType = triple.getObjDataType();
                             parseAttribute(predicateContent, possibleID, lang, dataType, parseable);
                         }
                     }
@@ -419,11 +431,11 @@ namespace alps.net.api.StandardPASS
 
             if (getModelLayers().Count == 1)
             {
-                if(baseLayer == null)
+                if (baseLayer == null)
                 {
                     //Console.WriteLine("There is one layer but it is not the base layer");
                     IModelLayer mylayer = getModelLayers().Values.First();
-                    if(mylayer.getLayerType() == LayerType.STANDARD)
+                    if (mylayer.getLayerType() == LayerType.STANDARD)
                     {
                         setBaseLayer(mylayer);
                     }
@@ -463,7 +475,7 @@ namespace alps.net.api.StandardPASS
                 }
             }
 
-            foreach (Triple triple in getTriples())
+            foreach (IPASSTriple triple in getIncompleteTriples())
             {
                 parseAttribute(triple, allElements, out IParseablePASSProcessModelElement element);
                 // Calling parsing method
@@ -485,7 +497,7 @@ namespace alps.net.api.StandardPASS
             {
                 IDictionary<string, IList<string>> multiBehaviors = new Dictionary<string, IList<string>>();
                 if (getAllElements().Values.OfType<ISubjectBehavior>().Count() > 1)
-                { 
+                {
                     foreach (ISubjectBehavior behavior in getAllElements().Values.OfType<ISubjectBehavior>())
                     {
                         if (behavior.getSubject() != null && behavior.getSubject() is IFullySpecifiedSubject subject)
@@ -595,24 +607,24 @@ namespace alps.net.api.StandardPASS
                     //addLayer(layer);
                 }
             }
-            
+
         }
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
         {
-                if (implCapsule != null && implCapsule.parseAttribute(predicate, objectContent, lang, dataType, element))
-                    return true;
-                else if (predicate.Contains(OWLTags.contains) && element != null)
+            if (implCapsule != null && implCapsule.parseAttribute(predicate, objectContent, lang, dataType, element))
+                return true;
+            else if (predicate.Contains(OWLTags.contains) && element != null)
+            {
+                if (element is IModelLayer layer)
                 {
-                    if (element is IModelLayer layer)
-                    {
-                        addLayer(layer);
-                    }
-                    else addElement(element);
-
-                    return true;
+                    addLayer(layer);
                 }
-            
+                else addElement(element);
+
+                return true;
+            }
+
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
 
@@ -764,6 +776,13 @@ namespace alps.net.api.StandardPASS
         {
             return implCapsule.getImplementedInterfaces();
         }
+
+        public void setModelGraph(IGraphFactory graphFactory)
+        {
+            modelGraphFactory = graphFactory;
+        }
+
+
     }
 }
 

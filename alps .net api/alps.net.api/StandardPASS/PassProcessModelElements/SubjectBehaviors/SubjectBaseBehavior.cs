@@ -1,5 +1,6 @@
 ﻿using alps.net.api.ALPS;
 using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using System;
@@ -30,7 +31,7 @@ namespace alps.net.api.StandardPASS
 
         public SubjectBaseBehavior(IModelLayer layer, string labelForID = null, ISubject subject = null, ISet<IBehaviorDescribingComponent> components = null,
             ISet<IState> endStates = null, IState initialStateOfBehavior = null, int priorityNumber = 0, string comment = null, string additionalLabel = null,
-            IList<IIncompleteTriple> additionalAttribute = null)
+            IList<IPASSTriple> additionalAttribute = null)
             : base(layer, labelForID, subject, components, initialStateOfBehavior, priorityNumber, comment, additionalLabel, additionalAttribute)
         {
             if (endStates != null)
@@ -102,7 +103,7 @@ namespace alps.net.api.StandardPASS
         {
             addBehaviorDescribingComponent(state);
             state.setIsStateType(IState.StateType.EndState);
-            addTriple(new IncompleteTriple(OWLTags.stdHasEndState, state.getUriModelComponentID()));
+            addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasEndState, state.getUriModelComponentID()));
         }
 
         public void unregisterEndState(string id, int removeCascadeDepth = 0)
@@ -111,9 +112,9 @@ namespace alps.net.api.StandardPASS
             if (component is IState state)
             {
                 state.removeStateType(IState.StateType.EndState);
-                removeTriple(new IncompleteTriple(OWLTags.stdHasEndState, getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasEndState, getUriModelComponentID()));
             }
-            
+
         }
     }
 }

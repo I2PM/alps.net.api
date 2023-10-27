@@ -1,6 +1,5 @@
 ﻿
 using alps.net.api.parsing;
-using VDS.RDF;
 
 namespace alps.net.api
 {
@@ -53,21 +52,21 @@ namespace alps.net.api
             }
             else { this.extra = extra; }
         }
-        public abstract INode getNodeFromString(IPASSGraph graph);
+
         public abstract IStringWithExtra clone();
 
         public override bool Equals(object obj)
         {
             if (obj is IStringWithExtra extra)
-            if (GetType().Equals(extra.GetType()))
-            {
-                int matches = 0;
-                if ((extra.getContent() != null && getContent() != null && extra.getContent().Equals(getContent())) || (extra.getContent() is null && getContent() is null))
-                    matches++;
-                if ((extra.getExtra() != null && getExtra() != null && extra.getExtra().Equals(getExtra())) || (extra.getExtra() is null && getExtra() is null))
-                    matches++;
-                if (matches == 2) return true;
-            }
+                if (GetType().Equals(extra.GetType()))
+                {
+                    int matches = 0;
+                    if ((extra.getContent() != null && getContent() != null && extra.getContent().Equals(getContent())) || (extra.getContent() is null && getContent() is null))
+                        matches++;
+                    if ((extra.getExtra() != null && getExtra() != null && extra.getExtra().Equals(getExtra())) || (extra.getExtra() is null && getExtra() is null))
+                        matches++;
+                    if (matches == 2) return true;
+                }
             return false;
         }
 
@@ -75,5 +74,6 @@ namespace alps.net.api
         {
             return (getContent() + getExtra()).GetHashCode();
         }
+
     }
 }

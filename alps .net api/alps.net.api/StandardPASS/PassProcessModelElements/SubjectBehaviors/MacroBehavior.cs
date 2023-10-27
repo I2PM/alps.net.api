@@ -29,10 +29,10 @@ namespace alps.net.api.StandardPASS
             return new MacroBehavior();
         }
 
-       protected MacroBehavior() { }
+        protected MacroBehavior() { }
         public MacroBehavior(IModelLayer layer, string labelForID = null, ISubject subject = null, ISet<IBehaviorDescribingComponent> components = null,
             ISet<IStateReference> stateReferences = null, IState initialStateOfBehavior = null, int priorityNumber = 0, string comment = null, string additionalLabel = null,
-            IList<IIncompleteTriple> additionalAttribute = null)
+            IList<IPASSTriple> additionalAttribute = null)
             : base(layer, labelForID, subject, components, initialStateOfBehavior, priorityNumber, comment, additionalLabel, additionalAttribute)
         {
             if (stateReferences != null)

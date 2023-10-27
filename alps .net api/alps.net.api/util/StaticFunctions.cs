@@ -1,10 +1,10 @@
 ﻿using alps.net.api.parsing;
+using System.Linq;
 
 namespace alps.net.api.util
 {
     public class StaticFunctions
     {
-        public const char BASE_URI_SEPARATOR = '#';
 
         /// <summary>
         /// Replaces a base uri contained in a string with a generic placeholder.
@@ -14,21 +14,51 @@ namespace alps.net.api.util
         /// </summary>
         /// <param name="input">The string that MAY contain a base uri</param>
         /// <returns>the string without specific base uri</returns>
-        public static string replaceBaseUriWithGeneric(string input, string baseuri)
+        public static string replaceSpecificBaseUriWithGeneric(string input, string baseuri, string newPlaceholder = ParserConstants.EXAMPLE_BASE_URI_PLACEHOLDER)
         {
             string output = input;
-
-            // If a base uri is contained, replace it with generic one
-            if (output.Contains(baseuri + BASE_URI_SEPARATOR.ToString()))
-            {
-                output = output.Replace(baseuri + BASE_URI_SEPARATOR.ToString(), PASSGraph.EXAMPLE_BASE_URI_PLACEHOLDER);
-            }
+            string uriToSearchFor = baseuri.EndsWith(ParserConstants.URI_SEPARATOR.ToString()) ? baseuri:baseuri+ ParserConstants.URI_SEPARATOR;
 
             // If a base uri is contained, replace it with generic one
             if (output.Equals(baseuri))
             {
                 output = baseuri;
             }
+
+            // If a base uri is contained, replace it with generic one
+            else if (output.Contains(uriToSearchFor))
+            {
+                output = output.Replace(uriToSearchFor, ParserConstants.EXAMPLE_BASE_URI_PLACEHOLDER);
+            }
+
+            if (!newPlaceholder.Equals(ParserConstants.EXAMPLE_BASE_URI_PLACEHOLDER) && output.Contains(ParserConstants.EXAMPLE_BASE_URI_PLACEHOLDER))
+            {
+                output = output.Replace(ParserConstants.EXAMPLE_BASE_URI_PLACEHOLDER, newPlaceholder);
+            }
+
+            return output;
+        }
+
+        /*public static string replaceBaseUriWithGeneric(string input, string baseuri,string genericPlaceholder)
+        {
+            if (genericPlaceholder == null)
+            return addGenericBaseURI(removeBaseUri(input, baseuri));
+            else return addGenericBaseURI(removeBaseUri(input, baseuri), genericPlaceholder);
+        }*/
+
+
+        public static string removeAllUriPrefix(string input) {
+            string output = input;
+            var splitted = input.Split(ParserConstants.URI_SEPARATOR);
+
+            if (splitted.Length > 1)
+                output = splitted.Last();
+
+            var splitted2 = output.Split(ParserConstants.PLACEHOLDER_SEPARATOR);
+
+            if (splitted2.Length > 1)
+                output = splitted2.Last();
+
             return output;
         }
 
@@ -48,9 +78,9 @@ namespace alps.net.api.util
             if (baseuri != null)
             {
                 // If a base uri is contained, replace it with generic one
-                if (output.Contains(baseuri + BASE_URI_SEPARATOR.ToString()))
+                if (output.Contains(baseuri + ParserConstants.URI_SEPARATOR))
                 {
-                    output = output.Replace(baseuri + BASE_URI_SEPARATOR.ToString(), "");
+                    output = output.Replace(baseuri + ParserConstants.URI_SEPARATOR, "");
                 }
 
                 // If a base uri is contained, replace it with generic one
@@ -60,23 +90,22 @@ namespace alps.net.api.util
                 }
             }
 
-            // If a base uri is contained, replace it with generic one
-            if (output.Contains(PASSGraph.EXAMPLE_BASE_URI_PLACEHOLDER))
+            if (output.Contains(ParserConstants.EXAMPLE_BASE_URI_PLACEHOLDER))
             {
-                output = output.Replace(PASSGraph.EXAMPLE_BASE_URI_PLACEHOLDER, "");
+                output = output.Replace(ParserConstants.EXAMPLE_BASE_URI_PLACEHOLDER, "");
             }
-
             return output;
         }
 
-        public static string addGenericBaseURI(string input)
+        public static string addGenericBaseURI(string input, string generic = ParserConstants.EXAMPLE_BASE_URI_PLACEHOLDER)
         {
-            string output = input;
 
-            if (!output.StartsWith(PASSGraph.EXAMPLE_BASE_URI_PLACEHOLDER))
-                output = PASSGraph.EXAMPLE_BASE_URI_PLACEHOLDER + output;
+            if (input.StartsWith(ParserConstants.EXAMPLE_BASE_URI_PLACEHOLDER)) return input;
+            if (input.StartsWith("http")) return input;
 
-            return output;
+            return generic + input;
         }
+
+        
     }
 }

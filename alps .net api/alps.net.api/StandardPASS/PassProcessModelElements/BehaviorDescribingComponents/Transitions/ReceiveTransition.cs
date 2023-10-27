@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
@@ -10,7 +11,9 @@ namespace alps.net.api.StandardPASS
     /// </summary>
     public class ReceiveTransition : CommunicationTransition, IReceiveTransition
     {
-        protected readonly ICompatibilityDictionary<string, IDataMappingIncomingToLocal> dataMappingsIncomingToLocal = new CompatibilityDictionary<string, IDataMappingIncomingToLocal>();
+        protected readonly ICompDict<string, IDataMappingIncomingToLocal> dataMappingsIncomingToLocal =
+            new CompDict<string, IDataMappingIncomingToLocal>();
+
         protected int priorityNumber = 1;
 
         /// <summary>
@@ -23,17 +26,22 @@ namespace alps.net.api.StandardPASS
         {
             return className;
         }
+
         public override IParseablePASSProcessModelElement getParsedInstance()
         {
             return new ReceiveTransition();
         }
 
-       protected ReceiveTransition() { }
+        protected ReceiveTransition() { }
 
-        public ReceiveTransition(IState sourceState, IState targetState, string labelForID = null, ITransitionCondition transitionCondition = null,
-            ITransition.TransitionType transitionType = ITransition.TransitionType.Standard, ISet<IDataMappingIncomingToLocal> dataMappingIncomingToLocal = null,
-            int priorityNumber = 0, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
-            : base(sourceState, targetState, labelForID, transitionCondition, transitionType, comment, additionalLabel, additionalAttribute)
+        public ReceiveTransition(IState sourceState, IState targetState, string labelForID = null,
+            ITransitionCondition transitionCondition = null,
+            ITransition.TransitionType transitionType = ITransition.TransitionType.Standard,
+            ISet<IDataMappingIncomingToLocal> dataMappingIncomingToLocal = null,
+            int priorityNumber = 0, string comment = null, string additionalLabel = null,
+            IList<IPASSTriple> additionalAttribute = null)
+            : base(sourceState, targetState, labelForID, transitionCondition, transitionType, comment, additionalLabel,
+                additionalAttribute)
         {
             setDataMappingFunctionsIncomingToLocal(dataMappingIncomingToLocal);
             setPriorityNumber(priorityNumber);
@@ -41,9 +49,12 @@ namespace alps.net.api.StandardPASS
 
         public ReceiveTransition(ISubjectBehavior behavior, string label = null,
             IState sourceState = null, IState targetState = null, ITransitionCondition transitionCondition = null,
-            ITransition.TransitionType transitionType = ITransition.TransitionType.Standard, ISet<IDataMappingIncomingToLocal> dataMappingIncomingToLocal = null,
-             int priorityNumber = 0, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
-            : base(behavior, label, sourceState, targetState, transitionCondition, transitionType, comment, additionalLabel, additionalAttribute)
+            ITransition.TransitionType transitionType = ITransition.TransitionType.Standard,
+            ISet<IDataMappingIncomingToLocal> dataMappingIncomingToLocal = null,
+            int priorityNumber = 0, string comment = null, string additionalLabel = null,
+            IList<IPASSTriple> additionalAttribute = null)
+            : base(behavior, label, sourceState, targetState, transitionCondition, transitionType, comment,
+                additionalLabel, additionalAttribute)
         {
             setDataMappingFunctionsIncomingToLocal(dataMappingIncomingToLocal);
             setPriorityNumber(priorityNumber);
@@ -60,11 +71,14 @@ namespace alps.net.api.StandardPASS
         public void addDataMappingFunction(IDataMappingIncomingToLocal dataMappingIncomingToLocal)
         {
             if (dataMappingIncomingToLocal is null) { return; }
-            if (dataMappingsIncomingToLocal.TryAdd(dataMappingIncomingToLocal.getModelComponentID(), dataMappingIncomingToLocal))
+
+            if (dataMappingsIncomingToLocal.TryAdd(dataMappingIncomingToLocal.getModelComponentID(),
+                    dataMappingIncomingToLocal))
             {
                 publishElementAdded(dataMappingIncomingToLocal);
                 dataMappingIncomingToLocal.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdHasDataMappingFunction, dataMappingIncomingToLocal.getModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasDataMappingFunction,
+                    dataMappingIncomingToLocal.getModelComponentID()));
             }
         }
 
@@ -75,16 +89,18 @@ namespace alps.net.api.StandardPASS
             {
                 dataMappingsIncomingToLocal.Remove(mappingID);
                 mapping.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdHasDataMappingFunction, mappingID));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasDataMappingFunction, mappingID));
             }
         }
 
-        public void setDataMappingFunctionsIncomingToLocal(ISet<IDataMappingIncomingToLocal> dataMappingsIncomingToLocal, int removeCascadeDepth = 0)
+        public void setDataMappingFunctionsIncomingToLocal(
+            ISet<IDataMappingIncomingToLocal> dataMappingsIncomingToLocal, int removeCascadeDepth = 0)
         {
             foreach (IDataMappingIncomingToLocal mapping in getDataMappingFunctions().Values)
             {
                 removeDataMappingFunction(mapping.getModelComponentID(), removeCascadeDepth);
             }
+
             if (dataMappingsIncomingToLocal is null) return;
             foreach (IDataMappingIncomingToLocal mapping in dataMappingsIncomingToLocal)
             {
@@ -101,9 +117,12 @@ namespace alps.net.api.StandardPASS
         public void setPriorityNumber(int positiveInteger)
         {
             if (positiveInteger == this.priorityNumber) return;
-            removeTriple(new IncompleteTriple(OWLTags.stdHasPriorityNumber, this.priorityNumber.ToString(), IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypePositiveInteger));
+            removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasPriorityNumber,
+                this.priorityNumber.ToString(),
+                new PASSTriple.LiteralDataType(OWLTags.xsdDataTypePositiveInteger)));
             priorityNumber = (positiveInteger > 0) ? positiveInteger : 1;
-            addTriple(new IncompleteTriple(OWLTags.stdHasPriorityNumber, priorityNumber.ToString(), IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypePositiveInteger));
+            addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasPriorityNumber, priorityNumber.ToString(),
+                new PASSTriple.LiteralDataType(OWLTags.xsdDataTypePositiveInteger)));
         }
 
 
@@ -120,12 +139,14 @@ namespace alps.net.api.StandardPASS
 
         public override void setTransitionCondition(ITransitionCondition condition, int removeCascadeDepth = 0)
         {
-            if (condition is IReceiveTransitionCondition receiveCondition) base.setTransitionCondition(receiveCondition);
+            if (condition is IReceiveTransitionCondition receiveCondition)
+                base.setTransitionCondition(receiveCondition);
             else base.setTransitionCondition(null);
         }
 
 
-        protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
+        protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType,
+            IParseablePASSProcessModelElement element)
         {
             if (predicate.Contains(OWLTags.hasPriorityNumber))
             {
@@ -135,7 +156,8 @@ namespace alps.net.api.StandardPASS
             }
             else if (element != null)
             {
-                if (predicate.Contains(OWLTags.hasDataMappingFunction) && element is IDataMappingIncomingToLocal dataMapping)
+                if (predicate.Contains(OWLTags.hasDataMappingFunction) &&
+                    element is IDataMappingIncomingToLocal dataMapping)
                 {
                     addDataMappingFunction(dataMapping);
                     return true;
@@ -147,11 +169,13 @@ namespace alps.net.api.StandardPASS
                     return true;
                 }
             }
+
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
 
 
-        public override ISet<IPASSProcessModelElement> getAllConnectedElements(ConnectedElementsSetSpecification specification)
+        public override ISet<IPASSProcessModelElement> getAllConnectedElements(
+            ConnectedElementsSetSpecification specification)
         {
             ISet<IPASSProcessModelElement> baseElements = base.getAllConnectedElements(specification);
             foreach (IDataMappingIncomingToLocal mapping in getDataMappingFunctions().Values)
@@ -159,12 +183,14 @@ namespace alps.net.api.StandardPASS
             return baseElements;
         }
 
-        public override void updateRemoved(IPASSProcessModelElement update, IPASSProcessModelElement caller, int removeCascadeDepth = 0)
+        public override void updateRemoved(IPASSProcessModelElement update, IPASSProcessModelElement caller,
+            int removeCascadeDepth = 0)
         {
             base.updateRemoved(update, caller, removeCascadeDepth);
             if (update != null)
             {
-                if (update is IDataMappingIncomingToLocal mapping) removeDataMappingFunction(mapping.getModelComponentID(), removeCascadeDepth);
+                if (update is IDataMappingIncomingToLocal mapping)
+                    removeDataMappingFunction(mapping.getModelComponentID(), removeCascadeDepth);
             }
         }
 
@@ -179,6 +205,5 @@ namespace alps.net.api.StandardPASS
 
             base.notifyModelComponentIDChanged(oldID, newID);
         }
-
     }
 }

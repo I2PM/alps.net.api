@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using Serilog;
@@ -10,10 +11,10 @@ namespace alps.net.api.StandardPASS
     /// <summary>
     /// Class that represents a DoTransition
     /// </summary>
-
     public class DoTransition : Transition, IDoTransition
     {
         protected int priorityNumber = 0;
+
         /// <summary>
         /// Name of the class, needed for parsing
         /// </summary>
@@ -28,24 +29,31 @@ namespace alps.net.api.StandardPASS
 
         public override IParseablePASSProcessModelElement getParsedInstance()
         {
-
             return new DoTransition();
         }
 
-       protected DoTransition() {
-            
+        protected DoTransition()
+        {
         }
-        public DoTransition(IState sourceState, IState targetState, string labelForID = null, ITransitionCondition transitionCondition = null,
-            ITransition.TransitionType transitionType = ITransition.TransitionType.Standard, int priorityNumber = 0, string comment = null, string additionalLabel = null,
-            IList<IIncompleteTriple> additionalAttribute = null) : base(sourceState, targetState, labelForID, transitionCondition, transitionType, comment, additionalLabel, additionalAttribute) {
+
+        public DoTransition(IState sourceState, IState targetState, string labelForID = null,
+            ITransitionCondition transitionCondition = null,
+            ITransition.TransitionType transitionType = ITransition.TransitionType.Standard, int priorityNumber = 0,
+            string comment = null, string additionalLabel = null,
+            IList<IPASSTriple> additionalAttribute = null) : base(sourceState, targetState, labelForID,
+            transitionCondition, transitionType, comment, additionalLabel, additionalAttribute)
+        {
             setPriorityNumber(priorityNumber);
         }
 
         public DoTransition(ISubjectBehavior behavior, string label = null,
             IState sourceState = null, IState targetState = null, ITransitionCondition transitionCondition = null,
             ITransition.TransitionType transitionType = ITransition.TransitionType.Standard,
-            int priorityNumber = 0, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
-            : base(behavior, label, sourceState, targetState, transitionCondition, transitionType, comment, additionalLabel, additionalAttribute) {
+            int priorityNumber = 0, string comment = null, string additionalLabel = null,
+            IList<IPASSTriple> additionalAttribute = null)
+            : base(behavior, label, sourceState, targetState, transitionCondition, transitionType, comment,
+                additionalLabel, additionalAttribute)
+        {
             setPriorityNumber(priorityNumber);
         }
 
@@ -61,9 +69,12 @@ namespace alps.net.api.StandardPASS
         public void setPriorityNumber(int positiveInteger)
         {
             if (positiveInteger == this.priorityNumber) return;
-            removeTriple(new IncompleteTriple(OWLTags.stdHasPriorityNumber, this.priorityNumber.ToString(), IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypePositiveInteger));
+            removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasPriorityNumber,
+                this.priorityNumber.ToString(),
+                new PASSTriple.LiteralDataType(OWLTags.xsdDataTypePositiveInteger)));
             priorityNumber = (positiveInteger > 0) ? positiveInteger : 1;
-            addTriple(new IncompleteTriple(OWLTags.stdHasPriorityNumber, priorityNumber.ToString(), IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypePositiveInteger));
+            addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasPriorityNumber, priorityNumber.ToString(),
+                new PASSTriple.LiteralDataType(OWLTags.xsdDataTypePositiveInteger)));
         }
 
 
@@ -73,16 +84,16 @@ namespace alps.net.api.StandardPASS
         }
 
 
-        protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
+        protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType,
+            IParseablePASSProcessModelElement element)
         {
-            
-
             if (predicate.Contains(OWLTags.hasPriorityNumber))
             {
                 string prio = objectContent;
                 setPriorityNumber(int.Parse(prio));
                 return true;
-            }else if (predicate.Contains(OWLTags.abstrHasSimpleSimTransitionChoiceChance))
+            }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimTransitionChoiceChance))
             {
                 try
                 {
@@ -92,8 +103,10 @@ namespace alps.net.api.StandardPASS
                 {
                     Log.Warning("could not parse the value " + objectContent + " as valid double");
                 }
+
                 return true;
             }
+
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
 

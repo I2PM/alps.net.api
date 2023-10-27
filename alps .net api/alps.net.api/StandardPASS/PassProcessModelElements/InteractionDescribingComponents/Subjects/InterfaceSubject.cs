@@ -1,5 +1,6 @@
 ﻿using alps.net.api.ALPS;
 using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using Serilog;
@@ -32,7 +33,7 @@ namespace alps.net.api.StandardPASS
             return new InterfaceSubject();
         }
 
-       protected InterfaceSubject() { }
+        protected InterfaceSubject() { }
 
         /// <summary>
         /// 
@@ -45,10 +46,10 @@ namespace alps.net.api.StandardPASS
         /// <param name="maxSubjectInstanceRestriction"></param>
         /// <param name="additionalAttribute"></param>
         /// <param name="fullySpecifiedSubject"></param>
-        public InterfaceSubject(IModelLayer layer, string labelForID = null,  ISet<IMessageExchange> incomingMessageExchange = null,
+        public InterfaceSubject(IModelLayer layer, string labelForID = null, ISet<IMessageExchange> incomingMessageExchange = null,
             ISet<IMessageExchange> outgoingMessageExchange = null, int maxSubjectInstanceRestriction = 1, IFullySpecifiedSubject referencedSubject = null,
-            string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
-            : base(layer, labelForID,  incomingMessageExchange, outgoingMessageExchange, maxSubjectInstanceRestriction, comment, additionalLabel, additionalAttribute)
+            string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
+            : base(layer, labelForID, incomingMessageExchange, outgoingMessageExchange, maxSubjectInstanceRestriction, comment, additionalLabel, additionalAttribute)
         {
             setReferencedSubject(referencedSubject);
         }
@@ -64,7 +65,7 @@ namespace alps.net.api.StandardPASS
             {
                 if (oldSubject.Equals(referencedSubject)) return;
                 oldSubject.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdReferences, oldSubject.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdReferences, oldSubject.getUriModelComponentID()));
             }
 
             // Might set it to null
@@ -73,7 +74,7 @@ namespace alps.net.api.StandardPASS
             {
                 publishElementAdded(fullySpecifiedSubject);
                 fullySpecifiedSubject.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdReferences, fullySpecifiedSubject.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdReferences, fullySpecifiedSubject.getUriModelComponentID()));
             }
         }
 

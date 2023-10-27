@@ -22,7 +22,7 @@ namespace alps.net.api.ALPS
 
 
         public ALPSSBDComponent(ISubjectBehavior subjectBehavior, string labelForID = null, string comment = null, string additionalLabel = null,
-            IList<IIncompleteTriple> additionalAttribute = null)
+            IList<IPASSTriple> additionalAttribute = null)
             : base(subjectBehavior, labelForID, comment, additionalLabel, additionalAttribute)
         { }
 

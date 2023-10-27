@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using Serilog;
@@ -24,7 +25,7 @@ namespace alps.net.api.StandardPASS
 
         private double _billedWaitingTime;
         public double getSisiBilledWaitingTime() { return this._billedWaitingTime; }
-        public void   setSiSiBilledWaitingTime(double value)
+        public void setSiSiBilledWaitingTime(double value)
         {
             if (value >= 0.0 && value <= 1.0)
             {
@@ -44,7 +45,7 @@ namespace alps.net.api.StandardPASS
                 }
             }
         }
-        
+
 
         public override string getClassName()
         {
@@ -56,7 +57,7 @@ namespace alps.net.api.StandardPASS
             return new ReceiveState();
         }
 
-       protected ReceiveState() { }
+        protected ReceiveState() { }
         protected override string getExportTag()
         {
             return exportTag;
@@ -64,7 +65,7 @@ namespace alps.net.api.StandardPASS
 
         public ReceiveState(ISubjectBehavior behavior, string labelForID = null, IGuardBehavior guardBehavior = null,
             IReceiveFunction functionSpecification = null,
-            ISet<ITransition> incomingTransition = null, ISet<IReceiveTransition> outgoingTransition = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            ISet<ITransition> incomingTransition = null, ISet<IReceiveTransition> outgoingTransition = null, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(behavior, labelForID, guardBehavior, functionSpecification, incomingTransition, (ISet<ITransition>)outgoingTransition, comment, additionalLabel, additionalAttribute)
         { }
 
@@ -136,18 +137,18 @@ namespace alps.net.api.StandardPASS
                 switch (stateType)
                 {
                     case StateType.Abstract:
-                        removeTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                        removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                         exportTag = OWLTags.abstr;
                         exportClassname = "Abstract" + className;
-                        addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                        addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                         if (isStateType(StateType.Finalized))
                             removeStateType(StateType.Finalized);
                         break;
                     case StateType.Finalized:
-                        removeTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                        removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                         exportTag = OWLTags.abstr;
                         exportClassname = "Finalized" + className;
-                        addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                        addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                         if (isStateType(StateType.Abstract))
                             removeStateType(StateType.Abstract);
                         break;
@@ -166,18 +167,18 @@ namespace alps.net.api.StandardPASS
                 switch (stateType)
                 {
                     case StateType.Abstract:
-                        removeTriple(new IncompleteTriple(OWLTags.rdfType, OWLTags.std + "Abstract" + getExportTag() + getClassName()));
+                        removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, OWLTags.std + "Abstract" + getExportTag() + getClassName()));
                         stateTypes.Remove(stateType);
                         exportTag = OWLTags.std;
                         exportClassname = className;
-                        addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                        addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                         break;
                     case StateType.Finalized:
-                        removeTriple(new IncompleteTriple(OWLTags.rdfType, OWLTags.std + "Finalized" + getExportTag() + getClassName()));
+                        removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, OWLTags.std + "Finalized" + getExportTag() + getClassName()));
                         stateTypes.Remove(stateType);
                         exportTag = OWLTags.std;
                         exportClassname = className;
-                        addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                        addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                         break;
                     default:
                         base.removeStateType(stateType);

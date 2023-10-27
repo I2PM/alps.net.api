@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.StandardPASS;
 using alps.net.api.util;
@@ -42,7 +43,7 @@ namespace alps.net.api.ALPS
         /// <param name="additionalAttribute"></param>
         public ExtensionBehavior(IModelLayer layer, string labelForId = null, ISubject subject = null, ISet<IBehaviorDescribingComponent> behaviorDescribingComponents = null,
             IState initialStateOfBehavior = null, int priorityNumber = 0, string comment = null, string additionalLabel = null,
-            IList<IIncompleteTriple> additionalAttribute = null)
+            IList<IPASSTriple> additionalAttribute = null)
             : base(layer, labelForId, subject, behaviorDescribingComponents, initialStateOfBehavior, priorityNumber, comment, additionalLabel, additionalAttribute)
         {
         }
@@ -58,7 +59,7 @@ namespace alps.net.api.ALPS
             {
                 if (oldSubj.Equals(subj)) return;
                 if (oldSubj is IParseablePASSProcessModelElement parseable)
-                    removeTriple(new IncompleteTriple(OWLTags.stdHasInitialState, parseable.getUriModelComponentID()));
+                    removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasInitialState, parseable.getUriModelComponentID()));
                 if (oldSubj is ISubjectExtension oldExtension)
                 {
                     oldExtension.removeExtensionBehavior(getModelComponentID());
@@ -68,7 +69,7 @@ namespace alps.net.api.ALPS
             if (subj is not ISubjectExtension extension) return;
 
             if (extension is IParseablePASSProcessModelElement parseable2)
-                addTriple(new IncompleteTriple(OWLTags.stdHasInitialState, parseable2.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasInitialState, parseable2.getUriModelComponentID()));
             extension.addExtensionBehavior(this);
 
         }

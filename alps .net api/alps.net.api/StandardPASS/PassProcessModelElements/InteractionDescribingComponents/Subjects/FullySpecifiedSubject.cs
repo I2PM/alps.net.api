@@ -1,5 +1,6 @@
 ﻿using alps.net.api.ALPS;
 using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using Serilog;
@@ -15,9 +16,9 @@ namespace alps.net.api.StandardPASS
     public class FullySpecifiedSubject : Subject, IFullySpecifiedSubject
     {
         protected ISubjectBehavior subjectBaseBehavior;
-        protected ICompatibilityDictionary<string, ISubjectBehavior> subjectBehaviors = new CompatibilityDictionary<string, ISubjectBehavior>();
+        protected ICompDict<string, ISubjectBehavior> subjectBehaviors = new CompDict<string, ISubjectBehavior>();
         protected ISubjectDataDefinition subjectDataDefinition;
-        protected ICompatibilityDictionary<string, IInputPoolConstraint> inputPoolConstraints = new CompatibilityDictionary<string, IInputPoolConstraint>();
+        protected ICompDict<string, IInputPoolConstraint> inputPoolConstraints = new CompDict<string, IInputPoolConstraint>();
         protected ISubjectExecutionMapping subjectExecutionMapping;
         /// <summary>
         /// Name of the class, needed for parsing
@@ -29,9 +30,9 @@ namespace alps.net.api.StandardPASS
         public double sisiExecutionCostPerHour { get; set; } = 0;
         public SimpleSimVSMSubjectTypes sisiVSMSubjectType { get; set; } = SimpleSimVSMSubjectTypes.Standard;
         public double sisiVSMInventory { get; set; } = 0;
-        public double sisiVSMProcessQuantity { get; set; } = 0;     
-        public double sisiVSMQualityRate { get; set; } = 0; 
-        public double sisiVSMAvailability { get; set; } = 0;    
+        public double sisiVSMProcessQuantity { get; set; } = 0;
+        public double sisiVSMQualityRate { get; set; } = 0;
+        public double sisiVSMAvailability { get; set; } = 0;
 
         public override string getClassName()
         {
@@ -42,7 +43,7 @@ namespace alps.net.api.StandardPASS
             return new FullySpecifiedSubject();
         }
 
-       protected FullySpecifiedSubject() { }
+        protected FullySpecifiedSubject() { }
 
         /// <summary>
         /// 
@@ -55,11 +56,11 @@ namespace alps.net.api.StandardPASS
         /// <param name="additionalAttribute"></param>
         /// <param name="inputPoolConstraint"></param>
         /// <param name="subjectDataDefinition"></param>
-        public FullySpecifiedSubject(IModelLayer layer, string labelForID = null,  ISet<IMessageExchange> incomingMessageExchange = null,
+        public FullySpecifiedSubject(IModelLayer layer, string labelForID = null, ISet<IMessageExchange> incomingMessageExchange = null,
             ISubjectBaseBehavior subjectBaseBehavior = null, ISet<ISubjectBehavior> subjectBehaviors = null,
             ISet<IMessageExchange> outgoingMessageExchange = null, int maxSubjectInstanceRestriction = 1, ISubjectDataDefinition subjectDataDefinition = null,
-            ISet<IInputPoolConstraint> inputPoolConstraints = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
-            : base(layer, labelForID,  incomingMessageExchange, outgoingMessageExchange, maxSubjectInstanceRestriction, comment, additionalLabel, additionalAttribute)
+            ISet<IInputPoolConstraint> inputPoolConstraints = null, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
+            : base(layer, labelForID, incomingMessageExchange, outgoingMessageExchange, maxSubjectInstanceRestriction, comment, additionalLabel, additionalAttribute)
         {
             setDataDefintion(subjectDataDefinition);
             setInputPoolConstraints(inputPoolConstraints);
@@ -87,14 +88,14 @@ namespace alps.net.api.StandardPASS
             {
                 if (oldBehavior.Equals(subjectBaseBehavior)) return;
                 // We do only remove the triple for the old behavior, as it is still listed as normal behavior (just not as baseBehavior)
-                removeTriple(new IncompleteTriple(OWLTags.stdContainsBaseBehavior, oldBehavior.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContainsBaseBehavior, oldBehavior.getUriModelComponentID()));
             }
 
             if (!(subjectBaseBehavior is null))
             {
                 // NOT registering and publishing because we call addBehavior (happens there)
                 addBehavior(subjectBaseBehavior);
-                addTriple(new IncompleteTriple(OWLTags.stdContainsBaseBehavior, subjectBaseBehavior.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContainsBaseBehavior, subjectBaseBehavior.getUriModelComponentID()));
             }
         }
 
@@ -108,7 +109,7 @@ namespace alps.net.api.StandardPASS
                 publishElementAdded(behavior);
                 behavior.register(this);
                 behavior.setSubject(this);
-                addTriple(new IncompleteTriple(OWLTags.stdContainsBehavior, behavior.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContainsBehavior, behavior.getUriModelComponentID()));
                 return true;
             }
             return false;
@@ -139,7 +140,7 @@ namespace alps.net.api.StandardPASS
                 subjectBehaviors.Remove(id);
                 behavior.unregister(this, removeCascadeDepth);
                 behavior.setSubject(null);
-                removeTriple(new IncompleteTriple(OWLTags.stdContainsBehavior, behavior.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContainsBehavior, behavior.getUriModelComponentID()));
                 return true;
             }
             return false;
@@ -161,7 +162,7 @@ namespace alps.net.api.StandardPASS
             {
                 if (oldDef.Equals(subjectDataDefinition)) return;
                 oldDef.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdHasDataDefintion, oldDef.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasDataDefintion, oldDef.getUriModelComponentID()));
             }
 
 
@@ -169,7 +170,7 @@ namespace alps.net.api.StandardPASS
             {
                 publishElementAdded(subjectDataDefinition);
                 subjectDataDefinition.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdHasDataDefintion, subjectDataDefinition.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasDataDefintion, subjectDataDefinition.getUriModelComponentID()));
             }
         }
 
@@ -182,7 +183,7 @@ namespace alps.net.api.StandardPASS
             {
                 publishElementAdded(constraint);
                 constraint.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdHasInputPoolConstraint, constraint.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasInputPoolConstraint, constraint.getUriModelComponentID()));
                 return true;
             }
             return false;
@@ -210,7 +211,7 @@ namespace alps.net.api.StandardPASS
             {
                 inputPoolConstraints.Remove(id);
                 constraint.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdHasInputPoolConstraint, constraint.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasInputPoolConstraint, constraint.getUriModelComponentID()));
                 return true;
             }
             return false;
@@ -289,14 +290,14 @@ namespace alps.net.api.StandardPASS
             }
             else if (predicate.Contains(OWLTags.abstrHasSimpleSimVSMSubjectType))
             {
-               this.sisiVSMSubjectType = parseSimpleSimVSMSubjectType(objectContent);                
+                this.sisiVSMSubjectType = parseSimpleSimVSMSubjectType(objectContent);
                 return true;
             }
             else if (predicate.Contains(OWLTags.abstrHasSimpleSimVSMAvailability))
             {
                 try
                 {
-                    this.sisiVSMInventory = double.Parse(objectContent, customCulture  );
+                    this.sisiVSMInventory = double.Parse(objectContent, customCulture);
                 }
                 catch (System.Exception e)
                 {
@@ -320,7 +321,7 @@ namespace alps.net.api.StandardPASS
             {
                 try
                 {
-                    this.sisiVSMQualityRate = double.Parse(objectContent, customCulture );
+                    this.sisiVSMQualityRate = double.Parse(objectContent, customCulture);
                 }
                 catch (System.Exception e)
                 {
@@ -331,16 +332,17 @@ namespace alps.net.api.StandardPASS
             else if (predicate.Contains(OWLTags.hasExecutionMappingDefinition))
             {
                 //System.Console.WriteLine("Found an Execution Mapping: " + objectContent);
-                if (this.subjectExecutionMapping != null) {
+                if (this.subjectExecutionMapping != null)
+                {
                     string newlabel = "SubjectExecutionMappingOf" + this.modelComponentID;
                     string newID = newlabel;
                     ISubjectExecutionMapping newMappingObject =
-                        new SubjectExecutionMapping(this.layer,newlabel,objectContent);
-                    this.subjectExecutionMapping = newMappingObject;    
+                        new SubjectExecutionMapping(this.layer, newlabel, objectContent);
+                    this.subjectExecutionMapping = newMappingObject;
                 }
                 return true;
             }
-            
+
 
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
@@ -425,7 +427,7 @@ namespace alps.net.api.StandardPASS
 
         public void setSubjectExecutionMapping(ISubjectExecutionMapping subjectExecutionMapping)
         {
-            this.subjectExecutionMapping= subjectExecutionMapping;  
+            this.subjectExecutionMapping = subjectExecutionMapping;
         }
     }
 

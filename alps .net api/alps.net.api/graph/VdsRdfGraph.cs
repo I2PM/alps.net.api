@@ -11,42 +11,38 @@ namespace alps.net.api.parsing
     /// This class is an adapter class for the <see cref="IGraph"/> interface.
     /// It uses an <see cref="OntologyGraph"/> as internal graph.
     /// </summary>
-    public class PASSGraph : IPASSGraph
+    public class VdsRdfGraph : IPASSGraph
     {
-        public interface IGraphCallback
-        {
-            void notifyTriple(Triple triple);
 
-            string getSubjectName();
 
-            void notifyModelComponentIDChanged(string oldID, string newID);
-        }
+        private ICompDict<string, IPASSGraph.IGraphCallback> elements =
+            new CompDict<string, IPASSGraph.IGraphCallback>();
 
-        public const string EXAMPLE_BASE_URI_PLACEHOLDER = "baseuri:";
-        public const string EXAMPLE_BASE_URI_PLACEHOLDER_MAPPING_KEY = "baseuri";
+        private readonly ICompDict<string, string> namespaceMappings =
+            new CompDict<string, string>
+            {
+                { "rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#" },
+                { "rdfs", "http://www.w3.org/2000/01/rdf-schema#" },
+                { "xml", "http://www.w3.org/XML/1998/namespace" },
+                { "xsd", "http://www.w3.org/2001/XMLSchema#" },
+                { "swrla", "http://swrl.stanford.edu/ontologies/3.3/swrla.owl#" },
+                { "abstract-pass-ont", "http://www.imi.kit.edu/abstract-pass-ont#" },
+                { "standard-pass-ont", "http://www.i2pm.net/standard-pass-ont#" },
+                { "owl", "http://www.w3.org/2002/07/owl#" },
+                { "", "http://www.w3.org/1999/02/22-rdf-syntax-ns#" }
+            };
 
-        private ICompatibilityDictionary<string, IGraphCallback> elements = new CompatibilityDictionary<string, IGraphCallback>();
-
-        private readonly ICompatibilityDictionary<string, string> namespaceMappings = new CompatibilityDictionary<string, string>{
-            { "rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#"},
-            { "rdfs", "http://www.w3.org/2000/01/rdf-schema#"},
-            { "xml", "http://www.w3.org/XML/1998/namespace"},
-            { "xsd", "http://www.w3.org/2001/XMLSchema#"},
-            { "swrla", "http://swrl.stanford.edu/ontologies/3.3/swrla.owl#"},
-            { "abstract-pass-ont", "http://www.imi.kit.edu/abstract-pass-ont#"},
-            { "standard-pass-ont", "http://www.i2pm.net/standard-pass-ont#"},
-            { "owl", "http://www.w3.org/2002/07/owl#"},
-             { "", "http://www.w3.org/1999/02/22-rdf-syntax-ns#"}
-        };
         private string baseURI;
 
         public bool containsNonBaseUri(string input)
         {
             foreach (KeyValuePair<string, string> nameMapping in namespaceMappings)
             {
-                if (input.Contains(nameMapping.Value) && !nameMapping.Key.Equals(EXAMPLE_BASE_URI_PLACEHOLDER.Replace(":", "")))
+                if (input.Contains(nameMapping.Value) &&
+                    !nameMapping.Key.Equals(ParserConstants.EXAMPLE_BASE_URI_PLACEHOLDER.Replace(":", "")))
                     return true;
             }
+
             return false;
         }
 
@@ -54,21 +50,22 @@ namespace alps.net.api.parsing
 
         protected IGraph baseGraph;
 
-        public PASSGraph(string baseURI)
+        public VdsRdfGraph(string baseURI)
         {
             if (baseURI is null)
                 this.baseURI = EXAMPLE_BASE_URI;
             else
                 this.baseURI = baseURI;
-            namespaceMappings.Add(EXAMPLE_BASE_URI_PLACEHOLDER_MAPPING_KEY, baseURI + "#");
+            namespaceMappings.Add(ParserConstants.EXAMPLE_BASE_URI_PLACEHOLDER_MAPPING_KEY, baseURI + "#");
 
-            OntologyGraph exportGraph = new OntologyGraph();
+            OntologyGraph exportGraph = new();
 
             // Adding all namespaceMappings (exchange short acronyms like owl: with the complete uri)
             foreach (KeyValuePair<string, string> nameMapping in namespaceMappings)
             {
                 exportGraph.NamespaceMap.AddNamespace(nameMapping.Key, new Uri(nameMapping.Value));
             }
+
             exportGraph.NamespaceMap.AddNamespace("", new Uri(baseURI + "#"));
             exportGraph.BaseUri = new Uri(baseURI);
 
@@ -101,16 +98,13 @@ namespace alps.net.api.parsing
 
         public void changeBaseURI(string newUri)
         {
-            if (newUri is null)
-                this.baseURI = EXAMPLE_BASE_URI;
-            else
-                this.baseURI = newUri;
+            this.baseURI = newUri ?? EXAMPLE_BASE_URI;
 
-            namespaceMappings[EXAMPLE_BASE_URI_PLACEHOLDER_MAPPING_KEY] = baseURI + "#";
+            namespaceMappings[ParserConstants.EXAMPLE_BASE_URI_PLACEHOLDER_MAPPING_KEY] = baseURI + "#";
             // baseGraph.NamespaceMap.RemoveNamespace("");
             // baseGraph.NamespaceMap.RemoveNamespace(EXAMPLE_BASE_URI_PLACEHOLDER_MAPPING_KEY);
             baseGraph.NamespaceMap.AddNamespace("", new Uri(baseURI + "#"));
-            baseGraph.NamespaceMap.AddNamespace(EXAMPLE_BASE_URI_PLACEHOLDER_MAPPING_KEY, new Uri(baseURI + "#"));
+            baseGraph.NamespaceMap.AddNamespace(ParserConstants.EXAMPLE_BASE_URI_PLACEHOLDER_MAPPING_KEY, new Uri(baseURI + "#"));
             //exportGraph.NamespaceMap.AddNamespace("", new Uri(baseURI + "#"));
         }
 
@@ -119,59 +113,92 @@ namespace alps.net.api.parsing
             return baseGraph;
         }
 
-        public void addTriple(Triple t)
+
+        public void addTriple(IPASSTriple triple)
         {
+            INode subjectNode = createNodeIfNotExisting(triple.getSubject());
+            INode objectNode = createNodeIfNotExisting(triple.getObjectWithExtra());
+            INode predicateNode = createNodeIfNotExisting(triple.getPredicate());
+            Triple t = new(subjectNode, predicateNode, objectNode);
+
             if (baseGraph.Triples.Contains(t)) return;
             baseGraph.Assert(t);
             string subjWithoutUri = t.Subject.ToString().Replace(baseURI + "#", "");
             if (elements.ContainsKey(subjWithoutUri))
             {
-                elements[subjWithoutUri].notifyTriple(t);
+                elements[subjWithoutUri].notifyTriple(triple);
             }
         }
 
-        public IUriNode createUriNode()
+
+        public void removeTriple(IPASSTriple triple)
         {
-            return baseGraph.CreateUriNode();
-        }
-        public IUriNode createUriNode(Uri uri)
-        {
-            return baseGraph.CreateUriNode(uri);
-        }
-        public IUriNode createUriNode(string qname)
-        {
-            return baseGraph.CreateUriNode(qname);
+            INode subjectNode = getNodeOrNull(triple.getSubject());
+            INode objectNode = getNodeOrNull(triple.getObjectWithExtra());
+            INode predicateNode = getNodeOrNull(triple.getPredicate());
+            if (subjectNode is null || objectNode is null || predicateNode is null) { return; }
+
+            Triple t = new(subjectNode, predicateNode, objectNode);
+
+            baseGraph.Retract(t);
         }
 
-        public ILiteralNode createLiteralNode(string literal)
+
+        private INode createNodeIfNotExisting(string nodeContent)
         {
-            return baseGraph.CreateLiteralNode(literal);
-        }
-        public ILiteralNode createLiteralNode(string literal, Uri datadef)
-        {
-            return baseGraph.CreateLiteralNode(literal, datadef);
-        }
-        public ILiteralNode createLiteralNode(string literal, string langspec)
-        {
-            return baseGraph.CreateLiteralNode(literal, langspec);
+            return baseGraph.CreateUriNode(new Uri(nodeContent));
         }
 
-        public void removeTriple(Triple t) { baseGraph.Retract(t); }
+        private INode createNodeIfNotExisting(IStringWithExtra extraString)
+        {
+            if (extraString == null) { return null; }
+
+            if (extraString.getExtra() is not null && extraString.getExtra() != "")
+            {
+                if (extraString is LanguageSpecificString l)
+                    return baseGraph.CreateLiteralNode(l.getContent(),
+                        l.getExtra());
+                else if (extraString is DataTypeString d)
+                    baseGraph.CreateLiteralNode(d.getContent(),
+                        d.getExtra());
+            }
+
+            return baseGraph.CreateLiteralNode(extraString.getContent());
+        }
 
 
-        public void register(IGraphCallback element)
+        private INode getNodeOrNull(string node)
+        {
+            return baseGraph.GetUriNode(new Uri(node));
+        }
+
+        private INode getNodeOrNull(IStringWithExtra extraString)
+        {
+            if (extraString == null) { return null; }
+
+            if (extraString is LanguageSpecificString l)
+                return baseGraph.GetLiteralNode(l.getContent(),
+                    l.getExtra());
+            else if (extraString is DataTypeString d)
+                baseGraph.GetLiteralNode(d.getContent(),
+                    d.getExtra());
+            return baseGraph.GetLiteralNode(extraString.getContent());
+        }
+
+
+        public void register(IPASSGraph.IGraphCallback element)
         {
             elements.TryAdd(element.getSubjectName(), element);
         }
 
-        public void unregister(IGraphCallback element)
+        public void unregister(IPASSGraph.IGraphCallback element)
         {
             elements.Remove(element.getSubjectName());
         }
 
         public void modelComponentIDChanged(string oldID, string newID)
         {
-            IList<IGraphCallback> elementsToNotify = new List<IGraphCallback>();
+            IList<IPASSGraph.IGraphCallback> elementsToNotify = new List<IPASSGraph.IGraphCallback>();
             foreach (Triple t in baseGraph.Triples)
             {
                 if (t.ToString().Contains(oldID))
@@ -183,7 +210,8 @@ namespace alps.net.api.parsing
                     }
                 }
             }
-            foreach (IGraphCallback parseable in elementsToNotify)
+
+            foreach (IPASSGraph.IGraphCallback parseable in elementsToNotify)
             {
                 parseable.notifyModelComponentIDChanged(oldID, newID);
             }
@@ -200,6 +228,5 @@ namespace alps.net.api.parsing
         {
             return baseURI;
         }
-
     }
 }

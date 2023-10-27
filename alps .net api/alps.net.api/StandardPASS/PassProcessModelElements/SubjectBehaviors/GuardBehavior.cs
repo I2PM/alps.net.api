@@ -1,6 +1,7 @@
 ﻿using alps.net.api.ALPS;
 using alps.net.api.FunctionalityCapsules;
 using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
@@ -14,8 +15,8 @@ namespace alps.net.api.StandardPASS
 
     public class GuardBehavior : SubjectBehavior, IGuardBehavior
     {
-        protected ICompatibilityDictionary<string, ISubjectBehavior> subjectBehaviors = new CompatibilityDictionary<string, ISubjectBehavior>();
-        protected ICompatibilityDictionary<string, IState> guardedStates = new CompatibilityDictionary<string, IState>();
+        protected ICompDict<string, ISubjectBehavior> subjectBehaviors = new CompDict<string, ISubjectBehavior>();
+        protected ICompDict<string, IState> guardedStates = new CompDict<string, IState>();
         protected IGuardsFunctionalityCapsule<IState> stateGuardCapsule;
         protected IGuardsFunctionalityCapsule<ISubjectBehavior> behaviorGuardCapsule;
 
@@ -33,10 +34,10 @@ namespace alps.net.api.StandardPASS
             return new GuardBehavior();
         }
 
-       protected GuardBehavior() { }
+        protected GuardBehavior() { }
         public GuardBehavior(IModelLayer layer, string labelForID = null, ISubject subject = null, ISet<IBehaviorDescribingComponent> components = null,
             ISet<ISubjectBehavior> guardedBehaviors = null, ISet<IState> guardedStates = null, IState initialStateOfBehavior = null, int priorityNumber = 0, string comment = null,
-            string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(layer, labelForID, subject, components, initialStateOfBehavior, priorityNumber, comment, additionalLabel, additionalAttribute)
         {
             setGuardedBehaviors(guardedBehaviors);
@@ -63,7 +64,7 @@ namespace alps.net.api.StandardPASS
             {
                 publishElementAdded(behavior);
                 behavior.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdGuardsBehavior, behavior.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdGuardsBehavior, behavior.getUriModelComponentID()));
             }
         }
 
@@ -79,7 +80,7 @@ namespace alps.net.api.StandardPASS
             {
                 subjectBehaviors.Remove(id);
                 behavior.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdGuardsBehavior, behavior.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdGuardsBehavior, behavior.getUriModelComponentID()));
             }
         }
 
@@ -104,7 +105,7 @@ namespace alps.net.api.StandardPASS
             {
                 publishElementAdded(state);
                 state.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdGuardsState, state.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdGuardsState, state.getUriModelComponentID()));
             }
         }
 
@@ -120,7 +121,7 @@ namespace alps.net.api.StandardPASS
             {
                 guardedStates.Remove(id);
                 state.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdGuardsState, state.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdGuardsState, state.getUriModelComponentID()));
             }
         }
 

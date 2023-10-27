@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using alps.net.api.parsing.graph;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,6 +9,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Ontology;
 using alps.net.api.StandardPASS;
 using alps.net.api.util;
+using System.Reflection;
 
 namespace alps.net.api.parsing
 {
@@ -88,13 +90,16 @@ namespace alps.net.api.parsing
                 .CreateLogger();
         }
 
-        
+
+        public void addAssemblyToCheckForTypes(Assembly assembly)
+        {
+            ReflectiveEnumerator.addAssemblyToCheckForTypes(assembly);
+        }
 
         public IDictionary<string, IList<(ITreeNode<IParseablePASSProcessModelElement>, int)>> getParsingDict()
         {
-            IDictionary<string, IList<(ITreeNode<IParseablePASSProcessModelElement>, int)>> newParsingDict =
-                new Dictionary<string, IList<(ITreeNode<IParseablePASSProcessModelElement>, int)>>();
-            foreach (KeyValuePair<string, IList<(ITreeNode<IParseablePASSProcessModelElement>, int)>> pair in parsingDict)
+            var newParsingDict = new Dictionary<string, IList<(ITreeNode<IParseablePASSProcessModelElement>, int)>>();
+            foreach (var pair in parsingDict)
             {
                 newParsingDict.Add(pair.Key, new List<(ITreeNode<IParseablePASSProcessModelElement>, int)>(pair.Value));
             }
@@ -127,7 +132,7 @@ namespace alps.net.api.parsing
 
         }
 
-        public IList<IPASSProcessModel> loadModels(IList<string> filepaths, bool overrideOWLParsingStructure = false)
+        public IList<IPASSProcessModel> loadModels(IList<string> filepaths, IGraphFactory modelGraphFactory = null, bool overrideOWLParsingStructure = false)
         {
             Console.Write("Reading input owl files...");
 
@@ -139,7 +144,7 @@ namespace alps.net.api.parsing
             {
                 try
                 {
-                    
+
                     // Create a new OntologyGraph
                     OntologyGraph owlGraph = new();
                     // Load files into it
@@ -207,10 +212,10 @@ namespace alps.net.api.parsing
             {
                 IDictionary<string, IList<string>> namedIndividualsDict = findAllNamedIndividualTriples(graph);
                 count++;
-                bar.Report((double)count / filepaths.Count*2);
+                bar.Report((double)count / filepaths.Count * 2);
 
                 // Get models with elements from the current graph and merge it in the list of all models
-                passProcessModels = passProcessModels.Union(createClassInstancesFromNamedIndividuals(graph, namedIndividualsDict)).ToList();
+                passProcessModels = passProcessModels.Union(createClassInstancesFromNamedIndividuals(graph, namedIndividualsDict, modelGraphFactory)).ToList();
                 count++;
                 bar.Report((double)count / filepaths.Count * 2);
             }
@@ -234,7 +239,7 @@ namespace alps.net.api.parsing
 
             string xmlnsConstruct = "xmlns=\"\"";
 
-            for (int i = 0; i < Math.Min(lines.Length, 10); i=i+1) // Change the number 5 to the desired number of lines to check
+            for (int i = 0; i < Math.Min(lines.Length, 10); i = i + 1) // Change the number 5 to the desired number of lines to check
             {
                 if (lines[i].Contains(xmlnsConstruct))
                 {
@@ -261,7 +266,7 @@ namespace alps.net.api.parsing
         /// </summary>
         /// <param name="someString">a triple converted to string</param>
         /// <returns>true if it is part of a standard pass document, false if it is only part of a normal model</returns>
-        private bool isStandardPass(String trpl)
+        private bool isStandardPass(string trpl)
         {
             return (trpl.Contains("standard") && trpl.Contains("pass")) || (trpl.Contains("abstract") && trpl.Contains("pass"));
         }
@@ -318,7 +323,7 @@ namespace alps.net.api.parsing
         /// <param name="namedIndividualsDict">A dictionary containing the uri for each NamedIndividual as key and the type(s) as value (in the form of a list)</param>
         /// <param name="graph">The graph used for parsing</param>
         /// <returns></returns>
-        private IList<IPASSProcessModel> createClassInstancesFromNamedIndividuals(IGraph graph, IDictionary<string, IList<string>> namedIndividualsDict)
+        private IList<IPASSProcessModel> createClassInstancesFromNamedIndividuals(IGraph graph, IDictionary<string, IList<string>> namedIndividualsDict, IGraphFactory modelGraphFactory)
         {
             IDictionary<string, IParseablePASSProcessModelElement> createdElements = new Dictionary<string, IParseablePASSProcessModelElement>();
             IList<IPASSProcessModel> passProcessModels = new List<IPASSProcessModel>();
@@ -336,31 +341,55 @@ namespace alps.net.api.parsing
                 string elementType = elementFactory.createInstance(parsingDict, pair.Value, out IParseablePASSProcessModelElement modelElement);
 
                 // If the factory found a fitting element
-                if (!(modelElement is null))
+                if (modelElement is not null)
                 {
                     // The model element receives its triples which define all its characteristics in the form of incomplete triples
                     // Incomplete triples carry no information about the subject, as the subjects uri can change during parsing.
                     IList<Triple> elementTriples = new List<Triple>(graph.GetTriplesWithSubject(graph.GetUriNode(new Uri(pair.Key))));
-                    IList<IIncompleteTriple> elementIncompleteTriples = new List<IIncompleteTriple>();
+                    IList<IPASSTriple> elementIncompleteTriples = new List<IPASSTriple>();
 
                     foreach (Triple triple in elementTriples)
-                        elementIncompleteTriples.Add(new IncompleteTriple(triple, baseUri));
+                    {
+                        var subj = NodeHelper.getNodeContent(triple.Subject);
+                        var pred = NodeHelper.getNodeContent(triple.Predicate);
+                        var obj = NodeHelper.getObjAsStringWithExtra(triple.Object);
+                        if (obj == null)
+                        {
+                            var strObj = NodeHelper.getNodeContent(triple.Object);
+                            if (strObj != null) elementIncompleteTriples.Add(new PASSTriple(subj, pred, strObj));
+                        }
+                        else
+                        {
+                            elementIncompleteTriples.Add(new PASSTriple(subj, pred, obj));
+                        }
+                    }
+
                     modelElement.addTriples(elementIncompleteTriples);
 
                     // Important! The ModelComponentID is overwritten by the suffix of the elements uri (= "baseuri#suffix").
                     if (elementTriples.Count > 0)
                         modelElement.setModelComponentID(StaticFunctions.removeBaseUri(elementTriples[0].Subject.ToString(), baseUri));
 
-                    if (modelElement is IPASSProcessModel passProcessModell)
+                    if (modelElement is IPASSProcessModel passProcessModel)
                     {
-                        passProcessModels.Add(passProcessModell);
-                        passProcessModell.setBaseURI(baseUri);
-                        IPASSGraph modelBaseGraph = passProcessModell.getBaseGraph();
+                        passProcessModels.Add(passProcessModel);
+                        passProcessModel.setModelGraph(modelGraphFactory);
+                        passProcessModel.setBaseURI(baseUri);
+                        IPASSGraph modelBaseGraph = passProcessModel.getBaseGraph();
 
                         // Add all the triples to the graph that describe the owl file directly (version iri, imports...)
                         foreach (Triple triple in graph.Triples.WithSubject(graph.GetUriNode(new Uri(baseUri))))
-                            modelBaseGraph.addTriple(triple);
-
+                        {
+                            var subj = NodeHelper.getNodeContent(triple.Subject);
+                            var pred = NodeHelper.getNodeContent(triple.Subject);
+                            var obj = NodeHelper.getObjAsStringWithExtra(triple.Object);
+                            if (obj == null)
+                            {
+                                var strObj = NodeHelper.getNodeContent(triple.Object);
+                                if (strObj != null) modelBaseGraph.addTriple(new PASSTriple(subj, pred, strObj));
+                            }
+                            else modelBaseGraph.addTriple(new PASSTriple(subj, pred, obj));
+                        }
                     }
                     else
                     {
@@ -403,7 +432,7 @@ namespace alps.net.api.parsing
             // Get the graph hold by the model and use the export function given by the library
             string fullPath = (filepath.EndsWith(".owl")) ? filepath : filepath + ".owl";
             model.getBaseGraph().exportTo(fullPath);
-            if (model.getBaseGraph() is PASSGraph graph)
+            if (model.getBaseGraph() is VdsRdfGraph graph)
                 exportGraph = graph.getGraph();
             else exportGraph = null;
             return fullPath;

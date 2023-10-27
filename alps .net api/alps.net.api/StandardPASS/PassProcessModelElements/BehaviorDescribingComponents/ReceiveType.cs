@@ -24,14 +24,14 @@ namespace alps.net.api.StandardPASS
             return new ReceiveType();
         }
 
-       protected ReceiveType() { }
+        protected ReceiveType() { }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="label"></param>
         /// <param name="comment"></param>
         /// <param name="additionalAttribute"></param>
-        public ReceiveType(ISubjectBehavior behavior, string label, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+        public ReceiveType(ISubjectBehavior behavior, string label, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(behavior, label, comment, additionalLabel, additionalAttribute) { }
 
 

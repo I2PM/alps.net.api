@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using System;
@@ -47,17 +48,17 @@ namespace alps.net.api.StandardPASS
             return new ReceiveTransitionCondition();
         }
 
-       protected ReceiveTransitionCondition() { }
+        protected ReceiveTransitionCondition() { }
 
         public override string getClassName()
         {
             return className;
         }
 
-        public ReceiveTransitionCondition(ITransition transition, string labelForID = null,  string toolSpecificDefintion = null, IMessageExchange messageExchange = null,
+        public ReceiveTransitionCondition(ITransition transition, string labelForID = null, string toolSpecificDefintion = null, IMessageExchange messageExchange = null,
             int upperBound = 0, int lowerBound = 0, ReceiveTypes receiveType = ReceiveTypes.STANDARD, ISubject requiredMessageSendFromSubject = null,
-            IMessageSpecification requiresReceptionOfMessage = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
-            : base(transition, labelForID,  toolSpecificDefintion, messageExchange, comment, additionalLabel, additionalAttribute)
+            IMessageSpecification requiresReceptionOfMessage = null, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
+            : base(transition, labelForID, toolSpecificDefintion, messageExchange, comment, additionalLabel, additionalAttribute)
         {
             setMultipleReceiveLowerBound(lowerBound);
             setMultipleReceiveUpperBound(upperBound);
@@ -72,22 +73,22 @@ namespace alps.net.api.StandardPASS
         public void setMultipleReceiveLowerBound(int lowerBound)
         {
             if (this.lowerBound == lowerBound) return;
-            removeTriple(new IncompleteTriple(OWLTags.stdHasMultiReceiveLowerBound, this.lowerBound.ToString(),
-                IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypePositiveInteger));
+            removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasMultiReceiveLowerBound, this.lowerBound.ToString(),
+                new PASSTriple.LiteralDataType(OWLTags.xsdDataTypePositiveInteger)));
             this.lowerBound = (lowerBound > 0) ? lowerBound : 1;
-            addTriple(new IncompleteTriple(OWLTags.stdHasMultiReceiveLowerBound, lowerBound.ToString(),
-                IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypePositiveInteger));
+            addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasMultiReceiveLowerBound, lowerBound.ToString(),
+                new PASSTriple.LiteralDataType(OWLTags.xsdDataTypePositiveInteger)));
         }
 
 
         public void setMultipleReceiveUpperBound(int upperBound)
         {
             if (this.upperBound == upperBound) return;
-            removeTriple(new IncompleteTriple(OWLTags.stdHasMultiReceiveUpperBound, this.upperBound.ToString(),
-                IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypePositiveInteger));
+            removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasMultiReceiveUpperBound, this.upperBound.ToString(),
+                new PASSTriple.LiteralDataType(OWLTags.xsdDataTypePositiveInteger)));
             this.upperBound = (upperBound > 0) ? upperBound : 1;
-            addTriple(new IncompleteTriple(OWLTags.stdHasMultiReceiveUpperBound, upperBound.ToString(),
-                IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypePositiveInteger));
+            addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasMultiReceiveUpperBound, upperBound.ToString(),
+                new PASSTriple.LiteralDataType(OWLTags.xsdDataTypePositiveInteger)));
         }
 
 
@@ -98,8 +99,8 @@ namespace alps.net.api.StandardPASS
 
             if (oldType.Equals(receiveType)) return;
 
-            removeTriple(new IncompleteTriple(OWLTags.stdHasReceiveType, receiveTypeOWLExportNames[(int)oldType]));
-            addTriple(new IncompleteTriple(OWLTags.stdHasReceiveType, receiveTypeOWLExportNames[(int)receiveType]));
+            removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasReceiveType, receiveTypeOWLExportNames[(int)oldType]));
+            addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasReceiveType, receiveTypeOWLExportNames[(int)receiveType]));
         }
 
 
@@ -113,14 +114,14 @@ namespace alps.net.api.StandardPASS
             {
                 if (oldSubj.Equals(subject)) return;
                 oldSubj.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdRequiresMessageSentFrom, oldSubj.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdRequiresMessageSentFrom, oldSubj.getUriModelComponentID()));
             }
 
             if (!(subject is null))
             {
                 publishElementAdded(subject);
                 subject.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdRequiresMessageSentFrom, subject.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdRequiresMessageSentFrom, subject.getUriModelComponentID()));
             }
         }
 
@@ -135,14 +136,14 @@ namespace alps.net.api.StandardPASS
             {
                 if (oldSpec.Equals(messageSpecification)) return;
                 oldSpec.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdRequiresReceptionOfMessage, oldSpec.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdRequiresReceptionOfMessage, oldSpec.getUriModelComponentID()));
             }
 
             if (!(messageSpecification is null))
             {
                 publishElementAdded(messageSpecification);
                 messageSpecification.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdRequiresReceptionOfMessage, messageSpecification.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdRequiresReceptionOfMessage, messageSpecification.getUriModelComponentID()));
             }
         }
 
@@ -204,7 +205,7 @@ namespace alps.net.api.StandardPASS
             }
             else if (element != null)
             {
-                
+
 
                 if (predicate.Contains(OWLTags.requiresMessageSentFrom) && element is ISubject subject)
                 {

@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using Serilog;
@@ -21,7 +22,7 @@ namespace alps.net.api.StandardPASS
         protected ISiSiTimeDistribution sisiExecutionDuration;
         protected double sisiCostPerExecution;
 
-        
+
         public override string getClassName()
         {
             return exportClassname;
@@ -36,12 +37,12 @@ namespace alps.net.api.StandardPASS
             return new SendState();
         }
 
-       protected SendState() { }
+        protected SendState() { }
 
         public SendState(ISubjectBehavior behavior, string labelForID = null, IGuardBehavior guardBehavior = null,
             ISendFunction functionSpecification = null,
             ISet<ITransition> incomingTransition = null, ISendTransition sendTransition = null,
-            ISet<ISendingFailedTransition> sendingFailedTransitions = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            ISet<ISendingFailedTransition> sendingFailedTransitions = null, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(behavior, labelForID, guardBehavior, functionSpecification, incomingTransition, null, comment, additionalLabel, additionalAttribute)
         {
             // Not passing these to base, rather pass null to avoid setting false values
@@ -235,18 +236,18 @@ namespace alps.net.api.StandardPASS
                 switch (stateType)
                 {
                     case StateType.Abstract:
-                        removeTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                        removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                         exportTag = OWLTags.abstr;
                         exportClassname = "Abstract" + className;
-                        addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                        addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                         if (isStateType(StateType.Finalized))
                             removeStateType(StateType.Finalized);
                         break;
                     case StateType.Finalized:
-                        removeTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                        removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                         exportTag = OWLTags.abstr;
                         exportClassname = "Finalized" + className;
-                        addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                        addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                         if (isStateType(StateType.Abstract))
                             removeStateType(StateType.Abstract);
                         break;
@@ -265,18 +266,18 @@ namespace alps.net.api.StandardPASS
                 switch (stateType)
                 {
                     case StateType.Abstract:
-                        removeTriple(new IncompleteTriple(OWLTags.rdfType, OWLTags.std + "Abstract" + getExportTag() + getClassName()));
+                        removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, OWLTags.std + "Abstract" + getExportTag() + getClassName()));
                         stateTypes.Remove(stateType);
                         exportTag = OWLTags.std;
                         exportClassname = className;
-                        addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                        addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                         break;
                     case StateType.Finalized:
-                        removeTriple(new IncompleteTriple(OWLTags.rdfType, OWLTags.std + "Finalized" + getExportTag() + getClassName()));
+                        removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, OWLTags.std + "Finalized" + getExportTag() + getClassName()));
                         stateTypes.Remove(stateType);
                         exportTag = OWLTags.std;
                         exportClassname = className;
-                        addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                        addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                         break;
                     default:
                         base.removeStateType(stateType);
@@ -292,7 +293,7 @@ namespace alps.net.api.StandardPASS
 
         public void setSisiExecutionDuration(ISiSiTimeDistribution sisiExecutionDuration)
         {
-            this.sisiExecutionDuration = sisiExecutionDuration; 
+            this.sisiExecutionDuration = sisiExecutionDuration;
         }
 
 
@@ -303,7 +304,7 @@ namespace alps.net.api.StandardPASS
 
         public void setSisiCostPerExecution(double sisiCostPerExecution)
         {
-            this.sisiCostPerExecution = sisiCostPerExecution;   
+            this.sisiCostPerExecution = sisiCostPerExecution;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.StandardPASS;
 using alps.net.api.util;
@@ -40,7 +41,7 @@ namespace alps.net.api.ALPS
         /// <param name="subjectDataDefinition"></param>
         public StandaloneMacroSubject(IModelLayer layer, string labelForID = null, ISet<IMessageExchange> incomingMessageExchange = null,
             IMacroBehavior macroBehavior = null, ISet<IMessageExchange> outgoingMessageExchange = null, int maxSubjectInstanceRestriction = 1,
-            string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(layer, labelForID, incomingMessageExchange, outgoingMessageExchange, maxSubjectInstanceRestriction,
                 comment, additionalLabel, additionalAttribute)
         {
@@ -58,7 +59,7 @@ namespace alps.net.api.ALPS
                 if (oldDef.Equals(behavior)) return;
                 oldDef.unregister(this, removeCascadeDepth);
                 behavior.setSubject(null);
-                removeTriple(new IncompleteTriple(OWLTags.stdContainsBehavior, oldDef.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContainsBehavior, oldDef.getUriModelComponentID()));
             }
 
             if (behavior is null) return;
@@ -66,7 +67,7 @@ namespace alps.net.api.ALPS
             publishElementAdded(behavior);
             behavior.register(this);
             behavior.setSubject(this);
-            addTriple(new IncompleteTriple(OWLTags.stdContainsBehavior, behavior.getUriModelComponentID()));
+            addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContainsBehavior, behavior.getUriModelComponentID()));
         }
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
@@ -80,7 +81,7 @@ namespace alps.net.api.ALPS
                     Debug.Print("Element Type: " + element.GetType().ToString() + " - is macroB: " + (element is IMacroBehavior));
                 }
             }*/
-            
+
             if (element is IMacroBehavior subjectBehavior && predicate.Contains(OWLTags.containsBehavior))
             {
                 setBehavior(subjectBehavior);

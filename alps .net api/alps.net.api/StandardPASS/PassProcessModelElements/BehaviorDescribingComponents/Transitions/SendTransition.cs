@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace alps.net.api.StandardPASS
     /// </summary>
     public class SendTransition : CommunicationTransition, ISendTransition
     {
-        protected readonly ICompatibilityDictionary<string, IDataMappingLocalToOutgoing> dataMappingsLocalToOutgoing = new CompatibilityDictionary<string, IDataMappingLocalToOutgoing>();
+        protected readonly ICompDict<string, IDataMappingLocalToOutgoing> dataMappingsLocalToOutgoing = new CompDict<string, IDataMappingLocalToOutgoing>();
 
         /// <summary>
         /// Name of the class, needed for parsing
@@ -27,11 +28,11 @@ namespace alps.net.api.StandardPASS
             return new SendTransition();
         }
 
-       protected SendTransition() { }
+        protected SendTransition() { }
 
         public SendTransition(IState sourceState, IState targetState, string labelForID = null, ITransitionCondition transitionCondition = null,
             ITransition.TransitionType transitionType = ITransition.TransitionType.Standard, ISet<IDataMappingLocalToOutgoing> dataMappingLocalToOutgoing = null, string comment = null, string additionalLabel = null,
-            IList<IIncompleteTriple> additionalAttribute = null) : base(sourceState, targetState, labelForID, transitionCondition, transitionType, comment, additionalLabel, additionalAttribute)
+            IList<IPASSTriple> additionalAttribute = null) : base(sourceState, targetState, labelForID, transitionCondition, transitionType, comment, additionalLabel, additionalAttribute)
         {
             setDataMappingFunctionsLocalToOutgoing(dataMappingLocalToOutgoing);
         }
@@ -39,7 +40,7 @@ namespace alps.net.api.StandardPASS
         public SendTransition(ISubjectBehavior behavior, string label = null,
             IState sourceState = null, IState targetState = null, ITransitionCondition transitionCondition = null,
             ITransition.TransitionType transitionType = ITransition.TransitionType.Standard, ISet<IDataMappingLocalToOutgoing> dataMappingLocalToOutgoing = null,
-            string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(behavior, label, sourceState, targetState, transitionCondition, transitionType, comment, additionalLabel, additionalAttribute)
         {
             setDataMappingFunctionsLocalToOutgoing(dataMappingLocalToOutgoing);
@@ -55,7 +56,7 @@ namespace alps.net.api.StandardPASS
             {
                 publishElementAdded(dataMappingLocalToOutgoing);
                 dataMappingLocalToOutgoing.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdHasDataMappingFunction, dataMappingLocalToOutgoing.getModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasDataMappingFunction, dataMappingLocalToOutgoing.getModelComponentID()));
             }
         }
 
@@ -66,7 +67,7 @@ namespace alps.net.api.StandardPASS
             {
                 dataMappingsLocalToOutgoing.Remove(mappingID);
                 mapping.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdHasDataMappingFunction, mappingID));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasDataMappingFunction, mappingID));
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using alps.net.api.FunctionalityCapsules;
 using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.StandardPASS;
 using alps.net.api.util;
@@ -14,7 +15,7 @@ namespace alps.net.api.ALPS
     /// </summary>
     public class ModelLayer : ALPSModelElement, IModelLayer
     {
-        protected ICompatibilityDictionary<string, IPASSProcessModelElement> elements = new CompatibilityDictionary<string, IPASSProcessModelElement>();
+        protected ICompDict<string, IPASSProcessModelElement> elements = new CompDict<string, IPASSProcessModelElement>();
         protected readonly IImplementsFunctionalityCapsule<IModelLayer> implCapsule;
         protected readonly IExtendsFunctionalityCapsule<IModelLayer> extendsCapsule;
         protected int priorityNumber;
@@ -51,7 +52,7 @@ namespace alps.net.api.ALPS
         }
 
 
-        public ModelLayer(IPASSProcessModel model, string labelForID = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+        public ModelLayer(IPASSProcessModel model, string labelForID = null, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(labelForID, comment, additionalLabel, additionalAttribute)
         {
             extendsCapsule = new ExtendsFunctionalityCapsule<IModelLayer>(this);
@@ -117,34 +118,34 @@ namespace alps.net.api.ALPS
             switch (layerType)
             {
                 case LayerType.GUARD:
-                    removeTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                    removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                     exportClassname = "Guard" + className;
                     this.layerType = layerType;
-                    addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                    addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                     break;
                 case LayerType.EXTENSION:
-                    removeTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                    removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                     this.layerType = layerType;
                     exportClassname = "Extension" + className;
-                    addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                    addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                     break;
                 case LayerType.MACRO:
-                    removeTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                    removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                     this.layerType = layerType;
                     exportClassname = "Macro" + className;
-                    addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                    addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                     break;
                 case LayerType.BASE:
-                    removeTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                    removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                     this.layerType = layerType;
                     exportClassname = "Base" + className;
-                    addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                    addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                     break;
                 case LayerType.STANDARD:
-                    removeTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                    removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                     this.layerType = layerType;
                     exportClassname = className;
-                    addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                    addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                     break;
                 default:
 
@@ -163,11 +164,11 @@ namespace alps.net.api.ALPS
             this.isAbstractType = isAbstract;
             if (isAbstract)
             {
-                addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + ABSTRACT_NAME));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + ABSTRACT_NAME));
             }
             else
             {
-                removeTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + ABSTRACT_NAME));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + ABSTRACT_NAME));
             }
         }
 
@@ -185,7 +186,7 @@ namespace alps.net.api.ALPS
                 element.unregister(this, removeCascadeDepth);
                 if (element is IContainableElement<IModelLayer> containable && containable.getContainedBy(out IModelLayer layer) && layer == this)
                     containable.removeFromContainer();
-                removeTriple(new IncompleteTriple(OWLTags.stdContains, element.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains, element.getUriModelComponentID()));
                 checkLayerTypes();
 
             }
@@ -232,7 +233,7 @@ namespace alps.net.api.ALPS
                     checkLayerTypes();
                     if (element is IContainableElement<IModelLayer> containable)
                         containable.setContainedBy(this);
-                    addTriple(new IncompleteTriple(OWLTags.stdContains, element.getUriModelComponentID()));
+                    addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains, element.getUriModelComponentID()));
                 }
         }
 
@@ -443,7 +444,7 @@ namespace alps.net.api.ALPS
         {
             base.updateAdded(update, caller);
 
-            
+
             if (getContainedBy(out IPASSProcessModel model))
             {
                 // If the element is already in another layer, do not add it
@@ -486,10 +487,11 @@ namespace alps.net.api.ALPS
 
         public void setPriorityNumber(int nonNegativInteger)
         {
-            removeTriple(new IncompleteTriple(OWLTags.stdHasPriorityNumber, this.priorityNumber.ToString(), IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypePositiveInteger));
+            if (nonNegativInteger == priorityNumber) return;
+            removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasPriorityNumber, this.priorityNumber.ToString(), new PASSTriple.LiteralDataType(OWLTags.xsdDataTypePositiveInteger)));
             if (nonNegativInteger > 0) priorityNumber = nonNegativInteger;
             else priorityNumber = 1;
-            addTriple(new IncompleteTriple(OWLTags.stdHasPriorityNumber, priorityNumber.ToString(), IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypePositiveInteger));
+            addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasPriorityNumber, priorityNumber.ToString(), new PASSTriple.LiteralDataType(OWLTags.xsdDataTypePositiveInteger)));
         }
 
         public int getPriorityNumber()
@@ -539,12 +541,12 @@ namespace alps.net.api.ALPS
             if (oldExtendedLayer != null)
             {
                 if (oldExtendedLayer.Equals(extendedLayer)) return;
-                removeTriple(new IncompleteTriple(OWLTags.abstrExtends, oldExtendedLayer.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.abstrExtends, oldExtendedLayer.getUriModelComponentID()));
             }
 
             if (!(extendedLayer is null))
             {
-                addTriple(new IncompleteTriple(OWLTags.abstrExtends, extendedLayer.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.abstrExtends, extendedLayer.getUriModelComponentID()));
             }
         }
 
@@ -616,7 +618,7 @@ namespace alps.net.api.ALPS
         public void removeFromContainer()
         {
             if (model != null)
-            model.removeElement(getModelComponentID());
+                model.removeElement(getModelComponentID());
             model = null;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
@@ -26,29 +27,53 @@ namespace alps.net.api.StandardPASS
         /// </summary>
         IDictionary<int, SpecificTimeTransitionCondition> specificConditions = new Dictionary<int, SpecificTimeTransitionCondition> {
             // CalendarBasedReminderTransitionCondition
-            {(int) TimeTransitionConditionType.CalendarBasedReminder,
-                new SpecificTimeTransitionCondition(OWLTags.CalendarBasedReminderTransitionConditionClassName,OWLTags.hasCalendarBasedFrequencyOrDate,
+            {(int) TimeTransitionConditionType.CalendarBasedReminderTC,
+                new SpecificTimeTransitionCondition(OWLTags.CalendarBasedReminderTransitionConditionClassName,
+                    OWLTags.hasCalendarBasedFrequencyOrDate,
                     OWLTags.stdHasCalendarBasedFrequencyOrDate, OWLTags.xsdDataTypeString) },
 
             // TimeBasedReminderTransitionCondition
-            {(int) TimeTransitionConditionType.TimeBasedReminder,
-                new SpecificTimeTransitionCondition(OWLTags.TimeBasedReminderTransitionConditionClassName,OWLTags.hasTimeBasedReoccuranceFrequencyOrDate,
+            {(int) TimeTransitionConditionType.TimeBasedReminderTC,
+                new SpecificTimeTransitionCondition(OWLTags.TimeBasedReminderTransitionConditionClassName,
+                    OWLTags.hasTimeBasedReoccuranceFrequencyOrDate,
                     OWLTags.stdHasTimeBasedReoccuranceFrequencyOrDate, OWLTags.xsdDataTypeString) },
 
             // BusinessDayTimerTransitionCondition
-            {(int) TimeTransitionConditionType.BusinessDayTimer,
-                new SpecificTimeTransitionCondition(OWLTags.BusinessDayTimerTransitionConditionClassName, OWLTags.hasBusinessDayDurationTimeOutTime,
+            {(int) TimeTransitionConditionType.BusinessDayTimerTC,
+                new SpecificTimeTransitionCondition(OWLTags.BusinessDayTimerTransitionConditionClassName,
+                    OWLTags.hasBusinessDayDurationTimeOutTime,
                     OWLTags.stdHasBusinessDayDurationTimeOutTime,OWLTags.xsdDayTimeDuration) },
 
             // DayTimeTimerTransitionCondition
-            {(int) TimeTransitionConditionType.DayTimeTimer,
-                new SpecificTimeTransitionCondition(OWLTags.DayTimeTimerTransitionConditionClassName, OWLTags.hasDayTimeDurationTimeOutTime,
+            {(int) TimeTransitionConditionType.DayTimeTimerTC,
+                new SpecificTimeTransitionCondition(OWLTags.DayTimeTimerTransitionConditionClassName,
+                    OWLTags.hasDayTimeDurationTimeOutTime,
                     OWLTags.stdHasDayTimeDurationTimeOutTime,OWLTags.xsdDayTimeDuration) },
 
             // YearMonthTimerTransitionCondition
-            {(int) TimeTransitionConditionType.YearMonthTimer,
-                new SpecificTimeTransitionCondition(OWLTags.YearMonthTimerTransitionConditionClassName, OWLTags.hasYearMonthDurationTimeOutTime,
-                    OWLTags.stdHasYearMonthDurationTimeOutTime,OWLTags.xsdYearMonthDuration) }
+            {(int) TimeTransitionConditionType.YearMonthTimerTC,
+                new SpecificTimeTransitionCondition(OWLTags.YearMonthTimerTransitionConditionClassName,
+                    OWLTags.hasYearMonthDurationTimeOutTime,
+                    OWLTags.stdHasYearMonthDurationTimeOutTime,OWLTags.xsdYearMonthDuration) },
+
+
+
+
+            {(int) TimeTransitionConditionType.TimeTC,
+                new SpecificTimeTransitionCondition(OWLTags.TimeTransitionConditionClassName,
+                    OWLTags.hasTimeValue,
+                    OWLTags.stdHasTimeValue,OWLTags.xsdDataTypeString) },
+
+            {(int) TimeTransitionConditionType.ReminderEventTC,
+                new SpecificTimeTransitionCondition(OWLTags.ReminderEventTransitionConditionClassName,
+                    OWLTags.hasReoccuranceFrequenyOrDate,
+                    OWLTags.stdHasReoccuranceFrequenyOrDate,OWLTags.xsdDataTypeString) },
+
+            {(int) TimeTransitionConditionType.TimerTC,
+                new SpecificTimeTransitionCondition(OWLTags.TimerTransitionConditionClassName,
+                    OWLTags.hasDurationTimeOutTime,
+                    OWLTags.stdHasDurationTimeOutTime,OWLTags.xsdDuration) }
+
         };
 
         /// <summary>
@@ -69,12 +94,12 @@ namespace alps.net.api.StandardPASS
 
         protected TimeTransitionCondition()
         {
-            lastUsedTypeForExportFunctions = TimeTransitionConditionType.DayTimeTimer;
-            setTimeTransitionConditionType(TimeTransitionConditionType.DayTimeTimer);
+            lastUsedTypeForExportFunctions = TimeTransitionConditionType.DayTimeTimerTC;
+            setTimeTransitionConditionType(TimeTransitionConditionType.DayTimeTimerTC);
         }
         public TimeTransitionCondition(ITransition transition, string labelForID = null, string toolSpecificDefintion = null, string timeValue = null,
-            TimeTransitionConditionType timeTransitionConditionType = TimeTransitionConditionType.DayTimeTimer, string comment = null,
-            string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            TimeTransitionConditionType timeTransitionConditionType = TimeTransitionConditionType.DayTimeTimerTC, string comment = null,
+            string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(transition, labelForID, toolSpecificDefintion, comment, additionalLabel, additionalAttribute)
         {
             lastUsedTypeForExportFunctions = timeTransitionConditionType;
@@ -118,13 +143,13 @@ namespace alps.net.api.StandardPASS
             if (oldType.Equals(timeTransitionConditionType)) return;
 
             // Removes the export tag (if it exists) which defines the element as pure TimeTransitionCondition instance
-            removeTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+            removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
 
             // Removes the export tag (if it exists) which defines the element as instance of the previously specified transition condition type 
-            removeTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + specificConditions[(int)oldType].getExportString()));
+            removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + specificConditions[(int)oldType].getExportString()));
 
             // Adds the export tag which defines the element as instance of the newly specified transition condition type
-            addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + specificConditions[(int)timeTransitionConditionType].getExportString()));
+            addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + specificConditions[(int)timeTransitionConditionType].getExportString()));
 
             // Important! The time value must be exported again using the new type to get correct triples
             setTimeValue(timeValue);
@@ -142,8 +167,8 @@ namespace alps.net.api.StandardPASS
 
             // We remove the last timeValue triple, which may have a different predicate than the current since the TimeTransitionCondition type could have been different
             SpecificTimeTransitionCondition specificCond = specificConditions[(int)lastUsedTypeForExportFunctions];
-            removeTriple(new IncompleteTriple(specificCond.getTimeValuePredicate(true),
-                this.timeValue, IncompleteTriple.LiteralType.DATATYPE, specificCond.getDataType()));
+            removeTriple(new PASSTriple(getExportXmlName(), specificCond.getTimeValuePredicate(true),
+                this.timeValue, new PASSTriple.LiteralDataType(specificCond.getDataType())));
 
 
             this.timeValue = (timeValue is null || timeValue.Equals("")) ? null : timeValue;
@@ -151,7 +176,7 @@ namespace alps.net.api.StandardPASS
             {
                 // We fetch the predicate we need with the current TimeTransitionCondition type and export the value with it
                 SpecificTimeTransitionCondition newSpecificCond = specificConditions[(int)timeTransitionConditionType];
-                addTriple(new IncompleteTriple(newSpecificCond.getTimeValuePredicate(true), timeValue, IncompleteTriple.LiteralType.DATATYPE, newSpecificCond.getDataType()));
+                addTriple(new PASSTriple(getExportXmlName(), newSpecificCond.getTimeValuePredicate(true), timeValue, new PASSTriple.LiteralDataType(newSpecificCond.getDataType())));
                 lastUsedTypeForExportFunctions = timeTransitionConditionType;
             }
 

@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.StandardPASS;
 using alps.net.api.util;
@@ -11,14 +12,18 @@ namespace alps.net.api.FunctionalityCapsules
     /// Every element can hold a capsule, delegating all the incoming calls to this capsule.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IImplementsFunctionalityCapsule<T> : IImplementingElement<T>, IFunctionalityCapsule<T> where T : IPASSProcessModelElement
+    public interface IImplementsFunctionalityCapsule<T> : IImplementingElement<T>, IFunctionalityCapsule<T>
+        where T : IPASSProcessModelElement
     {
     }
 
 
-    public class ImplementsFunctionalityCapsule<T> : IImplementsFunctionalityCapsule<T> where T : IPASSProcessModelElement
+    public class ImplementsFunctionalityCapsule<T> : IImplementsFunctionalityCapsule<T>
+        where T : IPASSProcessModelElement
     {
-        protected readonly ICompatibilityDictionary<string, T> implementedInterfaces = new CompatibilityDictionary<string, T>();
+        protected readonly ICompDict<string, T> implementedInterfaces =
+            new CompDict<string, T>();
+
         protected readonly ISet<string> implementedInterfacesIDs = new HashSet<string>();
         protected readonly ICapsuleCallback callback;
 
@@ -28,7 +33,8 @@ namespace alps.net.api.FunctionalityCapsules
         }
 
 
-        public bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
+        public bool parseAttribute(string predicate, string objectContent, string lang, string dataType,
+            IParseablePASSProcessModelElement element)
         {
             if (predicate.Contains(OWLTags.implements))
             {
@@ -43,6 +49,7 @@ namespace alps.net.api.FunctionalityCapsules
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -52,6 +59,7 @@ namespace alps.net.api.FunctionalityCapsules
             {
                 removeImplementedInterfaces(implInterface.getModelComponentID(), removeCascadeDepth);
             }
+
             if (implementedInterface is null) return;
             foreach (T implInterface in implementedInterface)
             {
@@ -62,11 +70,13 @@ namespace alps.net.api.FunctionalityCapsules
         public void addImplementedInterface(T implementedInterface)
         {
             if (implementedInterface is null) { return; }
+
             if (implementedInterfaces.TryAdd(implementedInterface.getModelComponentID(), implementedInterface))
             {
                 callback.publishElementAdded(implementedInterface);
                 implementedInterface.register(callback);
-                callback.addTriple(new IncompleteTriple(OWLTags.abstrImplements, implementedInterface.getUriModelComponentID()));
+                callback.addTriple(new PASSTriple(callback.getExportXmlName(), OWLTags.abstrImplements,
+                    implementedInterface.getUriModelComponentID()));
             }
         }
 
@@ -77,7 +87,8 @@ namespace alps.net.api.FunctionalityCapsules
             {
                 implementedInterfaces.Remove(id);
                 implInterface.unregister(callback, removeCascadeDepth);
-                callback.removeTriple(new IncompleteTriple(OWLTags.abstrImplements, implInterface.getUriModelComponentID()));
+                callback.removeTriple(new PASSTriple(
+                    callback.getExportXmlName(), OWLTags.abstrImplements, implInterface.getUriModelComponentID()));
             }
         }
 
@@ -85,7 +96,6 @@ namespace alps.net.api.FunctionalityCapsules
         {
             return new Dictionary<string, T>(implementedInterfaces);
         }
-
 
 
         public void setImplementedInterfacesIDReferences(ISet<string> implementedInterfacesIDs)
@@ -112,7 +122,5 @@ namespace alps.net.api.FunctionalityCapsules
                 ts.Add(implementedInterfaceID);
             return ts;
         }
-
-
     }
 }

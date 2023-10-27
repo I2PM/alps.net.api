@@ -1,6 +1,7 @@
 ﻿using alps.net.api.util;
 using System.Collections.Generic;
 using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using static alps.net.api.StandardPASS.IState;
 using alps.net.api.StandardPASS.PassProcessModelElements.DataDescribingComponents;
@@ -16,9 +17,9 @@ namespace alps.net.api.StandardPASS
 
     public class DoState : StandardPASSState, IDoState
     {
-        protected readonly ICompatibilityDictionary<string, IDataMappingFunction> generalDataMappingFunctions = new CompatibilityDictionary<string, IDataMappingFunction>();
-        protected readonly ICompatibilityDictionary<string, IDataMappingIncomingToLocal> dataMappingIncomingToLocalDict = new CompatibilityDictionary<string, IDataMappingIncomingToLocal>();
-        protected readonly ICompatibilityDictionary<string, IDataMappingLocalToOutgoing> dataMappingLocalToOutgoingDict = new CompatibilityDictionary<string, IDataMappingLocalToOutgoing>();
+        protected readonly ICompDict<string, IDataMappingFunction> generalDataMappingFunctions = new CompDict<string, IDataMappingFunction>();
+        protected readonly ICompDict<string, IDataMappingIncomingToLocal> dataMappingIncomingToLocalDict = new CompDict<string, IDataMappingIncomingToLocal>();
+        protected readonly ICompDict<string, IDataMappingLocalToOutgoing> dataMappingLocalToOutgoingDict = new CompDict<string, IDataMappingLocalToOutgoing>();
 
         /// <summary>
         /// Name of the class, needed for parsing
@@ -54,7 +55,7 @@ namespace alps.net.api.StandardPASS
         {
             this.sisiCostPerExecution = sisiCostPerExecution;
         }
-        public double getSisiEndStayChance(){ return this._sisiEndStayChance; }
+        public double getSisiEndStayChance() { return this._sisiEndStayChance; }
         public void setSisiEndStayChance(double value)
         {
             // Add validation logic
@@ -90,7 +91,7 @@ namespace alps.net.api.StandardPASS
 
         public override string getClassName()
         {
-            
+
             return exportClassname;
         }
 
@@ -104,11 +105,11 @@ namespace alps.net.api.StandardPASS
             return new DoState();
         }
 
-       protected DoState() { }
+        protected DoState() { }
         public DoState(ISubjectBehavior behavior, string labelForID = null, IGuardBehavior guardBehavior = null,
             IDoFunction doFunction = null, ISet<ITransition> incomingTransitions = null, ISet<ITransition> outgoingTransitions = null,
             ISet<IDataMappingIncomingToLocal> dataMappingIncomingToLocal = null, ISet<IDataMappingLocalToOutgoing> dataMappingLocalToOutgoing = null,
-            string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttributes = null)
+            string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttributes = null)
             : base(behavior, labelForID, guardBehavior, doFunction, incomingTransitions, null, comment, additionalLabel, additionalAttributes)
         {
             // Set those attributes locally and pass null to base (so no wrong attributes will be set)
@@ -140,7 +141,7 @@ namespace alps.net.api.StandardPASS
             {
                 publishElementAdded(dataMappingIncomingToLocal);
                 dataMappingIncomingToLocal.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdHasDataMappingFunction, dataMappingIncomingToLocal.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasDataMappingFunction, dataMappingIncomingToLocal.getUriModelComponentID()));
             }
         }
 
@@ -156,7 +157,7 @@ namespace alps.net.api.StandardPASS
             {
                 dataMappingIncomingToLocalDict.Remove(id);
                 mapping.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdHasDataMappingFunction, mapping.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasDataMappingFunction, mapping.getUriModelComponentID()));
             }
         }
 
@@ -181,11 +182,11 @@ namespace alps.net.api.StandardPASS
             {
                 publishElementAdded(dataMappingLocalToOutgoing);
                 dataMappingLocalToOutgoing.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdHasDataMappingFunction, dataMappingLocalToOutgoing.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasDataMappingFunction, dataMappingLocalToOutgoing.getUriModelComponentID()));
             }
         }
 
-        
+
 
         public IDictionary<string, IDataMappingLocalToOutgoing> getDataMappingFunctionsLocalToOutgoing()
         {
@@ -199,7 +200,7 @@ namespace alps.net.api.StandardPASS
             {
                 dataMappingLocalToOutgoingDict.Remove(id);
                 mapping.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdHasDataMappingFunction, mapping.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasDataMappingFunction, mapping.getUriModelComponentID()));
             }
         }
 
@@ -211,7 +212,7 @@ namespace alps.net.api.StandardPASS
             {
                 publishElementAdded(dataMappingFunction);
                 dataMappingFunction.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdHasDataMappingFunction, dataMappingFunction.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasDataMappingFunction, dataMappingFunction.getUriModelComponentID()));
             }
         }
 
@@ -228,7 +229,7 @@ namespace alps.net.api.StandardPASS
             {
                 dataMappingLocalToOutgoingDict.Remove(id);
                 mapping.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdHasDataMappingFunction, mapping.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasDataMappingFunction, mapping.getUriModelComponentID()));
             }
         }
 
@@ -287,10 +288,10 @@ namespace alps.net.api.StandardPASS
                     setFunctionSpecification(function);
                     return true;
                 }
-                
+
                 if (predicate.Contains(OWLTags.abstrHasSimpleSimDurationMeanValue))
                 {
-                   
+
                 }
             }
             else if (predicate.Contains(OWLTags.type))
@@ -305,15 +306,17 @@ namespace alps.net.api.StandardPASS
                     setIsStateType(StateType.Finalized);
                     return true;
                 }
-            }else if (predicate.Contains(OWLTags.abstrHasSimpleSimDurationMeanValue))
-            { 
+            }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimDurationMeanValue))
+            {
                 if (this.sisiExecutionDuration == null)
                 {
                     this.sisiExecutionDuration = new SisiTimeDistribution();
                 }
                 this.sisiExecutionDuration.meanValue = SisiTimeDistribution.ConvertXSDDurationStringToFractionsOfDay(objectContent);
                 return true;
-            }else if(predicate.Contains(OWLTags.abstrHasSimpleSimDurationDeviation))
+            }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimDurationDeviation))
             {
                 if (this.sisiExecutionDuration == null)
                 {
@@ -321,7 +324,8 @@ namespace alps.net.api.StandardPASS
                 }
                 this.sisiExecutionDuration.standardDeviation = SisiTimeDistribution.ConvertXSDDurationStringToFractionsOfDay(objectContent);
                 return true;
-            }else if(predicate.Contains(OWLTags.abstrHasSimpleSimDurationMinValue))
+            }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimDurationMinValue))
             {
                 if (this.sisiExecutionDuration == null)
                 {
@@ -329,7 +333,8 @@ namespace alps.net.api.StandardPASS
                 }
                 this.sisiExecutionDuration.minValue = SisiTimeDistribution.ConvertXSDDurationStringToFractionsOfDay(objectContent);
                 return true;
-            }else if (predicate.Contains(OWLTags.abstrHasSimpleSimDurationMaxValue))
+            }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimDurationMaxValue))
             {
                 if (this.sisiExecutionDuration == null)
                 {
@@ -337,7 +342,8 @@ namespace alps.net.api.StandardPASS
                 }
                 this.sisiExecutionDuration.maxValue = SisiTimeDistribution.ConvertXSDDurationStringToFractionsOfDay(objectContent);
                 return true;
-            }else if (predicate.Contains(OWLTags.abstrHasSimpleSimCostPerExecution))
+            }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimCostPerExecution))
             {
                 try
                 {
@@ -348,7 +354,8 @@ namespace alps.net.api.StandardPASS
                     Log.Warning("could not parse the value " + objectContent + " as valid double");
                 }
                 return true;
-            }else if (predicate.Contains(OWLTags.abstrHasSimpleSimEndStayChance))
+            }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimEndStayChance))
             {
                 try
                 {
@@ -359,7 +366,8 @@ namespace alps.net.api.StandardPASS
                     Log.Warning("could not parse the value " + objectContent + " as valid double");
                 }
                 return true;
-            }else if (predicate.Contains(OWLTags.abstrHasSimpleSimVSMTimeCategory))
+            }
+            else if (predicate.Contains(OWLTags.abstrHasSimpleSimVSMTimeCategory))
             {
                 try
                 {
@@ -382,18 +390,18 @@ namespace alps.net.api.StandardPASS
                 switch (stateType)
                 {
                     case StateType.Abstract:
-                        removeTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                        removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                         exportTag = OWLTags.abstr;
                         exportClassname = "Abstract" + className;
-                        addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                        addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                         if (isStateType(StateType.Finalized))
                             removeStateType(StateType.Finalized);
                         break;
                     case StateType.Finalized:
-                        removeTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                        removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                         exportTag = OWLTags.abstr;
                         exportClassname = "Finalized" + className;
-                        addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                        addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                         if (isStateType(StateType.Abstract))
                             removeStateType(StateType.Abstract);
                         break;
@@ -413,18 +421,18 @@ namespace alps.net.api.StandardPASS
                 switch (stateType)
                 {
                     case StateType.Abstract:
-                        removeTriple(new IncompleteTriple(OWLTags.rdfType, OWLTags.std + "Abstract" + getExportTag() + getClassName()));
+                        removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, OWLTags.std + "Abstract" + getExportTag() + getClassName()));
                         stateTypes.Remove(stateType);
                         exportTag = OWLTags.std;
                         exportClassname = className;
-                        addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                        addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                         break;
                     case StateType.Finalized:
-                        removeTriple(new IncompleteTriple(OWLTags.rdfType, OWLTags.std + "Finalized" + getExportTag() + getClassName()));
+                        removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, OWLTags.std + "Finalized" + getExportTag() + getClassName()));
                         stateTypes.Remove(stateType);
                         exportTag = OWLTags.std;
                         exportClassname = className;
-                        addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + getClassName()));
+                        addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + getClassName()));
                         break;
                     default:
                         base.removeStateType(stateType);
@@ -483,7 +491,8 @@ namespace alps.net.api.StandardPASS
                 {
                     this.setIsStateType(StateType.EndState);
                 }
-            }else
+            }
+            else
             {
                 if (this.isStateType(StateType.EndState))
                 {
@@ -520,7 +529,7 @@ namespace alps.net.api.StandardPASS
             }
 
             return SimpleSimTimeCategory.Standard;
-            
+
         }
     }
 }

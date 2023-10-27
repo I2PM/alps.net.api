@@ -1,5 +1,6 @@
 ﻿using alps.net.api.ALPS;
 using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ namespace alps.net.api.StandardPASS
             return new InputPoolConstraint();
         }
 
-       protected InputPoolConstraint() { }
+        protected InputPoolConstraint() { }
         /// <summary>
         /// 
         /// </summary>
@@ -38,8 +39,8 @@ namespace alps.net.api.StandardPASS
         /// <param name="additionalAttribute"></param>
         /// <param name="inputPoolConstraintHandlingStrategy"></param>
         /// <param name="limit"></param>
-        public InputPoolConstraint(IModelLayer layer, string labelForID = null,  IInputPoolConstraintHandlingStrategy inputPoolConstraintHandlingStrategy = null,
-            int limit = 0, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+        public InputPoolConstraint(IModelLayer layer, string labelForID = null, IInputPoolConstraintHandlingStrategy inputPoolConstraintHandlingStrategy = null,
+            int limit = 0, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(layer, labelForID, comment, additionalLabel, additionalAttribute)
         {
             setInputPoolConstraintHandlingStrategy(inputPoolConstraintHandlingStrategy);
@@ -57,14 +58,14 @@ namespace alps.net.api.StandardPASS
             {
                 if (oldStrat.Equals(inputPoolConstraintHandlingStrategy)) return;
                 oldStrat.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdHasHandlingStrategy, oldStrat.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasHandlingStrategy, oldStrat.getUriModelComponentID()));
             }
-            
+
             if (!(inputPoolConstraintHandlingStrategy is null))
             {
                 publishElementAdded(inputPoolConstraintHandlingStrategy);
                 inputPoolConstraintHandlingStrategy.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdHasHandlingStrategy, inputPoolConstraintHandlingStrategy.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasHandlingStrategy, inputPoolConstraintHandlingStrategy.getUriModelComponentID()));
             }
         }
 
@@ -72,9 +73,9 @@ namespace alps.net.api.StandardPASS
         public void setLimit(int nonNegativInteger)
         {
             if (nonNegativInteger == getLimit()) return;
-            removeTriple(new IncompleteTriple(OWLTags.stdHasLimit, this.limit.ToString(), IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeNonNegativeInt));
+            removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasLimit, this.limit.ToString(), new PASSTriple.LiteralDataType(OWLTags.xsdDataTypeNonNegativeInt)));
             limit = (nonNegativInteger >= 0) ? nonNegativInteger : 0;
-            addTriple(new IncompleteTriple(OWLTags.stdHasLimit, this.limit.ToString(), IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeNonNegativeInt));
+            addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasLimit, this.limit.ToString(), new PASSTriple.LiteralDataType(OWLTags.xsdDataTypeNonNegativeInt)));
         }
 
 

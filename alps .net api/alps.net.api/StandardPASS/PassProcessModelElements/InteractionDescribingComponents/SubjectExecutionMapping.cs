@@ -26,7 +26,7 @@ namespace alps.net.api.StandardPASS
             return new SubjectExecutionMapping();
         }
 
-       protected SubjectExecutionMapping() { }
+        protected SubjectExecutionMapping() { }
         /// <summary>
         /// 
         /// </summary>
@@ -37,7 +37,7 @@ namespace alps.net.api.StandardPASS
         /// <param name="receiverSubject"></param>
         /// <param name="additionalAttribute"></param>
         public SubjectExecutionMapping(IModelLayer layer, string labelForID = null, string executionMapping = null, string comment = null,
-            string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(layer, labelForID, comment, additionalLabel, additionalAttribute)
         {
             setExecutionMappingDefinition(executionMapping);
@@ -51,7 +51,7 @@ namespace alps.net.api.StandardPASS
 
         public void setExecutionMappingDefinition(string mapping)
         {
-            this._executionMapping= mapping;    
+            this._executionMapping = mapping;
         }
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
@@ -64,6 +64,6 @@ namespace alps.net.api.StandardPASS
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
 
-       
+
     }
 }

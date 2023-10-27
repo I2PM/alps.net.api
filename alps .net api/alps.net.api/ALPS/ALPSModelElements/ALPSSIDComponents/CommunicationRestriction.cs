@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.StandardPASS;
 using alps.net.api.util;
@@ -42,9 +43,9 @@ namespace alps.net.api.ALPS
         protected CommunicationRestriction() { }
 
         public CommunicationRestriction(IModelLayer layer, string labelForID = null,
-            ISubject correspondentA = null, ISubject correspondentB = null, 
+            ISubject correspondentA = null, ISubject correspondentB = null,
             string comment = null, string additionalLabel = null,
-            IList<IIncompleteTriple> additionalAttribute = null)
+            IList<IPASSTriple> additionalAttribute = null)
             : base(layer, labelForID, comment, additionalLabel, additionalAttribute)
         {
             setCorrespondentA(correspondentA);
@@ -100,13 +101,13 @@ namespace alps.net.api.ALPS
             {
                 if (oldCorrespondentA.Equals(correspondentA)) return;
                 oldCorrespondentA.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdHasCorrespondent, correspondentA.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasCorrespondent, correspondentA.getUriModelComponentID()));
             }
             if (!(correspondentA is null))
             {
                 publishElementAdded(correspondentA);
                 correspondentA.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdHasCorrespondent, correspondentA.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasCorrespondent, correspondentA.getUriModelComponentID()));
             }
         }
 
@@ -120,13 +121,13 @@ namespace alps.net.api.ALPS
             {
                 if (oldCorrespondentB.Equals(correspondentB)) return;
                 oldCorrespondentB.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdHasCorrespondent, correspondentB.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasCorrespondent, correspondentB.getUriModelComponentID()));
             }
             if (!(correspondentB is null))
             {
                 publishElementAdded(correspondentB);
                 correspondentB.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdHasCorrespondent, correspondentB.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasCorrespondent, correspondentB.getUriModelComponentID()));
             }
         }
 

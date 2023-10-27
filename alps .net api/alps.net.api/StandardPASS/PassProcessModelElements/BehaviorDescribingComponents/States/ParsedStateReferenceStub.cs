@@ -53,13 +53,11 @@ namespace alps.net.api.StandardPASS
 
         public IState transformToState(IDictionary<string, IParseablePASSProcessModelElement> allElements)
         {
-            IList<IIncompleteTriple> allTriples = getIncompleteTriples();
-            foreach (Triple t in getTriples())
-                allTriples.Add(new IncompleteTriple(t));
+            IList<IPASSTriple> allTriples = getIncompleteTriples();
 
-            foreach (IIncompleteTriple t in allTriples)
+            foreach (IPASSTriple t in allTriples)
             {
-                if (t.getPredicate().ToString().Contains(OWLTags.references))
+                if (t.getPredicate().Contains(OWLTags.references))
                 {
                     string objID = StaticFunctions.removeBaseUri(t.getObject().ToString(), null);
                     if (allElements.TryGetValue(objID, out IParseablePASSProcessModelElement element))

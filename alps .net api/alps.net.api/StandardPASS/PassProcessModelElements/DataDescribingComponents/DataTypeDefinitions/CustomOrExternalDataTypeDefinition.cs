@@ -24,10 +24,10 @@ namespace alps.net.api.StandardPASS
             return new CustomOrExternalDataTypeDefinition();
         }
 
-       protected CustomOrExternalDataTypeDefinition() { }
+        protected CustomOrExternalDataTypeDefinition() { }
         public CustomOrExternalDataTypeDefinition(IPASSProcessModel model, string labelForID = null, ISet<IDataObjectDefinition> dataObjectDefiniton = null,
-            string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
-            : base(model, labelForID, dataObjectDefiniton,comment, additionalLabel, additionalAttribute)
+            string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
+            : base(model, labelForID, dataObjectDefiniton, comment, additionalLabel, additionalAttribute)
         { }
 
     }

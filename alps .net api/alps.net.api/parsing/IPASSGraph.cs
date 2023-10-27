@@ -1,6 +1,6 @@
-﻿using System;
-using VDS.RDF;
-using static alps.net.api.parsing.PASSGraph;
+﻿using alps.net.api.parsing.graph;
+using alps.net.api.util;
+using System;
 
 namespace alps.net.api.parsing
 {
@@ -12,6 +12,17 @@ namespace alps.net.api.parsing
     public interface IPASSGraph
     {
 
+
+        public interface IGraphCallback
+        {
+            void notifyTriple(IPASSTriple triple);
+
+            string getSubjectName();
+
+            void notifyModelComponentIDChanged(string oldID, string newID);
+        }
+
+
         public string getBaseURI();
 
         public bool containsNonBaseUri(string input);
@@ -20,38 +31,15 @@ namespace alps.net.api.parsing
         /// Adds a triple to the triple store this graph contains
         /// </summary>
         /// <param name="t">the triple</param>
-        void addTriple(Triple t);
+        void addTriple(IPASSTriple t);
         /// <summary>
         /// Removes a triple from the triple store this graph contains
         /// </summary>
         /// <param name="t">the triple</param>
-        void removeTriple(Triple t);
+        void removeTriple(IPASSTriple t);
 
-        /// <summary>
-        /// Creates a new Uri node inside the graph
-        /// </summary>
-        /// <returns>The new Uri node</returns>
-        IUriNode createUriNode();
-        /// <summary>
-        /// Creates a new Uri node from an Uri
-        /// </summary>
-        /// <param name="uri">The correctly formatted uri</param>
-        /// <returns>The new Uri node</returns>
-        IUriNode createUriNode(Uri uri);
-        /// <summary>
-        /// Creates a new Uri node from a string name
-        /// This name should not be an uri/url (start with http: ...)
-        /// For this use <see cref="createUriNode(Uri)"/>.
-        /// </summary>
-        /// <param name="qname">The name</param>
-        /// <returns>The new Uri node</returns>
-        IUriNode createUriNode(string qname);
 
-        ILiteralNode createLiteralNode(string literal);
-        ILiteralNode createLiteralNode(string literal, Uri datadef);
-        ILiteralNode createLiteralNode(string literal, string langspec);
 
-        
 
         /// <summary>
         /// Registers a component to the graph.
@@ -62,7 +50,7 @@ namespace alps.net.api.parsing
         void register(IGraphCallback element);
 
         /// <summary>
-        /// Deregisteres a component previously registered via <see cref="register(IParseablePASSProcessModelElement)"/>
+        /// De-registers a component previously registered via <see cref="register(IParseablePASSProcessModelElement)"/>
         /// </summary>
         /// <param name="element">the element that is de-registered</param>
         void unregister(IGraphCallback element);

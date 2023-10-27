@@ -27,7 +27,7 @@ namespace alps.net.api.StandardPASS
             return new SingleSubject();
         }
 
-       protected SingleSubject() { }
+        protected SingleSubject() { }
         /// <summary>
         /// 
         /// </summary>
@@ -38,8 +38,9 @@ namespace alps.net.api.StandardPASS
         /// <param name="maxSubjectInstanceRestriction"></param>
         /// <param name="additionalAttribute"></param>
         public SingleSubject(IModelLayer layer, string labelForID = null, ISet<IMessageExchange> incomingMessageExchange = null, ISet<IMessageExchange> outgoingMessageExchange = null,
-            string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null) : base(layer, labelForID,  incomingMessageExchange,
-                outgoingMessageExchange, 1, comment, additionalLabel, additionalAttribute) { }
+            string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null) : base(layer, labelForID, incomingMessageExchange,
+                outgoingMessageExchange, 1, comment, additionalLabel, additionalAttribute)
+        { }
 
         public new void setInstanceRestriction(int restriction)
         {

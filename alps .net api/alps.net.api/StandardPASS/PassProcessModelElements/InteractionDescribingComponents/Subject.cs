@@ -1,6 +1,7 @@
 ﻿using alps.net.api.ALPS;
 using alps.net.api.FunctionalityCapsules;
 using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using System;
@@ -18,8 +19,8 @@ namespace alps.net.api.StandardPASS
 
 
         protected int instanceRestriction;
-        protected readonly ICompatibilityDictionary<string, IMessageExchange> incomingExchange = new CompatibilityDictionary<string, IMessageExchange>();
-        protected readonly ICompatibilityDictionary<string, IMessageExchange> outgoingExchange = new CompatibilityDictionary<string, IMessageExchange>();
+        protected readonly ICompDict<string, IMessageExchange> incomingExchange = new CompDict<string, IMessageExchange>();
+        protected readonly ICompDict<string, IMessageExchange> outgoingExchange = new CompDict<string, IMessageExchange>();
         protected readonly IImplementsFunctionalityCapsule<ISubject> implCapsule;
         protected readonly IExtendsFunctionalityCapsule<ISubject> extendsCapsule;
         protected readonly IList<ISubject.Role> roles = new List<ISubject.Role>();
@@ -149,7 +150,7 @@ namespace alps.net.api.StandardPASS
         /// <param name="additionalAttribute"></param>
         public Subject(IModelLayer layer, string labelForID = null, ISet<IMessageExchange> incomingMessageExchange = null,
             ISet<IMessageExchange> outgoingMessageExchange = null, int maxSubjectInstanceRestriction = 1, string comment = null, string additionalLabel = null,
-            IList<IIncompleteTriple> additionalAttribute = null)
+            IList<IPASSTriple> additionalAttribute = null)
             : base(layer, labelForID, comment, additionalLabel, additionalAttribute)
         {
             extendsCapsule = new ExtendsFunctionalityCapsule<ISubject>(this);
@@ -164,9 +165,9 @@ namespace alps.net.api.StandardPASS
         public void setInstanceRestriction(int restriction)
         {
             if (restriction == this.instanceRestriction) return;
-            removeTriple(new IncompleteTriple(OWLTags.stdhasInstanceRestriction, instanceRestriction.ToString(), IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeNonNegativeInt));
+            removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdhasInstanceRestriction, instanceRestriction.ToString(), new PASSTriple.LiteralDataType(OWLTags.xsdDataTypeNonNegativeInt)));
             this.instanceRestriction = (restriction >= 0) ? restriction : 0;
-            addTriple(new IncompleteTriple(OWLTags.stdhasInstanceRestriction, instanceRestriction.ToString(), IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeNonNegativeInt));
+            addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdhasInstanceRestriction, instanceRestriction.ToString(), new PASSTriple.LiteralDataType(OWLTags.xsdDataTypeNonNegativeInt)));
         }
 
 
@@ -179,7 +180,7 @@ namespace alps.net.api.StandardPASS
                 publishElementAdded(exchange);
                 exchange.register(this);
                 exchange.setReceiver(this);
-                addTriple(new IncompleteTriple(OWLTags.stdHasIncomingMessageExchange, exchange.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasIncomingMessageExchange, exchange.getUriModelComponentID()));
             }
         }
 
@@ -191,7 +192,7 @@ namespace alps.net.api.StandardPASS
                 publishElementAdded(exchange);
                 exchange.register(this);
                 exchange.setSender(this);
-                addTriple(new IncompleteTriple(OWLTags.stdHasOutgoingMessageExchange, exchange.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasOutgoingMessageExchange, exchange.getUriModelComponentID()));
             }
         }
 
@@ -240,7 +241,7 @@ namespace alps.net.api.StandardPASS
                 incomingExchange.Remove(id);
                 exchange.unregister(this, removeCascadeDepth);
                 exchange.setReceiver(null);
-                removeTriple(new IncompleteTriple(OWLTags.stdHasIncomingMessageExchange, exchange.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasIncomingMessageExchange, exchange.getUriModelComponentID()));
             }
         }
 
@@ -252,7 +253,7 @@ namespace alps.net.api.StandardPASS
                 outgoingExchange.Remove(id);
                 exchange.unregister(this, removeCascadeDepth);
                 exchange.setSender(null);
-                removeTriple(new IncompleteTriple(OWLTags.stdHasOutgoingMessageExchange, exchange.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasOutgoingMessageExchange, exchange.getUriModelComponentID()));
             }
         }
 
@@ -336,7 +337,7 @@ namespace alps.net.api.StandardPASS
                 roles.Add(role);
                 if (role == ISubject.Role.StartSubject)
                 {
-                    addTriple(new IncompleteTriple(OWLTags.rdfType, OWLTags.stdStartSubject));
+                    addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, OWLTags.stdStartSubject));
                     if (getContainedBy(out IModelLayer layer))
                     {
                         if (layer.getContainedBy(out IPASSProcessModel model))
@@ -358,7 +359,7 @@ namespace alps.net.api.StandardPASS
                 roles.Remove(role);
                 if (role == ISubject.Role.StartSubject)
                 {
-                    removeTriple(new IncompleteTriple(OWLTags.rdfType, OWLTags.stdStartSubject));
+                    removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, OWLTags.stdStartSubject));
                     if (getContainedBy(out IModelLayer layer))
                     {
                         if (layer.getContainedBy(out IPASSProcessModel model))
@@ -414,11 +415,11 @@ namespace alps.net.api.StandardPASS
             this.isAbstractType = isAbstract;
             if (isAbstract)
             {
-                addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + ABSTRACT_NAME));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + ABSTRACT_NAME));
             }
             else
             {
-                removeTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + ABSTRACT_NAME));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + ABSTRACT_NAME));
             }
         }
 
@@ -492,6 +493,6 @@ namespace alps.net.api.StandardPASS
             return extendsCapsule.isExtension();
         }
 
-        
+
     }
 }

@@ -43,7 +43,7 @@ namespace alps.net.api.StandardPASS
             return new DataDescribingComponent();
         }
 
-       protected DataDescribingComponent() { }
+        protected DataDescribingComponent() { }
         /// <summary>
         /// Constructor that creates a new fully specified instance of the data describing component class
         /// </summary>
@@ -51,7 +51,7 @@ namespace alps.net.api.StandardPASS
         /// <param name="modelComponentID"></param>
         /// <param name="modelComponentLabel"></param>
         /// <param name="comment"></param>
-        public DataDescribingComponent(IPASSProcessModel model, string labelForID = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+        public DataDescribingComponent(IPASSProcessModel model, string labelForID = null, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(labelForID, comment, additionalLabel, additionalAttribute)
         { setContainedBy(model); }
 

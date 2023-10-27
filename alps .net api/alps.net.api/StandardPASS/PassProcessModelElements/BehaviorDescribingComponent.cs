@@ -1,5 +1,6 @@
 ﻿using alps.net.api.ALPS;
 using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
@@ -38,7 +39,7 @@ namespace alps.net.api.StandardPASS
         /// <param name="comment"></param>
         /// <param name="additionalAttribute"></param>
         public BehaviorDescribingComponent(ISubjectBehavior subjectBehavior, string labelForID = null, string comment = null,
-            string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(labelForID, comment, additionalLabel, additionalAttribute) { setContainedBy(subjectBehavior); }
 
 
@@ -47,7 +48,7 @@ namespace alps.net.api.StandardPASS
             if (this.subjectBehavior != null)
             {
                 if (this.subjectBehavior.Equals(subjectBehavior)) return;
-                removeTriple(new IncompleteTriple(OWLTags.stdBelongsTo, this.subjectBehavior.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdBelongsTo, this.subjectBehavior.getUriModelComponentID()));
             }
 
             // Might set it to null
@@ -55,7 +56,7 @@ namespace alps.net.api.StandardPASS
             if (!(subjectBehavior is null))
             {
                 subjectBehavior.addBehaviorDescribingComponent(this);
-                    addTriple(new IncompleteTriple(OWLTags.stdBelongsTo, subjectBehavior.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdBelongsTo, subjectBehavior.getUriModelComponentID()));
             }
         }
 
@@ -79,7 +80,7 @@ namespace alps.net.api.StandardPASS
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
 
-        
+
 
         public override ISet<IPASSProcessModelElement> getAllConnectedElements(ConnectedElementsSetSpecification specification)
         {

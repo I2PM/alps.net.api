@@ -1,5 +1,6 @@
 ﻿using alps.net.api.ALPS;
 using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using Newtonsoft.Json.Linq;
@@ -11,7 +12,6 @@ namespace alps.net.api.StandardPASS
     /// <summary>
     /// Class that contains a certain message specification
     /// </summary>
-
     public class MessageSpecification : InteractionDescribingComponent, IMessageSpecification
     {
         protected IPayloadDescription payloadDescription;
@@ -35,7 +35,8 @@ namespace alps.net.api.StandardPASS
             return new MessageSpecification();
         }
 
-       protected MessageSpecification() { }
+        protected MessageSpecification() { }
+
         /// <summary>
         /// 
         /// </summary>
@@ -43,8 +44,9 @@ namespace alps.net.api.StandardPASS
         /// <param name="comment"></param>
         /// <param name="payloadDescription"></param>
         /// <param name="additionalAttribute"></param>
-        public MessageSpecification(IModelLayer layer, string labelForID = null, IPayloadDescription payloadDescription = null,
-            string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+        public MessageSpecification(IModelLayer layer, string labelForID = null,
+            IPayloadDescription payloadDescription = null,
+            string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(layer, labelForID, comment, additionalLabel, additionalAttribute)
         {
             setContainedPayloadDescription(payloadDescription);
@@ -61,14 +63,16 @@ namespace alps.net.api.StandardPASS
             {
                 if (oldDescription.Equals(payloadDescription)) return;
                 oldDescription.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdContainsPayloadDescription, oldDescription.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContainsPayloadDescription,
+                    oldDescription.getUriModelComponentID()));
             }
 
             if (!(payloadDescription is null))
             {
                 publishElementAdded(payloadDescription);
                 payloadDescription.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdContainsPayloadDescription, payloadDescription.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContainsPayloadDescription,
+                    payloadDescription.getUriModelComponentID()));
             }
         }
 
@@ -79,11 +83,13 @@ namespace alps.net.api.StandardPASS
         }
 
 
-        protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
+        protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType,
+            IParseablePASSProcessModelElement element)
         {
             if (element != null)
             {
-                if (predicate.Contains(OWLTags.containsPayloadDescription) && element is IPayloadDescription description)
+                if (predicate.Contains(OWLTags.containsPayloadDescription) &&
+                    element is IPayloadDescription description)
                 {
                     setContainedPayloadDescription(description);
                     return true;
@@ -95,7 +101,9 @@ namespace alps.net.api.StandardPASS
                 {
                     this.simpleSimTransmissionTime = new SisiTimeDistribution();
                 }
-                this.simpleSimTransmissionTime.meanValue = SisiTimeDistribution.ConvertXSDDurationStringToFractionsOfDay(objectContent);
+
+                this.simpleSimTransmissionTime.meanValue =
+                    SisiTimeDistribution.ConvertXSDDurationStringToFractionsOfDay(objectContent);
                 return true;
             }
             else if (predicate.Contains(OWLTags.abstrHasSimpleSimDurationDeviation))
@@ -104,7 +112,9 @@ namespace alps.net.api.StandardPASS
                 {
                     this.simpleSimTransmissionTime = new SisiTimeDistribution();
                 }
-                this.simpleSimTransmissionTime.standardDeviation = SisiTimeDistribution.ConvertXSDDurationStringToFractionsOfDay(objectContent);
+
+                this.simpleSimTransmissionTime.standardDeviation =
+                    SisiTimeDistribution.ConvertXSDDurationStringToFractionsOfDay(objectContent);
                 return true;
             }
             else if (predicate.Contains(OWLTags.abstrHasSimpleSimDurationMinValue))
@@ -113,7 +123,9 @@ namespace alps.net.api.StandardPASS
                 {
                     this.simpleSimTransmissionTime = new SisiTimeDistribution();
                 }
-                this.simpleSimTransmissionTime.minValue = SisiTimeDistribution.ConvertXSDDurationStringToFractionsOfDay(objectContent);
+
+                this.simpleSimTransmissionTime.minValue =
+                    SisiTimeDistribution.ConvertXSDDurationStringToFractionsOfDay(objectContent);
                 return true;
             }
             else if (predicate.Contains(OWLTags.abstrHasSimpleSimDurationMaxValue))
@@ -122,7 +134,9 @@ namespace alps.net.api.StandardPASS
                 {
                     this.simpleSimTransmissionTime = new SisiTimeDistribution();
                 }
-                this.simpleSimTransmissionTime.maxValue = SisiTimeDistribution.ConvertXSDDurationStringToFractionsOfDay(objectContent);
+
+                this.simpleSimTransmissionTime.maxValue =
+                    SisiTimeDistribution.ConvertXSDDurationStringToFractionsOfDay(objectContent);
                 return true;
             }
             else if (predicate.Contains(OWLTags.abstrHasSimpleSimVSMMessageType))
@@ -130,6 +144,7 @@ namespace alps.net.api.StandardPASS
                 this.simpleSimVSMMessageType = parseSimpleSimVSMMessageType(objectContent);
                 return true;
             }
+
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
 
@@ -147,7 +162,7 @@ namespace alps.net.api.StandardPASS
                 value = "nothing correct";
             }
 
-            if (value.ToLower().Contains("conveyance") )
+            if (value.ToLower().Contains("conveyance"))
             {
                 if (value.ToLower().Contains("external")) return SimpleSimVSMMessageTypes.ConveyanceTimeExternal;
                 else return SimpleSimVSMMessageTypes.ConveyanceTimeInternal;
@@ -163,14 +178,16 @@ namespace alps.net.api.StandardPASS
             }
         }
 
-        public override ISet<IPASSProcessModelElement> getAllConnectedElements(ConnectedElementsSetSpecification specification)
+        public override ISet<IPASSProcessModelElement> getAllConnectedElements(
+            ConnectedElementsSetSpecification specification)
         {
             ISet<IPASSProcessModelElement> baseElements = base.getAllConnectedElements(specification);
             if (getContainedPayloadDescription() != null) baseElements.Add(getContainedPayloadDescription());
             return baseElements;
         }
 
-        public override void updateRemoved(IPASSProcessModelElement update, IPASSProcessModelElement caller, int removeCascadeDepth = 0)
+        public override void updateRemoved(IPASSProcessModelElement update, IPASSProcessModelElement caller,
+            int removeCascadeDepth = 0)
         {
             base.updateRemoved(update, caller, removeCascadeDepth);
             if (update != null)

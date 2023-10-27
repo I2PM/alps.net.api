@@ -25,11 +25,11 @@ namespace alps.net.api.StandardPASS
             return new StandardPASSState();
         }
 
-       protected StandardPASSState() { }
+        protected StandardPASSState() { }
 
         public StandardPASSState(ISubjectBehavior behavior, string labelForID = null, IGuardBehavior guardBehavior = null,
             IFunctionSpecification functionSpecification = null,
-            ISet<ITransition> incomingTransition = null, ISet<ITransition> outgoingTransition = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            ISet<ITransition> incomingTransition = null, ISet<ITransition> outgoingTransition = null, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(behavior, labelForID, guardBehavior, functionSpecification, incomingTransition, outgoingTransition, comment, additionalLabel, additionalAttribute)
         { }
 

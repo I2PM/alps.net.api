@@ -1,6 +1,7 @@
 ﻿using alps.net.api.StandardPASS;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using VDS.RDF;
 
 namespace alps.net.api.parsing
@@ -19,7 +20,7 @@ namespace alps.net.api.parsing
         /// <param name="overrideOWLParsingStructure">Default false, should be set true when the structure defining owl files
         ///     are passed alongside the model defining ones, and the current parsing structure should be overwritten.</param>
         /// <returns>A list of <see cref="IPASSProcessModel"/> the were created from the given owl</returns>
-        IList<IPASSProcessModel> loadModels(IList<string> filepaths, bool overrideOWLParsingStructure = false);
+        IList<IPASSProcessModel> loadModels(IList<string> filepaths, IGraphFactory modelGraphFactory = null, bool overrideOWLParsingStructure = false);
 
         /*
         /// <summary>
@@ -74,5 +75,13 @@ namespace alps.net.api.parsing
         /// </summary>
         /// <param name="factory"></param>
         void setModelElementFactory(IPASSProcessModelElementFactory<IParseablePASSProcessModelElement> factory);
+
+        /// <summary>
+        /// Allows to add Assemblies to be searched for clesses which extend the PASSProcessModelElement class.
+        /// When the parsing tree is built, these classes are considered as well, and a ModelElement might be parsed
+        /// as instance of one of the found classes.
+        /// </summary>
+        /// <param name="assembly">The assembly that is searched for classes</param>
+        void addAssemblyToCheckForTypes(Assembly assembly);
     }
 }

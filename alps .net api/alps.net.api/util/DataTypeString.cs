@@ -1,6 +1,5 @@
 ﻿using alps.net.api.parsing;
 using System;
-using VDS.RDF;
 
 namespace alps.net.api.util
 {
@@ -47,13 +46,7 @@ namespace alps.net.api.util
             }
             else { this.extra = extra; }
         }
-
-        public override INode getNodeFromString(IPASSGraph graph)
-        {
-            if (getExtra().Contains("www"))
-                return graph.createLiteralNode(getContent(), new Uri(getExtra()));
-            return graph.createLiteralNode(getContent(), graph.createUriNode(getExtra()).Uri);
-        }
+        
 
         public override IStringWithExtra clone()
         {

@@ -1,5 +1,5 @@
 ﻿using alps.net.api.parsing;
-using VDS.RDF;
+using System;
 
 namespace alps.net.api
 {
@@ -34,13 +34,6 @@ namespace alps.net.api
         /// <param name="extra">the extra information</param>
         public void setExtra(string extra);
 
-        /// <summary>
-        /// Creates a <see cref="INode"/> from the current string (a literal node)
-        /// therefor it needs a graph as context
-        /// </summary>
-        /// <param name="graph">the context in which the node is created</param>
-        /// <returns>the created node</returns>
-        INode getNodeFromString(IPASSGraph graph);
 
         /// <summary>
         /// Clones the current string with extra to get a new instance

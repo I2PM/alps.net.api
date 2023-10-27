@@ -24,9 +24,9 @@ namespace alps.net.api.ALPS
             return new ALPSModelElement();
         }
 
-       protected ALPSModelElement() { }
-        public ALPSModelElement(string labelForID = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
-            : base(labelForID, comment, additionalLabel,additionalAttribute) { }
+        protected ALPSModelElement() { }
+        public ALPSModelElement(string labelForID = null, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
+            : base(labelForID, comment, additionalLabel, additionalAttribute) { }
 
         protected override string getExportTag()
         {

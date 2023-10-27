@@ -23,9 +23,9 @@ namespace alps.net.api.StandardPASS
             return new SendFunction();
         }
 
-       protected SendFunction() { }
+        protected SendFunction() { }
         public SendFunction(ISubjectBehavior behavior, string labelForID = null, string toolSpecificDefinition = null,
-            string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(behavior, labelForID, toolSpecificDefinition, comment, additionalLabel, additionalAttribute) { }
 
 

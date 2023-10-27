@@ -28,7 +28,7 @@ namespace alps.net.api.ALPS
             return new GuardReceiveState();
         }
 
-       protected GuardReceiveState() { }
+        protected GuardReceiveState() { }
 
         /// <summary>
         /// Constructor that creates a new fully specified instance of the guard receive state class
@@ -44,7 +44,7 @@ namespace alps.net.api.ALPS
         /// <param name="additionalAttribute"></param>
         public GuardReceiveState(ISubjectBehavior behavior, string labelForId = null, IGuardBehavior guardBehavior = null,
             IReceiveFunction functionSpecification = null,
-            ISet<ITransition> incomingTransition = null, ISet<IReceiveTransition> outgoingTransition = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            ISet<ITransition> incomingTransition = null, ISet<IReceiveTransition> outgoingTransition = null, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(behavior, labelForId, guardBehavior, functionSpecification, incomingTransition, outgoingTransition, comment, additionalLabel, additionalAttribute)
         { }
 

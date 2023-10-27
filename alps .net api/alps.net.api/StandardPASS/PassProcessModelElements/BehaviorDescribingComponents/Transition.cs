@@ -1,6 +1,7 @@
 ﻿using alps.net.api.ALPS;
 using alps.net.api.FunctionalityCapsules;
 using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using System;
@@ -46,7 +47,8 @@ namespace alps.net.api.StandardPASS
             return new Transition();
         }
 
-        protected Transition() {
+        protected Transition()
+        {
             //Console.WriteLine("Standard Transition constructor");
             implCapsule = new ImplementsFunctionalityCapsule<ITransition>(this);
         }
@@ -64,7 +66,7 @@ namespace alps.net.api.StandardPASS
         /// <param name="transitionType"></param>
         public Transition(IState sourceState, IState targetState, string labelForID = null, ITransitionCondition transitionCondition = null,
             ITransition.TransitionType transitionType = ITransition.TransitionType.Standard, string comment = null, string additionalLabel = null,
-            IList<IIncompleteTriple> additionalAttribute = null)
+            IList<IPASSTriple> additionalAttribute = null)
             : base(null, labelForID, comment, additionalLabel, additionalAttribute)
         {
             //Console.WriteLine("Second Transition constructor type: " + transitionType);
@@ -85,7 +87,7 @@ namespace alps.net.api.StandardPASS
         public Transition(ISubjectBehavior behavior, string labelForID = null, IState sourceState = null, IState targetState = null,
             ITransitionCondition transitionCondition = null,
             ITransition.TransitionType transitionType = ITransition.TransitionType.Standard, string comment = null, string additionalLabel = null,
-            IList<IIncompleteTriple> additionalAttribute = null)
+            IList<IPASSTriple> additionalAttribute = null)
             : base(behavior, labelForID, comment, additionalLabel, additionalAttribute)
         {
             //Console.WriteLine("Third Transition constructor");
@@ -111,14 +113,14 @@ namespace alps.net.api.StandardPASS
             {
                 if (oldAction.Equals(action)) return;
                 oldAction.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdBelongsTo, oldAction.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdBelongsTo, oldAction.getUriModelComponentID()));
             }
 
             if (!(action is null))
             {
                 publishElementAdded(action);
                 action.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdBelongsTo, action.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdBelongsTo, action.getUriModelComponentID()));
             }
         }
 
@@ -135,7 +137,7 @@ namespace alps.net.api.StandardPASS
                 oldSourceState.unregister(this, removeCascadeDepth);
                 oldSourceState.removeOutgoingTransition(getModelComponentID());
                 setBelongsToAction(null);
-                removeTriple(new IncompleteTriple(OWLTags.stdHasSourceState, oldSourceState.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasSourceState, oldSourceState.getUriModelComponentID()));
             }
             if (!(sourceState is null))
             {
@@ -143,7 +145,7 @@ namespace alps.net.api.StandardPASS
                 sourceState.register(this);
                 sourceState.addOutgoingTransition(this);
                 setBelongsToAction(sourceState.getAction());
-                addTriple(new IncompleteTriple(OWLTags.stdHasSourceState, sourceState.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasSourceState, sourceState.getUriModelComponentID()));
             }
         }
 
@@ -159,7 +161,7 @@ namespace alps.net.api.StandardPASS
                 if (oldState.Equals(targetState)) return;
                 oldState.unregister(this, removeCascadeDepth);
                 oldState.removeIncomingTransition(getModelComponentID());
-                removeTriple(new IncompleteTriple(OWLTags.stdHasTargetState, oldState.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasTargetState, oldState.getUriModelComponentID()));
             }
 
             if (!(targetState is null))
@@ -167,7 +169,7 @@ namespace alps.net.api.StandardPASS
                 publishElementAdded(targetState);
                 targetState.register(this);
                 targetState.addIncomingTransition(this);
-                addTriple(new IncompleteTriple(OWLTags.stdHasTargetState, targetState.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasTargetState, targetState.getUriModelComponentID()));
             }
         }
 
@@ -182,14 +184,14 @@ namespace alps.net.api.StandardPASS
             {
                 if (oldCond.Equals(transitionCondition)) return;
                 oldCond.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdHasTransitionCondition, oldCond.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasTransitionCondition, oldCond.getUriModelComponentID()));
             }
 
             if (!(transitionCondition is null))
             {
                 publishElementAdded(transitionCondition);
                 transitionCondition.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdHasTransitionCondition, transitionCondition.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasTransitionCondition, transitionCondition.getUriModelComponentID()));
             }
         }
 
@@ -229,7 +231,7 @@ namespace alps.net.api.StandardPASS
 
         protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
         {
-            
+
 
             if (implCapsule != null && implCapsule.parseAttribute(predicate, objectContent, lang, dataType, element))
                 return true;
@@ -264,22 +266,22 @@ namespace alps.net.api.StandardPASS
 
                 }
 
-                else if(element is ISimple2DVisualizationPathPoint point)
+                else if (element is ISimple2DVisualizationPathPoint point)
                 {
                     //Console.WriteLine(this.getModelComponentID() + ": PathPoint:" + point.getModelComponentID());
                     if (this.pathPoints == null) this.pathPoints = new List<ISimple2DVisualizationPathPoint>();
-                    
+
                     this.pathPoints.Add(point);
                 }
 
             }
             else //element == null --> data value
             {
-               
+
 
                 if (predicate.Contains(OWLTags.type))
                 {
-                   // Console.WriteLine(" - parsing object content transition type: " + objectContent);
+                    // Console.WriteLine(" - parsing object content transition type: " + objectContent);
 
                     if (objectContent.ToLower().Contains(ITransition.TransitionType.Finalized.ToString().ToLower()))
                     {
@@ -304,13 +306,14 @@ namespace alps.net.api.StandardPASS
                         setTransitionType(ITransition.TransitionType.Advice);
                         setIsAbstract(true);
                         return true;
-                    }else if (objectContent.Contains(ABSTRACT_NAME))
+                    }
+                    else if (objectContent.Contains(ABSTRACT_NAME))
                     {
                         setIsAbstract(true);
                         return true;
                     }
 
-                    
+
                 }
                 else if (predicate.Contains(OWLTags.abstrHas2DPageRatio))
                 {
@@ -399,11 +402,11 @@ namespace alps.net.api.StandardPASS
             this.isAbstractType = isAbstract;
             if (isAbstract)
             {
-                addTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + ABSTRACT_NAME));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + ABSTRACT_NAME));
             }
             else
             {
-                removeTriple(new IncompleteTriple(OWLTags.rdfType, getExportTag() + ABSTRACT_NAME));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.rdfType, getExportTag() + ABSTRACT_NAME));
             }
         }
 
@@ -458,8 +461,8 @@ namespace alps.net.api.StandardPASS
         }
 
         public void addSimple2DPathPoint(ISimple2DVisualizationPathPoint point)
-        { 
-            this.pathPoints.Add(point); 
+        {
+            this.pathPoints.Add(point);
         }
 
         public double get2DPageRatio() { return has2DPageRatio; }

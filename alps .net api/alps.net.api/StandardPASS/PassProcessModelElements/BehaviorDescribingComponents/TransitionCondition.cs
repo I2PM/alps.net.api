@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace alps.net.api.StandardPASS
     public class TransitionCondition : BehaviorDescribingComponent, ITransitionCondition
     {
         protected string toolSpecificDefinition = "";
+
         /// <summary>
         /// Name of the class, needed for parsing
         /// </summary>
@@ -21,12 +23,14 @@ namespace alps.net.api.StandardPASS
         {
             return className;
         }
+
         public override IParseablePASSProcessModelElement getParsedInstance()
         {
             return new TransitionCondition();
         }
 
-       protected TransitionCondition() { }
+        protected TransitionCondition() { }
+
         /// <summary>
         /// 
         /// </summary>
@@ -34,7 +38,8 @@ namespace alps.net.api.StandardPASS
         /// <param name="comment"></param>
         /// <param name="toolSpecificDefintion"></param>
         /// <param name="additionalAttribute"></param>
-        public TransitionCondition(ITransition transition, string label = null , string toolSpecificDefintion = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+        public TransitionCondition(ITransition transition, string label = null, string toolSpecificDefintion = null,
+            string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(null, label, comment, additionalLabel, additionalAttribute)
         {
             if (transition != null)
@@ -43,6 +48,7 @@ namespace alps.net.api.StandardPASS
                     setContainedBy(behavior);
                 transition.setTransitionCondition(this);
             }
+
             setToolSpecificDefinition(toolSpecificDefintion);
         }
 
@@ -50,11 +56,15 @@ namespace alps.net.api.StandardPASS
         public void setToolSpecificDefinition(string toolSpecificDefinition)
         {
             if (toolSpecificDefinition != null && toolSpecificDefinition.Equals(this.toolSpecificDefinition)) return;
-            removeTriple(new IncompleteTriple(OWLTags.stdHasToolSpecificDefinition, this.toolSpecificDefinition, IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeString));
-            this.toolSpecificDefinition = (toolSpecificDefinition is null || toolSpecificDefinition.Equals("")) ? null : toolSpecificDefinition;
+            removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasToolSpecificDefinition,
+                this.toolSpecificDefinition, new PASSTriple.LiteralDataType(OWLTags.xsdDataTypeString)));
+            this.toolSpecificDefinition = (toolSpecificDefinition is null || toolSpecificDefinition.Equals(""))
+                ? null
+                : toolSpecificDefinition;
             if (toolSpecificDefinition != null)
             {
-                addTriple(new IncompleteTriple(OWLTags.stdHasToolSpecificDefinition, toolSpecificDefinition, IncompleteTriple.LiteralType.DATATYPE, OWLTags.xsdDataTypeString));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasToolSpecificDefinition,
+                    toolSpecificDefinition, new PASSTriple.LiteralDataType(OWLTags.xsdDataTypeString)));
             }
         }
 
@@ -64,15 +74,16 @@ namespace alps.net.api.StandardPASS
             return toolSpecificDefinition;
         }
 
-        protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType, IParseablePASSProcessModelElement element)
+        protected override bool parseAttribute(string predicate, string objectContent, string lang, string dataType,
+            IParseablePASSProcessModelElement element)
         {
             if (predicate.Contains(OWLTags.hasToolSpecificDefinition))
             {
                 setToolSpecificDefinition(objectContent);
                 return true;
             }
+
             return base.parseAttribute(predicate, objectContent, lang, dataType, element);
         }
-
     }
 }

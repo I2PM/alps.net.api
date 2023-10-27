@@ -32,14 +32,14 @@ namespace alps.net.api.ALPS
             return new GuardExtension();
         }
 
-       protected GuardExtension() { }
+        protected GuardExtension() { }
 
         /// <summary>
         /// Constructor that creates a new fully specified instance of the subject extension class
         /// </summary>
         public GuardExtension(IModelLayer layer, string labelForID = null, ISubject extendedSubject = null, ISet<ISubjectBehavior> extensionBehavior = null,
              ISet<IMessageExchange> incomingMessageExchange = null, ISet<IMessageExchange> outgoingMessageExchange = null,
-            int maxSubjectInstanceRestriction = 1, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            int maxSubjectInstanceRestriction = 1, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(layer, labelForID, extendedSubject, extensionBehavior, incomingMessageExchange, outgoingMessageExchange, maxSubjectInstanceRestriction, comment, additionalLabel, additionalAttribute)
         {
         }

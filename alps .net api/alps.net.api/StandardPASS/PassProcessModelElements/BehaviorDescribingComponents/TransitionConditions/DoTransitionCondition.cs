@@ -24,10 +24,10 @@ namespace alps.net.api.StandardPASS
             return new DoTransitionCondition();
         }
 
-       protected DoTransitionCondition() { }
-        public DoTransitionCondition(ITransition transition, string labelForID = null, string toolSpecificDefintion = null, 
-            string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
-            : base(transition, labelForID, toolSpecificDefintion,  comment, additionalLabel, additionalAttribute)
+        protected DoTransitionCondition() { }
+        public DoTransitionCondition(ITransition transition, string labelForID = null, string toolSpecificDefintion = null,
+            string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
+            : base(transition, labelForID, toolSpecificDefintion, comment, additionalLabel, additionalAttribute)
         { }
 
     }

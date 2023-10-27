@@ -18,10 +18,10 @@ namespace alps.net.api.StandardPASS
             return new PayloadPhysicalObjectDescription();
         }
 
-       protected PayloadPhysicalObjectDescription() { }
+        protected PayloadPhysicalObjectDescription() { }
 
         public PayloadPhysicalObjectDescription(IPASSProcessModel model, string labelForID = null,
-            string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(model, labelForID, comment, additionalLabel, additionalAttribute)
         { }
     }

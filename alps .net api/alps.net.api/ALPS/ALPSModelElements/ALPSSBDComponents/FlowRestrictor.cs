@@ -22,7 +22,7 @@ namespace alps.net.api.ALPS
             return new FlowRestrictor();
         }
 
-        protected FlowRestrictor() {  }
+        protected FlowRestrictor() { }
 
         /// <summary>
         /// The constructor for a FlowRestrictor that is created by passing the referenced states (source and target)
@@ -37,7 +37,7 @@ namespace alps.net.api.ALPS
         /// <param name="additionalAttribute"></param>
         public FlowRestrictor(IState sourceState, IState targetState, string labelForId = null, ITransitionCondition transitionCondition = null,
             ITransition.TransitionType transitionType = ITransition.TransitionType.Standard, string comment = null, string additionalLabel = null,
-            IList<IIncompleteTriple> additionalAttribute = null)
+            IList<IPASSTriple> additionalAttribute = null)
             : base(sourceState, targetState, labelForId, transitionCondition, transitionType, comment, additionalLabel, additionalAttribute)
         {
         }
@@ -57,7 +57,7 @@ namespace alps.net.api.ALPS
         public FlowRestrictor(ISubjectBehavior behavior, string labelForId = null, IState sourceState = null, IState targetState = null,
             ITransitionCondition transitionCondition = null,
             ITransition.TransitionType transitionType = ITransition.TransitionType.Standard, string comment = null, string additionalLabel = null,
-            IList<IIncompleteTriple> additionalAttribute = null)
+            IList<IPASSTriple> additionalAttribute = null)
             : base(behavior, labelForId, sourceState, targetState, transitionCondition, transitionType, comment, additionalLabel, additionalAttribute)
         {
         }

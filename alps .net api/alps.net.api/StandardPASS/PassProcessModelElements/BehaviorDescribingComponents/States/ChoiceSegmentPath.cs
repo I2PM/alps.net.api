@@ -1,6 +1,7 @@
 ﻿using alps.net.api.util;
 using System.Collections.Generic;
 using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 
 namespace alps.net.api.StandardPASS
@@ -14,7 +15,7 @@ namespace alps.net.api.StandardPASS
         protected IState initialState;
         protected bool isOptionalToStart = false;
         protected bool isOptionalToEnd = false;
-        protected readonly ICompatibilityDictionary<string, IState> containedStates = new CompatibilityDictionary<string, IState>();
+        protected readonly ICompDict<string, IState> containedStates = new CompDict<string, IState>();
         protected IChoiceSegment segment;
 
         /// <summary>
@@ -36,12 +37,12 @@ namespace alps.net.api.StandardPASS
             return new ChoiceSegmentPath();
         }
 
-       protected ChoiceSegmentPath() { }
+        protected ChoiceSegmentPath() { }
         public ChoiceSegmentPath(ISubjectBehavior behavior, string labelForID = null, IGuardBehavior guardBehavior = null,
             IFunctionSpecification functionSpecification = null, ISet<ITransition> incomingTransition = null, ISet<ITransition> outgoingTransition = null,
             ISet<IState> containedStates = null, IState endState = null,
             IInitialStateOfChoiceSegmentPath initialStateOfChoiceSegmentPath = null, bool isOptionalToEndChoiceSegmentPath = false,
-            bool isOptionalToStartChoiceSegmentPath = false, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            bool isOptionalToStartChoiceSegmentPath = false, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(behavior, labelForID, guardBehavior, functionSpecification, incomingTransition, outgoingTransition, comment, additionalLabel, additionalAttribute)
         {
             setEndState(endState);
@@ -55,7 +56,7 @@ namespace alps.net.api.StandardPASS
             IFunctionSpecification functionSpecification = null, ISet<ITransition> incomingTransition = null, ISet<ITransition> outgoingTransition = null,
             ISet<IState> containedStates = null, IState endState = null,
             IInitialStateOfChoiceSegmentPath initialStateOfChoiceSegmentPath = null, bool isOptionalToEndChoiceSegmentPath = false,
-            bool isOptionalToStartChoiceSegmentPath = false, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            bool isOptionalToStartChoiceSegmentPath = false, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(choiceSegment is null ? null : choiceSegment.getContainedBy(out ISubjectBehavior behavior) ? behavior : null, labelForID, guardBehavior,
                   functionSpecification, incomingTransition, outgoingTransition, comment, additionalLabel, additionalAttribute)
         {
@@ -87,7 +88,7 @@ namespace alps.net.api.StandardPASS
             {
                 publishElementAdded(containedState);
                 containedState.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdContains, containedState.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains, containedState.getUriModelComponentID()));
             }
         }
 
@@ -103,7 +104,7 @@ namespace alps.net.api.StandardPASS
             {
                 containedStates.Remove(id);
                 state.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdContains, state.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdContains, state.getUriModelComponentID()));
                 if (state.Equals(getInitialState())) setInitialState(null, removeCascadeDepth);
                 if (state.Equals(getEndState())) setEndState(null, removeCascadeDepth);
             }
@@ -118,13 +119,13 @@ namespace alps.net.api.StandardPASS
             if (oldState != null)
             {
                 if (oldState.Equals(state)) return;
-                removeTriple(new IncompleteTriple(OWLTags.stdHasEndState, oldState.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasEndState, oldState.getUriModelComponentID()));
                 removeContainedState(oldState.getModelComponentID(), removeCascadeDepth);
             }
 
             if (!(state is null))
             {
-                addTriple(new IncompleteTriple(OWLTags.stdHasEndState, state.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasEndState, state.getUriModelComponentID()));
                 addContainedState(state);
             }
         }
@@ -145,13 +146,13 @@ namespace alps.net.api.StandardPASS
             if (oldState != null)
             {
                 if (oldState.Equals(state)) return;
-                removeTriple(new IncompleteTriple(OWLTags.stdHasInitialState, oldState.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasInitialState, oldState.getUriModelComponentID()));
                 removeContainedState(oldState.getModelComponentID(), removeCascadeDepth);
             }
 
             if (!(state is null))
             {
-                addTriple(new IncompleteTriple(OWLTags.stdHasInitialState, state.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasInitialState, state.getUriModelComponentID()));
                 addContainedState(state);
             }
         }
@@ -285,14 +286,14 @@ namespace alps.net.api.StandardPASS
             {
                 if (oldSegment.Equals(container)) return;
                 oldSegment.unregister(this);
-                removeTriple(new IncompleteTriple(OWLTags.stdBelongsTo, oldSegment.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdBelongsTo, oldSegment.getUriModelComponentID()));
             }
 
             if (!(container is null))
             {
                 publishElementAdded(container);
                 container.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdBelongsTo, container.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdBelongsTo, container.getUriModelComponentID()));
             }
         }
 

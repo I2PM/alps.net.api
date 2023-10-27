@@ -1,5 +1,6 @@
 ﻿using alps.net.api.ALPS;
 using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace alps.net.api.StandardPASS
             return new SenderTypeConstraint();
         }
 
-       protected SenderTypeConstraint() { }
+        protected SenderTypeConstraint() { }
 
         /// <summary>
         /// 
@@ -39,9 +40,9 @@ namespace alps.net.api.StandardPASS
         /// <param name="limit"></param>
         /// <param name="subject"></param>
         /// <param name="additionalAttribute"></param>
-        public SenderTypeConstraint(IModelLayer layer, string labelForID = null,  IInputPoolConstraintHandlingStrategy inputPoolConstraintHandlingStrategy = null,
-            int limit = 0, ISubject subject = null, string comment = null, string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
-            : base(layer, labelForID,  inputPoolConstraintHandlingStrategy, limit, comment, additionalLabel, additionalAttribute)
+        public SenderTypeConstraint(IModelLayer layer, string labelForID = null, IInputPoolConstraintHandlingStrategy inputPoolConstraintHandlingStrategy = null,
+            int limit = 0, ISubject subject = null, string comment = null, string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
+            : base(layer, labelForID, inputPoolConstraintHandlingStrategy, limit, comment, additionalLabel, additionalAttribute)
         {
 
             setReferencesSubject(subject);
@@ -57,14 +58,14 @@ namespace alps.net.api.StandardPASS
             if (oldSubj != null)
             {
                 oldSubj.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdReferences, oldSubj.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdReferences, oldSubj.getUriModelComponentID()));
             }
-            
+
             if (!(subject is null))
             {
                 publishElementAdded(subject);
                 subject.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdReferences, subject.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdReferences, subject.getUriModelComponentID()));
             }
         }
 

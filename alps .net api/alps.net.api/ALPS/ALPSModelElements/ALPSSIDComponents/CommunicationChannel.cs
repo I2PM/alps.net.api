@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.StandardPASS;
 using alps.net.api.util;
@@ -51,10 +52,10 @@ namespace alps.net.api.ALPS
         public CommunicationChannel(IModelLayer layer, string labelForID = null,
             ISubject correspondentA = null, ISubject correspondentB = null,
             bool isUniDirectional = false, string comment = null, string additionalLabel = null,
-            IList<IIncompleteTriple> additionalAttribute = null)
+            IList<IPASSTriple> additionalAttribute = null)
             : base(layer, labelForID, comment, additionalLabel, additionalAttribute)
         {
-            setIsUniDirectional(isUniDirectional); 
+            setIsUniDirectional(isUniDirectional);
             setCorrespondents(correspondentA, correspondentB);
         }
 
@@ -93,7 +94,7 @@ namespace alps.net.api.ALPS
                 {
                     setCorrespondentB(subj);
                 }
-                
+
             }
             else if (element is ISimple2DVisualizationPathPoint point)
             {
@@ -125,19 +126,19 @@ namespace alps.net.api.ALPS
                     oldCorrespondentA.unregister(this, removeCascadeDepth);
 
                 // Delete the existing triple depending on the old directional state of the channel
-                removeTriple(new IncompleteTriple(oldIsUniDirectionalValue ? OWLTags.stdHasSender : OWLTags.stdHasCorrespondent, correspondentA.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), oldIsUniDirectionalValue ? OWLTags.stdHasSender : OWLTags.stdHasCorrespondent, correspondentA.getUriModelComponentID()));
 
             }
             if (!(correspondentA is null))
             {
                 // Only if the correspondet is new, it must be registered
-                if ((oldCorrespondentA is null) ||(!oldCorrespondentA.Equals(correspondentA)))
+                if ((oldCorrespondentA is null) || (!oldCorrespondentA.Equals(correspondentA)))
                 {
                     publishElementAdded(correspondentA);
                     correspondentA.register(this);
                 }
                 // Add the new triple depending on the new directional state of the channel
-                addTriple(new IncompleteTriple(channelIsUniDirectional ? OWLTags.stdHasSender : OWLTags.stdHasCorrespondent, correspondentA.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), channelIsUniDirectional ? OWLTags.stdHasSender : OWLTags.stdHasCorrespondent, correspondentA.getUriModelComponentID()));
             }
         }
 
@@ -160,7 +161,7 @@ namespace alps.net.api.ALPS
                     oldCorrespondentB.unregister(this, removeCascadeDepth);
 
                 // Delete the existing triple depending on the old directional state of the channel
-                removeTriple(new IncompleteTriple(oldIsUniDirectionalValue ? OWLTags.stdHasReceiver : OWLTags.stdHasCorrespondent, correspondentB.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), oldIsUniDirectionalValue ? OWLTags.stdHasReceiver : OWLTags.stdHasCorrespondent, correspondentB.getUriModelComponentID()));
             }
             if (!(correspondentB is null))
             {
@@ -170,7 +171,7 @@ namespace alps.net.api.ALPS
                     publishElementAdded(correspondentB);
                     correspondentB.register(this);
                 }
-                addTriple(new IncompleteTriple(channelIsUniDirectional ? OWLTags.stdHasReceiver : OWLTags.stdHasCorrespondent, correspondentB.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), channelIsUniDirectional ? OWLTags.stdHasReceiver : OWLTags.stdHasCorrespondent, correspondentB.getUriModelComponentID()));
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using alps.net.api.parsing;
+using alps.net.api.parsing.graph;
 using alps.net.api.src;
 using alps.net.api.util;
 using System.Collections.Generic;
@@ -27,10 +28,10 @@ namespace alps.net.api.StandardPASS
             return new DataObjectDefinition();
         }
 
-       protected DataObjectDefinition() { }
+        protected DataObjectDefinition() { }
         public DataObjectDefinition(IPASSProcessModel model, string labelForID = null,
             IDataTypeDefinition dataTypeDefintion = null, string comment = null,
-            string additionalLabel = null, IList<IIncompleteTriple> additionalAttribute = null)
+            string additionalLabel = null, IList<IPASSTriple> additionalAttribute = null)
             : base(model, labelForID, comment, additionalLabel, additionalAttribute)
         {
             setDataTypeDefinition(dataTypeDefintion);
@@ -47,14 +48,14 @@ namespace alps.net.api.StandardPASS
             {
                 if (oldDef.Equals(dataTypeDefintion)) return;
                 oldDef.unregister(this, removeCascadeDepth);
-                removeTriple(new IncompleteTriple(OWLTags.stdHasDataType, oldDef.getUriModelComponentID()));
+                removeTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasDataType, oldDef.getUriModelComponentID()));
             }
 
             if (!(dataTypeDefintion is null))
             {
                 publishElementAdded(dataTypeDefintion);
                 dataTypeDefintion.register(this);
-                addTriple(new IncompleteTriple(OWLTags.stdHasDataType, dataTypeDefintion.getUriModelComponentID()));
+                addTriple(new PASSTriple(getExportXmlName(), OWLTags.stdHasDataType, dataTypeDefintion.getUriModelComponentID()));
             }
         }
 
