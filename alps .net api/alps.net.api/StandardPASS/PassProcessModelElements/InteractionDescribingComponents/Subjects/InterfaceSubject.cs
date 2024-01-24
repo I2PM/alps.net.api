@@ -126,12 +126,8 @@ namespace alps.net.api.StandardPASS
         public void setSimpleSimInterfaceSubjectResponseDefinition(string simpleSimInterfaceSubjectResponseDefinitionStringa)
         {
             XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(simpleSimInterfaceSubjectResponseDefinitionStringa);
-
-            // Assuming the input string represents a single XML node,
-            // we retrieve the first child node of the root element.
-            XmlNode node = xmlDoc.DocumentElement?.FirstChild;
-            this.simpleSimInterfaceSubjectResponseDefinition = node;
+            xmlDoc.LoadXml(simpleSimInterfaceSubjectResponseDefinitionStringa);            
+            this.simpleSimInterfaceSubjectResponseDefinition = xmlDoc;
         }
 
         public void setSimpleSimInterfaceSubjectResponseDefinition(XmlNode simpleSimInterfaceSubjectResponseDefinition)
