@@ -2268,5 +2268,202 @@ namespace alps.net.api.src
                 return ResourceManager.GetString("xsdDuration", resourceCulture);
             }
         }
+
+        internal static string hasAbsolute2D_PosX
+        {
+            get
+            {
+                return ResourceManager.GetString("hasAbsolute2D_PosX", resourceCulture);
+            }
+        }
+
+        internal static string hasAbsolute2D_PosY
+        {
+            get
+            {
+                return ResourceManager.GetString("hasAbsolute2D_PosX", resourceCulture);
+            }
+        }
+
+        internal static string isConnectorPointOccupied
+        {
+            get
+            {
+                return ResourceManager.GetString("isConnectorPointOccupied", resourceCulture);
+            }
+        }
+
+        internal static string xsdDataTypeBoolean
+        {
+            get
+            {
+                return ResourceManager.GetString("xsdDataTypeBoolean", resourceCulture);
+            }
+        }
+
+
+
+        internal static string hasAbsolute2D_Height
+        {
+            get
+            {
+                return ResourceManager.GetString("hasAbsolute2D_Height", resourceCulture);
+            }
+        }
+        internal static string hasAbsolute2D_Width
+        {
+            get
+            {
+                return ResourceManager.GetString("hasAbsolute2D_Width", resourceCulture);
+            }
+        }
+        internal static string hasAbsoluteBorderThickness
+        {
+            get
+            {
+                return ResourceManager.GetString("hasAbsoluteBorderThickness", resourceCulture);
+            }
+        }
+        internal static string hasAnchorPoint
+        {
+            get
+            {
+                return ResourceManager.GetString("hasAnchorPoint", resourceCulture);
+            }
+        }
+        internal static string hasBorderColor
+        {
+            get
+            {
+                return ResourceManager.GetString("hasBorderColor", resourceCulture);
+            }
+        }
+        internal static string hasBorderStyle
+        {
+            get
+            {
+                return ResourceManager.GetString("hasBorderStyle", resourceCulture);
+            }
+        }
+        internal static string hasConnectorPoints
+        {
+            get
+            {
+                return ResourceManager.GetString("hasConnectorPoints", resourceCulture);
+            }
+        }
+        internal static string hasFillColor
+        {
+            get
+            {
+                return ResourceManager.GetString("hasFillColor", resourceCulture);
+            }
+        }
+        internal static string hasTextAlignVertical
+        {
+            get
+            {
+                return ResourceManager.GetString("hasTextAlignVertical", resourceCulture);
+            }
+        }
+        internal static string hasTextAlignHorizontal
+        {
+            get
+            {
+                return ResourceManager.GetString("hasTextAlignHorizontal", resourceCulture);
+            }
+        }
+
+        internal static string hasTextColor
+        {
+            get
+            {
+                return ResourceManager.GetString("hasTextColor", resourceCulture);
+            }
+        }
+
+        internal static string hasTextFont
+        {
+            get
+            {
+                return ResourceManager.GetString("hasTextFont", resourceCulture);
+            }
+        }
+
+
+        internal static string visuallyDescribes
+        {
+            get
+            {
+                return ResourceManager.GetString("visuallyDescribes", resourceCulture);
+            }
+        }
+        internal static string hasAbsoluteBoxBorderThickness
+        {
+            get
+            {
+                return ResourceManager.GetString("hasAbsoluteBoxBorderThickness", resourceCulture);
+            }
+        }
+        internal static string hasBoxBorderColor
+        {
+            get
+            {
+                return ResourceManager.GetString("hasBoxBorderColor", resourceCulture);
+            }
+        }
+        internal static string hasBoxTextAlignHorizontal
+        {
+            get
+            {
+                return ResourceManager.GetString("hasBoxTextAlignHorizontal", resourceCulture);
+            }
+        }
+        internal static string hasBoxTextAlignVertical
+        {
+            get
+            {
+                return ResourceManager.GetString("hasBoxTextAlignVertical", resourceCulture);
+            }
+        }
+        internal static string hasConnectionColor
+        {
+            get
+            {
+                return ResourceManager.GetString("hasConnectionColor", resourceCulture);
+            }
+        }
+
+        internal static string hasStartingConnectorPoint
+        {
+            get
+            {
+                return ResourceManager.GetString("hasStartingConnectorPoint", resourceCulture);
+            }
+        }
+
+        internal static string hasEndingConnectorPoint
+        {
+            get
+            {
+                return ResourceManager.GetString("hasEndingConnectorPoint", resourceCulture);
+            }
+        }
+        internal static string hasPathDescribingPoints
+        {
+            get
+            {
+                return ResourceManager.GetString("hasPathDescribingPoints", resourceCulture);
+            }
+        }
+
+        internal static string xsdHexBinary
+        {
+            get
+            {
+                return ResourceManager.GetString("xsdHexBinary", resourceCulture);
+            }
+        }
+
     }
 }

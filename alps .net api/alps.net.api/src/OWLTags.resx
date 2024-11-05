@@ -917,4 +917,108 @@
     <value>xsd:duration</value>
     <comment/>
   </data>
+  <data name="hasAbsolute2D_PosX" xml:space="preserve">
+    <value>hasAbsolute2D_PosX</value>
+    <comment/>
+  </data>
+  <data name="hasAbsolute2D_PosY" xml:space="preserve">
+    <value>hasAbsolute2D_PosY</value>
+    <comment/>
+  </data>
+  <data name="isConnectorPointOccupied" xml:space="preserve">
+    <value>isConnectorPointOccupied</value>
+    <comment/>
+  </data>
+  <data name="xsdDataTypeBoolean" xml:space="preserve">
+    <value>xsd:boolean</value>
+    <comment/>
+  </data>
+  <data name="hasAbsolute2D_Height" xml:space="preserve">
+    <value>hasAbsolute2D_Height</value>
+    <comment/>
+  </data>
+  <data name="hasAbsolute2D_Width" xml:space="preserve">
+    <value>hasAbsolute2D_Width</value>
+    <comment/>
+  </data>
+  <data name="hasAbsoluteBorderThickness" xml:space="preserve">
+    <value>hasAbsoluteBorderThickness</value>
+    <comment/>
+  </data>
+  <data name="hasAnchorPoint" xml:space="preserve">
+    <value>hasAnchorPoint</value>
+    <comment/>
+  </data>
+  <data name="hasBorderColor" xml:space="preserve">
+    <value>hasBorderColor</value>
+    <comment/>
+  </data>
+  <data name="hasBorderStyle" xml:space="preserve">
+    <value>hasBorderStyle</value>
+    <comment/>
+  </data>
+  <data name="hasConnectorPoints" xml:space="preserve">
+    <value>hasConnectorPoints</value>
+    <comment/>
+  </data>
+  <data name="hasFillColor" xml:space="preserve">
+    <value>hasFillColor</value>
+    <comment/>
+  </data>
+  <data name="hasTextAlignVertical" xml:space="preserve">
+    <value>hasTextAlignVertical</value>
+    <comment/>
+  </data>
+  <data name="hasTextAlignHorizontal" xml:space="preserve">
+    <value>hasTextAlignHorizontal</value>
+    <comment/>
+  </data>
+  <data name="hasTextColor" xml:space="preserve">
+    <value>hasTextColor</value>
+    <comment/>
+  </data>
+  <data name="hasTextFont" xml:space="preserve">
+    <value>hasTextFont</value>
+    <comment/>
+  </data>
+  <data name="visuallyDescribes" xml:space="preserve">
+    <value>visuallyDescribes</value>
+    <comment/>
+  </data>
+  <data name="hasAbsoluteBoxBorderThickness" xml:space="preserve">
+    <value>hasAbsoluteBoxBorderThickness</value>
+    <comment/>
+  </data>
+  <data name="hasBoxBorderColor" xml:space="preserve">
+    <value>hasBoxBorderColor</value>
+    <comment/>
+  </data>
+  <data name="hasBoxTextAlignHorizontal" xml:space="preserve">
+    <value>hasBoxTextAlignHorizontal</value>
+    <comment/>
+  </data>
+  <data name="hasBoxTextAlignVertical" xml:space="preserve">
+    <value>hasBoxTextAlignVertical</value>
+    <comment/>
+  </data>
+  <data name="hasConnectionColor" xml:space="preserve">
+    <value>hasConnectionColor</value>
+    <comment/>
+  </data>
+  <data name="hasStartingConnectorPoint" xml:space="preserve">
+    <value>hasStartingConnectorPoint</value>
+    <comment/>
+  </data>
+  <data name="hasEndingConnectorPoint" xml:space="preserve">
+    <value>hasEndingConnectorPoint</value>
+    <comment/>
+  </data>
+  <data name="hasPathDescribingPoints" xml:space="preserve">
+    <value>hasPathDescribingPoints</value>
+    <comment/>
+  </data>
+  <data name="xsdHexBinary" xml:space="preserve">
+    <value>xsd:hexBinary</value>
+    <comment/>
+  </data>
 </root>
