@@ -72,8 +72,11 @@ namespace alps.net.api.parsing
         private PASSReaderWriter()
         {
             string logName = "logfile.txt";
-            string path = Directory.GetCurrentDirectory();
-            string cutPath = path.Substring(0, path.IndexOf("bin")) + "logs\\";
+            // Path for storing the log file at the location where the application is running.  
+            // May break depending on the environment, so the path might need to be adjusted.  
+            // Trying out the commented paths might help.  
+            string projectDirectory = AppDomain.CurrentDomain.BaseDirectory; //string path = Directory.GetCurrentDirectory();
+            string cutPath = projectDirectory + "logs\\"; //string cutPath = path + "logs\\";
 
             Directory.CreateDirectory(cutPath);
 
