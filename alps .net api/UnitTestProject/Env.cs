@@ -50,7 +50,7 @@ namespace UnitTestProject
             {
                 // Going for the ontology that lies in the more general src folder to avoid multiple files
                 "../../" + srcFolder + "standard_PASS_ont_v_1.1.0.owl",
-                "../../" + srcFolder + "abstract-layered-pass-ont.owl",
+                "../../" + srcFolder + "ALPS_ont_v_0.8.0.owl",
             };
             ioHandler.loadOWLParsingStructure(path);
             return ioHandler;

@@ -116,7 +116,10 @@ namespace alps.net.api.parsing
 
         protected virtual KeyValuePair<IParseablePASSProcessModelElement, string> decideForElement(IDictionary<IParseablePASSProcessModelElement, string> possibleElements)
         {
-            int max = -1;
+            // Start below -1 (the canParse "cannot parse" score): even if no candidate can parse its
+            // mapped name, one of them must be returned - a default pair would make the caller
+            // dereference a null element and crash the whole model import
+            int max = int.MinValue;
             KeyValuePair<IParseablePASSProcessModelElement, string> maxPair = new KeyValuePair<IParseablePASSProcessModelElement, string>();
             int counter = 0;
             foreach (KeyValuePair<IParseablePASSProcessModelElement, string> pair in possibleElements)

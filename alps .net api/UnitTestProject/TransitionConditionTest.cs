@@ -29,9 +29,9 @@ namespace UnitTestProject
             if (recTran1 is IParseablePASSProcessModelElement elem)
             {
                 bool found = false;
-                foreach (var triple in elem.getTriples())
+                foreach (var triple in elem.getIncompleteTriples())
                 {
-                    if (triple.Predicate.ToString().Contains("hasTransitionCondition"))
+                    if (triple.getPredicate().Contains("hasTransitionCondition"))
                     {
                         found = true;
                         break;
@@ -54,9 +54,9 @@ namespace UnitTestProject
             cond.setTimeValue("TimeValue");
             bool contains = false;
             if (cond is IParseablePASSProcessModelElement elem)
-                foreach (var t in elem.getTriples())
+                foreach (var t in elem.getIncompleteTriples())
                 {
-                    if (t.Predicate.ToString().Contains("hasDayTimeDurationTimeOutTime"))
+                    if (t.getPredicate().Contains("hasDayTimeDurationTimeOutTime"))
                     {
                         contains = true;
                     }

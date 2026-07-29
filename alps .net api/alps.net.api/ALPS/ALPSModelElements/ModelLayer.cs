@@ -21,6 +21,7 @@ namespace alps.net.api.ALPS
         protected int priorityNumber;
         protected IPASSProcessModel model;
         protected LayerType layerType = LayerType.STANDARD;
+        protected bool layerTypeExplicitlySet = false;
         protected bool isAbstractType = false;
         protected IModelLayer extendedLayer;
 
@@ -90,6 +91,11 @@ namespace alps.net.api.ALPS
             {
                 setIsAbstract(true);
             }
+            // A layer type explicitly stated in the model (rdf:type GuardLayer etc.) must not be
+            // overridden by inference from the contained elements: guard/macro extensions are often
+            // exported as generic SubjectExtension individuals, which would downgrade the layer
+            // to EXTENSION (or to STANDARD if no extension is contained).
+            if (layerTypeExplicitlySet) return;
             foreach (IPASSProcessModelElement element in getElements().Values)
             {
                 if (element is IGuardExtension)
@@ -211,7 +217,10 @@ namespace alps.net.api.ALPS
                     if (element is ISubjectExtension subjExt)
                     {
                         if (!(element is IMacroExtension) && getLayerType() == LayerType.MACRO
-                            || !(element is IGuardExtension) && getLayerType() == LayerType.GUARD
+                            // Guard layers must accept generic subject extensions: exporters type the
+                            // guard's extension individual as plain SubjectExtension, only the layer
+                            // carries the guard information
+                            || (element is IMacroExtension) && getLayerType() == LayerType.GUARD
                             || (element is IMacroExtension || element is IGuardExtension) && getLayerType() == LayerType.EXTENSION
                             || (element is IGuardReceiveState) && getLayerType() != LayerType.GUARD)
                         {
@@ -220,6 +229,10 @@ namespace alps.net.api.ALPS
                         }
                         foreach (ISubjectExtension ext in getElements().Values.OfType<ISubjectExtension>())
                         {
+                            // The element itself is already contained at this point and must not be
+                            // compared against itself, or it would always be removed again once its
+                            // extended subject is resolved
+                            if (ext.Equals(subjExt)) continue;
                             if (ext.getExtendedSubject() != null && subjExt.getExtendedSubject() != null && ext.getExtendedSubject().Equals(subjExt.getExtendedSubject()))
                             {
                                 elements.Remove(element.getModelComponentID());
@@ -403,21 +416,27 @@ namespace alps.net.api.ALPS
                     if (objectContent.Contains("MacroLayer"))
                     {
                         setLayerType(LayerType.MACRO);
+                        layerTypeExplicitlySet = true;
                         return true;
                     }
                     else if (objectContent.Contains("GuardLayer"))
                     {
                         setLayerType(LayerType.GUARD);
+                        layerTypeExplicitlySet = true;
                         return true;
                     }
                     else if (objectContent.Contains("ExtensionLayer"))
                     {
-                        setLayerType(LayerType.EXTENSION);
+                        // ExtensionLayer is the generic parent of Guard-/MacroLayer; a more specific
+                        // explicit type must not be overwritten by it
+                        if (!layerTypeExplicitlySet)
+                            setLayerType(LayerType.EXTENSION);
                         return true;
                     }
                     else if (objectContent.Contains("BaseLayer"))
                     {
                         setLayerType(LayerType.BASE);
+                        layerTypeExplicitlySet = true;
                         return true;
                     }
                     else if (objectContent.Contains(ABSTRACT_NAME))
