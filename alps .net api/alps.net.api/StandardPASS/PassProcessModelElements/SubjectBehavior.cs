@@ -253,7 +253,7 @@ namespace alps.net.api.StandardPASS
                 else if ((predicate.Contains(OWLTags.hasInitialStateOfBehavior) ||
                           predicate.Contains(OWLTags.hasInitialState)) && element is IState initialState)
                 {
-                    setInitialState(initialStateOfBehavior);
+                    setInitialState(initialState);
                     return true;
                 }
 

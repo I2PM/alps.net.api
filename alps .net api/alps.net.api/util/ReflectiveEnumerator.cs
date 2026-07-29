@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace alps.net.api
 {
-    static class ReflectiveEnumerator
+    public static class ReflectiveEnumerator
     {
         static ReflectiveEnumerator() { }
 

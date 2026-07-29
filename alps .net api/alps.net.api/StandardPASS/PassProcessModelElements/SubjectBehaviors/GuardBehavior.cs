@@ -156,6 +156,32 @@ namespace alps.net.api.StandardPASS
             return baseElements;
         }
 
+        private bool isGuardedElement(IPASSProcessModelElement element)
+        {
+            return element != null &&
+                   (subjectBehaviors.ContainsKey(element.getModelComponentID()) ||
+                    guardedStates.ContainsKey(element.getModelComponentID()));
+        }
+
+        public override void updateAdded(IPASSProcessModelElement update, IPASSProcessModelElement caller)
+        {
+            // Guarding an element (addGuardedBehavior / addGuardedState) registers this guard as an
+            // observer of that element. The components the guarded element publishes belong to the
+            // guarded behavior, not to this guard, so they must not be claimed as own components here
+            // (SubjectBehavior.updateAdded would re-parent every state of the guarded behavior into
+            // this guard, making them indistinguishable from real guard states).
+            if (isGuardedElement(caller)) return;
+            base.updateAdded(update, caller);
+        }
+
+        protected override void successfullyParsedElement(IParseablePASSProcessModelElement parsedElement)
+        {
+            // Elements referenced by guardsBehavior/guardsState triples are guarded, not contained;
+            // they keep belonging to the behavior they were defined in.
+            if (isGuardedElement(parsedElement)) return;
+            base.successfullyParsedElement(parsedElement);
+        }
+
         public override void updateRemoved(IPASSProcessModelElement update, IPASSProcessModelElement caller, int removeCascadeDepth = 0)
         {
             base.updateRemoved(update, caller, removeCascadeDepth);
